@@ -1,6 +1,7 @@
 import {
   Injectable,
   UnauthorizedException,
+  Logger,
   type CanActivate,
   type ExecutionContext,
 } from '@nestjs/common';
@@ -12,6 +13,8 @@ import type { JwtPayload } from '../interfaces/jwt-payload.interface.js';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
+  private readonly logger = new Logger(JwtAuthGuard.name);
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -28,6 +31,9 @@ export class JwtAuthGuard implements CanActivate {
 
     const secret = this.configService.get<string>('JWT_ACCESS_SECRET');
     if (!secret) {
+      this.logger.error(
+        'Lỗi cấu hình: JWT_ACCESS_SECRET chưa được cấu hình trong biến môi trường (.env)',
+      );
       throw new UnauthorizedException('Lỗi cấu hình xác thực máy chủ');
     }
 

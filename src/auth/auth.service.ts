@@ -2,18 +2,24 @@ import {
   Injectable,
   UnauthorizedException,
   InternalServerErrorException,
+  ConflictException,
+  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { UserRole } from '../../generated/prisma/client.js';
 import type { LoginDto } from './dto/login.dto.js';
 import type { RefreshTokenDto } from './dto/refresh-token.dto.js';
+import type { RegisterDto } from './dto/register.dto.js';
 import type { JwtPayload } from './interfaces/jwt-payload.interface.js';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -50,8 +56,11 @@ export class AuthService {
   }): Promise<{ token: string; expiresIn: string }> {
     const secret = this.configService.get<string>('JWT_ACCESS_SECRET');
     if (!secret) {
+      this.logger.error(
+        'Lỗi cấu hình: JWT_ACCESS_SECRET chưa được cấu hình trong biến môi trường (.env)',
+      );
       throw new InternalServerErrorException(
-        'JWT_ACCESS_SECRET chưa được cấu hình',
+        'Lỗi cấu hình hệ thống: Không thể xử lý yêu cầu xác thực',
       );
     }
 
@@ -249,5 +258,81 @@ export class AuthService {
     return {
       message: 'Đăng xuất thành công',
     };
+  }
+
+  /**
+   * Đăng ký tài khoản học viên (STUDENT) mới
+   */
+  async register(registerDto: RegisterDto) {
+    const email = registerDto.email.trim().toLowerCase();
+    const phone = registerDto.phone.trim();
+
+    // 1. Kiểm tra email đã tồn tại hay chưa
+    const existingEmail = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    if (existingEmail) {
+      throw new ConflictException('Email này đã được sử dụng');
+    }
+
+    // 2. Kiểm tra số điện thoại đã tồn tại hay chưa
+    const existingPhone = await this.prisma.user.findUnique({
+      where: { phone },
+    });
+    if (existingPhone) {
+      throw new ConflictException('Số điện thoại này đã được sử dụng');
+    }
+
+    // 3. Băm mật khẩu bằng bcrypt (10 rounds)
+    const passwordHash = await bcrypt.hash(registerDto.password, 10);
+
+    // 4. Lưu người dùng vào database với role mặc định là STUDENT và isActive là true
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          fullName: registerDto.fullName.trim(),
+          phone,
+          email,
+          passwordHash,
+          role: UserRole.STUDENT,
+          isActive: true,
+          dateOfBirth: registerDto.dateOfBirth
+            ? new Date(registerDto.dateOfBirth)
+            : null,
+        },
+        select: {
+          id: true,
+          fullName: true,
+          phone: true,
+          email: true,
+          role: true,
+          isActive: true,
+          dateOfBirth: true,
+          createdAt: true,
+        },
+      });
+
+      return {
+        message: 'Đăng ký tài khoản thành công',
+        user,
+      };
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        const target = Array.isArray(error?.meta?.target)
+          ? error.meta.target
+          : typeof error?.meta?.target === 'string'
+            ? [error.meta.target]
+            : [];
+
+        if (target.includes('email')) {
+          throw new ConflictException('Email này đã được sử dụng');
+        }
+        if (target.includes('phone')) {
+          throw new ConflictException('Số điện thoại này đã được sử dụng');
+        }
+        throw new ConflictException('Email hoặc số điện thoại đã được sử dụng');
+      }
+      throw error;
+    }
   }
 }

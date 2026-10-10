@@ -20,12 +20,13 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     // Distributed tracing, auto-correlated logs, request/job metrics, error
     // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
     ObserveModule.forRoot({
-      appKey: 'YOUR_APP_KEY',
-      appSecret: 'YOUR_APP_SECRET',
+      appKey: 'A!w0jPj1NXsFX^jw',
+      appSecret: '6bBqdBAqzXeyQu5UKfmSj99R2WHl5kd9s5dyEZj2V71P3',
       serviceId: 'VanbyNhi-be',
     }),
     PrismaModule,

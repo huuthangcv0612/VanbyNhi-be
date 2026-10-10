@@ -74,4 +74,43 @@ describe('JwtAuthGuard (Active User Check)', () => {
       'Tài khoản không tồn tại hoặc đã bị vô hiệu hóa',
     );
   });
+
+  it('từ chối khi request không có header Authorization hoặc sai định dạng', async () => {
+    const contextWithoutHeader = createMockContext();
+    await expect(jwtAuthGuard.canActivate(contextWithoutHeader)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    await expect(jwtAuthGuard.canActivate(contextWithoutHeader)).rejects.toThrow(
+      'Yêu cầu xác thực: Token không được cung cấp',
+    );
+
+    const contextWithInvalidFormat = createMockContext('Basic 12345');
+    await expect(jwtAuthGuard.canActivate(contextWithInvalidFormat)).rejects.toThrow(
+      'Yêu cầu xác thực: Token không được cung cấp',
+    );
+  });
+
+  it('báo lỗi khi thiếu JWT_ACCESS_SECRET trên máy chủ', async () => {
+    configServiceMock.get.mockReturnValue(null);
+    const context = createMockContext('Bearer some-token');
+
+    await expect(jwtAuthGuard.canActivate(context)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    await expect(jwtAuthGuard.canActivate(context)).rejects.toThrow(
+      'Lỗi cấu hình xác thực máy chủ',
+    );
+  });
+
+  it('từ chối khi token sai chữ ký hoặc đã hết hạn', async () => {
+    const context = createMockContext('Bearer expired-or-invalid-token');
+    jwtServiceMock.verifyAsync.mockRejectedValue(new Error('jwt expired'));
+
+    await expect(jwtAuthGuard.canActivate(context)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    await expect(jwtAuthGuard.canActivate(context)).rejects.toThrow(
+      'Token không hợp lệ hoặc đã hết hạn',
+    );
+  });
 });

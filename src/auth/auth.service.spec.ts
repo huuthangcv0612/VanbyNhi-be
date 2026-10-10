@@ -1,7 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { UnauthorizedException } from '@nestjs/common';
+import {
+  UnauthorizedException,
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { AuthService } from './auth.service.js';
+import { UserRole } from '../../generated/prisma/client.js';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -13,6 +18,8 @@ describe('AuthService', () => {
     prismaMock = {
       user: {
         findFirst: vi.fn(),
+        findUnique: vi.fn(),
+        create: vi.fn(),
       },
       refreshToken: {
         create: vi.fn(),
@@ -154,6 +161,41 @@ describe('AuthService', () => {
         }),
       ).rejects.toThrow('Tài khoản của bạn đã bị vô hiệu hóa hoặc khóa');
     });
+
+    it('báo lỗi an toàn InternalServerErrorException khi thiếu JWT_ACCESS_SECRET trong môi trường', async () => {
+      configServiceMock.get.mockImplementation((key: string) => {
+        if (key === 'JWT_ACCESS_SECRET') return null;
+        return null;
+      });
+
+      const plainPassword = 'password123';
+      const hashedPassword = await bcrypt.hash(plainPassword, 10);
+      const mockUser = {
+        id: 'user-1',
+        fullName: 'Nguyễn Văn A',
+        phone: '0901234567',
+        email: 'test@example.com',
+        passwordHash: hashedPassword,
+        role: 'STUDENT',
+        isActive: true,
+      };
+
+      prismaMock.user.findFirst.mockResolvedValue(mockUser);
+
+      await expect(
+        authService.login({
+          identifier: 'test@example.com',
+          password: plainPassword,
+        }),
+      ).rejects.toThrow(InternalServerErrorException);
+
+      await expect(
+        authService.login({
+          identifier: 'test@example.com',
+          password: plainPassword,
+        }),
+      ).rejects.toThrow('Lỗi cấu hình hệ thống: Không thể xử lý yêu cầu xác thực');
+    });
   });
 
   describe('Làm mới Token (Refresh Token Rotation)', () => {
@@ -247,6 +289,147 @@ describe('AuthService', () => {
         data: { isRevoked: true },
       });
       expect(result.message).toBe('Đăng xuất thành công');
+    });
+  });
+
+  describe('Đăng ký tài khoản (Register)', () => {
+    const registerInput = {
+      fullName: '  Lê Văn C  ',
+      email: '  LeVanC@Example.Com  ',
+      phone: '  0912345678  ',
+      password: 'password123',
+      dateOfBirth: '2005-01-15',
+    };
+
+    it('đăng ký thành công với dữ liệu hợp lệ (chuẩn hóa email, phone, băm mật khẩu, gán role STUDENT)', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      const createdUser = {
+        id: 'new-user-id',
+        fullName: 'Lê Văn C',
+        email: 'levanc@example.com',
+        phone: '0912345678',
+        role: UserRole.STUDENT,
+        isActive: true,
+        dateOfBirth: new Date('2005-01-15'),
+        createdAt: new Date(),
+      };
+      prismaMock.user.create.mockResolvedValue(createdUser);
+
+      const result = await authService.register(registerInput);
+
+      // Kiểm tra chuẩn hóa email và phone khi kiểm tra trùng lặp
+      expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+        where: { email: 'levanc@example.com' },
+      });
+      expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+        where: { phone: '0912345678' },
+      });
+
+      // Kiểm tra tham số gọi prisma.create
+      expect(prismaMock.user.create).toHaveBeenCalled();
+      const createCallArg = prismaMock.user.create.mock.calls[0][0];
+      expect(createCallArg.data.fullName).toBe('Lê Văn C');
+      expect(createCallArg.data.email).toBe('levanc@example.com');
+      expect(createCallArg.data.phone).toBe('0912345678');
+      expect(createCallArg.data.role).toBe(UserRole.STUDENT);
+      expect(createCallArg.data.isActive).toBe(true);
+
+      // Mật khẩu phải được băm bằng bcrypt, không phải plaintext
+      expect(createCallArg.data.passwordHash).not.toBe(registerInput.password);
+      const isHashValid = await bcrypt.compare(
+        registerInput.password,
+        createCallArg.data.passwordHash,
+      );
+      expect(isHashValid).toBe(true);
+
+      // Kết quả trả về an toàn, không có password hay passwordHash
+      expect(result.message).toBe('Đăng ký tài khoản thành công');
+      expect(result.user.id).toBe('new-user-id');
+      expect(result.user.email).toBe('levanc@example.com');
+      expect(result.user.role).toBe(UserRole.STUDENT);
+      expect((result.user as any).password).toBeUndefined();
+      expect((result.user as any).passwordHash).toBeUndefined();
+    });
+
+    it('báo lỗi ConflictException (409) khi email đã tồn tại', async () => {
+      prismaMock.user.findUnique.mockImplementation(async ({ where }: any) => {
+        if (where.email === 'levanc@example.com') {
+          return { id: 'existing-id', email: 'levanc@example.com' };
+        }
+        return null;
+      });
+
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        ConflictException,
+      );
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        'Email này đã được sử dụng',
+      );
+      expect(prismaMock.user.create).not.toHaveBeenCalled();
+    });
+
+    it('báo lỗi ConflictException (409) khi số điện thoại đã tồn tại', async () => {
+      prismaMock.user.findUnique.mockImplementation(async ({ where }: any) => {
+        if (where.phone === '0912345678') {
+          return { id: 'existing-id', phone: '0912345678' };
+        }
+        return null;
+      });
+
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        ConflictException,
+      );
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        'Số điện thoại này đã được sử dụng',
+      );
+      expect(prismaMock.user.create).not.toHaveBeenCalled();
+    });
+
+    it('xử lý an toàn khi xảy ra race condition trùng email (lỗi P2002)', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.user.create.mockRejectedValue({
+        code: 'P2002',
+        meta: { target: ['email'] },
+      });
+
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        'Email này đã được sử dụng',
+      );
+    });
+
+    it('xử lý an toàn khi xảy ra race condition trùng số điện thoại (lỗi P2002)', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.user.create.mockRejectedValue({
+        code: 'P2002',
+        meta: { target: ['phone'] },
+      });
+
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        'Số điện thoại này đã được sử dụng',
+      );
+    });
+
+    it('xử lý an toàn khi xảy ra race condition P2002 chung', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.user.create.mockRejectedValue({
+        code: 'P2002',
+      });
+
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        'Email hoặc số điện thoại đã được sử dụng',
+      );
+    });
+
+    it('ném lỗi gốc khi gặp lỗi cơ sở dữ liệu khác P2002', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.user.create.mockRejectedValue(
+        new Error('Database connection failed'),
+      );
+
+      await expect(authService.register(registerInput)).rejects.toThrow(
+        'Database connection failed',
+      );
     });
   });
 });
