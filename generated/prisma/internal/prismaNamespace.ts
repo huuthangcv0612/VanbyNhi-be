@@ -1914,6 +1914,8 @@ export const ClassScalarFieldEnum = {
   name: 'name',
   description: 'description',
   classCode: 'classCode',
+  joinCode: 'joinCode',
+  maxStudents: 'maxStudents',
   defaultMeetUrl: 'defaultMeetUrl',
   monthlyTuition: 'monthlyTuition',
   status: 'status',
@@ -1932,6 +1934,9 @@ export const EnrollmentScalarFieldEnum = {
   studentId: 'studentId',
   tuitionOverride: 'tuitionOverride',
   status: 'status',
+  requestedAt: 'requestedAt',
+  approvedAt: 'approvedAt',
+  rejectedAt: 'rejectedAt',
   joinedAt: 'joinedAt',
   leftAt: 'leftAt',
   createdAt: 'createdAt',
@@ -2135,6 +2140,7 @@ export type TeacherCalendarLabelScalarFieldEnum = (typeof TeacherCalendarLabelSc
 export const TeacherCalendarEventScalarFieldEnum = {
   id: 'id',
   teacherId: 'teacherId',
+  classId: 'classId',
   title: 'title',
   address: 'address',
   meetUrl: 'meetUrl',
@@ -2256,6 +2262,20 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -2322,20 +2342,6 @@ export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'AttendanceStatus[]'
  */
 export type ListEnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 

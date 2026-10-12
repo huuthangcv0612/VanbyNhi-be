@@ -37,6 +37,7 @@ export type TeacherCalendarEventSumAggregateOutputType = {
 export type TeacherCalendarEventMinAggregateOutputType = {
   id: string | null
   teacherId: string | null
+  classId: string | null
   title: string | null
   address: string | null
   meetUrl: string | null
@@ -52,6 +53,7 @@ export type TeacherCalendarEventMinAggregateOutputType = {
 export type TeacherCalendarEventMaxAggregateOutputType = {
   id: string | null
   teacherId: string | null
+  classId: string | null
   title: string | null
   address: string | null
   meetUrl: string | null
@@ -67,6 +69,7 @@ export type TeacherCalendarEventMaxAggregateOutputType = {
 export type TeacherCalendarEventCountAggregateOutputType = {
   id: number
   teacherId: number
+  classId: number
   title: number
   address: number
   meetUrl: number
@@ -92,6 +95,7 @@ export type TeacherCalendarEventSumAggregateInputType = {
 export type TeacherCalendarEventMinAggregateInputType = {
   id?: true
   teacherId?: true
+  classId?: true
   title?: true
   address?: true
   meetUrl?: true
@@ -107,6 +111,7 @@ export type TeacherCalendarEventMinAggregateInputType = {
 export type TeacherCalendarEventMaxAggregateInputType = {
   id?: true
   teacherId?: true
+  classId?: true
   title?: true
   address?: true
   meetUrl?: true
@@ -122,6 +127,7 @@ export type TeacherCalendarEventMaxAggregateInputType = {
 export type TeacherCalendarEventCountAggregateInputType = {
   id?: true
   teacherId?: true
+  classId?: true
   title?: true
   address?: true
   meetUrl?: true
@@ -224,6 +230,7 @@ export type TeacherCalendarEventGroupByArgs<ExtArgs extends runtime.Types.Extens
 export type TeacherCalendarEventGroupByOutputType = {
   id: string
   teacherId: string
+  classId: string | null
   title: string
   address: string | null
   meetUrl: string | null
@@ -262,6 +269,7 @@ export type TeacherCalendarEventWhereInput = {
   NOT?: Prisma.TeacherCalendarEventWhereInput | Prisma.TeacherCalendarEventWhereInput[]
   id?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   teacherId?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  classId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   address?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
@@ -273,6 +281,7 @@ export type TeacherCalendarEventWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   teacher?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  class?: Prisma.XOR<Prisma.ClassNullableScalarRelationFilter, Prisma.ClassWhereInput> | null
   label?: Prisma.XOR<Prisma.TeacherCalendarLabelNullableScalarRelationFilter, Prisma.TeacherCalendarLabelWhereInput> | null
   participants?: Prisma.CalendarEventParticipantListRelationFilter
   notifications?: Prisma.CalendarNotificationListRelationFilter
@@ -281,6 +290,7 @@ export type TeacherCalendarEventWhereInput = {
 export type TeacherCalendarEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  classId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   meetUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -292,6 +302,7 @@ export type TeacherCalendarEventOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   teacher?: Prisma.UserOrderByWithRelationInput
+  class?: Prisma.ClassOrderByWithRelationInput
   label?: Prisma.TeacherCalendarLabelOrderByWithRelationInput
   participants?: Prisma.CalendarEventParticipantOrderByRelationAggregateInput
   notifications?: Prisma.CalendarNotificationOrderByRelationAggregateInput
@@ -303,6 +314,7 @@ export type TeacherCalendarEventWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TeacherCalendarEventWhereInput[]
   NOT?: Prisma.TeacherCalendarEventWhereInput | Prisma.TeacherCalendarEventWhereInput[]
   teacherId?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  classId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   address?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
@@ -314,6 +326,7 @@ export type TeacherCalendarEventWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   teacher?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  class?: Prisma.XOR<Prisma.ClassNullableScalarRelationFilter, Prisma.ClassWhereInput> | null
   label?: Prisma.XOR<Prisma.TeacherCalendarLabelNullableScalarRelationFilter, Prisma.TeacherCalendarLabelWhereInput> | null
   participants?: Prisma.CalendarEventParticipantListRelationFilter
   notifications?: Prisma.CalendarNotificationListRelationFilter
@@ -322,6 +335,7 @@ export type TeacherCalendarEventWhereUniqueInput = Prisma.AtLeast<{
 export type TeacherCalendarEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  classId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   meetUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -345,6 +359,7 @@ export type TeacherCalendarEventScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TeacherCalendarEventScalarWhereWithAggregatesInput | Prisma.TeacherCalendarEventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TeacherCalendarEvent"> | string
   teacherId?: Prisma.StringWithAggregatesFilter<"TeacherCalendarEvent"> | string
+  classId?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringWithAggregatesFilter<"TeacherCalendarEvent"> | string
   address?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
@@ -369,6 +384,7 @@ export type TeacherCalendarEventCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   teacher: Prisma.UserCreateNestedOneWithoutTeacherCalendarEventsInput
+  class?: Prisma.ClassCreateNestedOneWithoutCalendarEventsInput
   label?: Prisma.TeacherCalendarLabelCreateNestedOneWithoutEventsInput
   participants?: Prisma.CalendarEventParticipantCreateNestedManyWithoutEventInput
   notifications?: Prisma.CalendarNotificationCreateNestedManyWithoutEventInput
@@ -377,6 +393,7 @@ export type TeacherCalendarEventCreateInput = {
 export type TeacherCalendarEventUncheckedCreateInput = {
   id?: string
   teacherId: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -403,6 +420,7 @@ export type TeacherCalendarEventUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teacher?: Prisma.UserUpdateOneRequiredWithoutTeacherCalendarEventsNestedInput
+  class?: Prisma.ClassUpdateOneWithoutCalendarEventsNestedInput
   label?: Prisma.TeacherCalendarLabelUpdateOneWithoutEventsNestedInput
   participants?: Prisma.CalendarEventParticipantUpdateManyWithoutEventNestedInput
   notifications?: Prisma.CalendarNotificationUpdateManyWithoutEventNestedInput
@@ -411,6 +429,7 @@ export type TeacherCalendarEventUpdateInput = {
 export type TeacherCalendarEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -428,6 +447,7 @@ export type TeacherCalendarEventUncheckedUpdateInput = {
 export type TeacherCalendarEventCreateManyInput = {
   id?: string
   teacherId: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -456,6 +476,7 @@ export type TeacherCalendarEventUpdateManyMutationInput = {
 export type TeacherCalendarEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -481,6 +502,7 @@ export type TeacherCalendarEventOrderByRelationAggregateInput = {
 export type TeacherCalendarEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  classId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   address?: Prisma.SortOrder
   meetUrl?: Prisma.SortOrder
@@ -500,6 +522,7 @@ export type TeacherCalendarEventAvgOrderByAggregateInput = {
 export type TeacherCalendarEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  classId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   address?: Prisma.SortOrder
   meetUrl?: Prisma.SortOrder
@@ -515,6 +538,7 @@ export type TeacherCalendarEventMaxOrderByAggregateInput = {
 export type TeacherCalendarEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  classId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   address?: Prisma.SortOrder
   meetUrl?: Prisma.SortOrder
@@ -578,6 +602,48 @@ export type TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput = {
   deleteMany?: Prisma.TeacherCalendarEventScalarWhereInput | Prisma.TeacherCalendarEventScalarWhereInput[]
 }
 
+export type TeacherCalendarEventCreateNestedManyWithoutClassInput = {
+  create?: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput> | Prisma.TeacherCalendarEventCreateWithoutClassInput[] | Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput | Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput[]
+  createMany?: Prisma.TeacherCalendarEventCreateManyClassInputEnvelope
+  connect?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+}
+
+export type TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput = {
+  create?: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput> | Prisma.TeacherCalendarEventCreateWithoutClassInput[] | Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput | Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput[]
+  createMany?: Prisma.TeacherCalendarEventCreateManyClassInputEnvelope
+  connect?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+}
+
+export type TeacherCalendarEventUpdateManyWithoutClassNestedInput = {
+  create?: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput> | Prisma.TeacherCalendarEventCreateWithoutClassInput[] | Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput | Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput[]
+  upsert?: Prisma.TeacherCalendarEventUpsertWithWhereUniqueWithoutClassInput | Prisma.TeacherCalendarEventUpsertWithWhereUniqueWithoutClassInput[]
+  createMany?: Prisma.TeacherCalendarEventCreateManyClassInputEnvelope
+  set?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  disconnect?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  delete?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  connect?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  update?: Prisma.TeacherCalendarEventUpdateWithWhereUniqueWithoutClassInput | Prisma.TeacherCalendarEventUpdateWithWhereUniqueWithoutClassInput[]
+  updateMany?: Prisma.TeacherCalendarEventUpdateManyWithWhereWithoutClassInput | Prisma.TeacherCalendarEventUpdateManyWithWhereWithoutClassInput[]
+  deleteMany?: Prisma.TeacherCalendarEventScalarWhereInput | Prisma.TeacherCalendarEventScalarWhereInput[]
+}
+
+export type TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput = {
+  create?: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput> | Prisma.TeacherCalendarEventCreateWithoutClassInput[] | Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput[]
+  connectOrCreate?: Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput | Prisma.TeacherCalendarEventCreateOrConnectWithoutClassInput[]
+  upsert?: Prisma.TeacherCalendarEventUpsertWithWhereUniqueWithoutClassInput | Prisma.TeacherCalendarEventUpsertWithWhereUniqueWithoutClassInput[]
+  createMany?: Prisma.TeacherCalendarEventCreateManyClassInputEnvelope
+  set?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  disconnect?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  delete?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  connect?: Prisma.TeacherCalendarEventWhereUniqueInput | Prisma.TeacherCalendarEventWhereUniqueInput[]
+  update?: Prisma.TeacherCalendarEventUpdateWithWhereUniqueWithoutClassInput | Prisma.TeacherCalendarEventUpdateWithWhereUniqueWithoutClassInput[]
+  updateMany?: Prisma.TeacherCalendarEventUpdateManyWithWhereWithoutClassInput | Prisma.TeacherCalendarEventUpdateManyWithWhereWithoutClassInput[]
+  deleteMany?: Prisma.TeacherCalendarEventScalarWhereInput | Prisma.TeacherCalendarEventScalarWhereInput[]
+}
+
 export type TeacherCalendarEventCreateNestedManyWithoutLabelInput = {
   create?: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutLabelInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutLabelInput> | Prisma.TeacherCalendarEventCreateWithoutLabelInput[] | Prisma.TeacherCalendarEventUncheckedCreateWithoutLabelInput[]
   connectOrCreate?: Prisma.TeacherCalendarEventCreateOrConnectWithoutLabelInput | Prisma.TeacherCalendarEventCreateOrConnectWithoutLabelInput[]
@@ -620,14 +686,6 @@ export type TeacherCalendarEventUncheckedUpdateManyWithoutLabelNestedInput = {
   deleteMany?: Prisma.TeacherCalendarEventScalarWhereInput | Prisma.TeacherCalendarEventScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type TeacherCalendarEventCreateNestedOneWithoutParticipantsInput = {
   create?: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutParticipantsInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutParticipantsInput>
   connectOrCreate?: Prisma.TeacherCalendarEventCreateOrConnectWithoutParticipantsInput
@@ -667,6 +725,7 @@ export type TeacherCalendarEventCreateWithoutTeacherInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  class?: Prisma.ClassCreateNestedOneWithoutCalendarEventsInput
   label?: Prisma.TeacherCalendarLabelCreateNestedOneWithoutEventsInput
   participants?: Prisma.CalendarEventParticipantCreateNestedManyWithoutEventInput
   notifications?: Prisma.CalendarNotificationCreateNestedManyWithoutEventInput
@@ -674,6 +733,7 @@ export type TeacherCalendarEventCreateWithoutTeacherInput = {
 
 export type TeacherCalendarEventUncheckedCreateWithoutTeacherInput = {
   id?: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -720,6 +780,7 @@ export type TeacherCalendarEventScalarWhereInput = {
   NOT?: Prisma.TeacherCalendarEventScalarWhereInput | Prisma.TeacherCalendarEventScalarWhereInput[]
   id?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   teacherId?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  classId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   address?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
@@ -730,6 +791,66 @@ export type TeacherCalendarEventScalarWhereInput = {
   note?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
+}
+
+export type TeacherCalendarEventCreateWithoutClassInput = {
+  id?: string
+  title: string
+  address?: string | null
+  meetUrl?: string | null
+  startAt: Date | string
+  endAt: Date | string
+  reminderMinutes?: number | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  teacher: Prisma.UserCreateNestedOneWithoutTeacherCalendarEventsInput
+  label?: Prisma.TeacherCalendarLabelCreateNestedOneWithoutEventsInput
+  participants?: Prisma.CalendarEventParticipantCreateNestedManyWithoutEventInput
+  notifications?: Prisma.CalendarNotificationCreateNestedManyWithoutEventInput
+}
+
+export type TeacherCalendarEventUncheckedCreateWithoutClassInput = {
+  id?: string
+  teacherId: string
+  title: string
+  address?: string | null
+  meetUrl?: string | null
+  startAt: Date | string
+  endAt: Date | string
+  labelId?: string | null
+  reminderMinutes?: number | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  participants?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutEventInput
+  notifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type TeacherCalendarEventCreateOrConnectWithoutClassInput = {
+  where: Prisma.TeacherCalendarEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput>
+}
+
+export type TeacherCalendarEventCreateManyClassInputEnvelope = {
+  data: Prisma.TeacherCalendarEventCreateManyClassInput | Prisma.TeacherCalendarEventCreateManyClassInput[]
+  skipDuplicates?: boolean
+}
+
+export type TeacherCalendarEventUpsertWithWhereUniqueWithoutClassInput = {
+  where: Prisma.TeacherCalendarEventWhereUniqueInput
+  update: Prisma.XOR<Prisma.TeacherCalendarEventUpdateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedUpdateWithoutClassInput>
+  create: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutClassInput>
+}
+
+export type TeacherCalendarEventUpdateWithWhereUniqueWithoutClassInput = {
+  where: Prisma.TeacherCalendarEventWhereUniqueInput
+  data: Prisma.XOR<Prisma.TeacherCalendarEventUpdateWithoutClassInput, Prisma.TeacherCalendarEventUncheckedUpdateWithoutClassInput>
+}
+
+export type TeacherCalendarEventUpdateManyWithWhereWithoutClassInput = {
+  where: Prisma.TeacherCalendarEventScalarWhereInput
+  data: Prisma.XOR<Prisma.TeacherCalendarEventUpdateManyMutationInput, Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassInput>
 }
 
 export type TeacherCalendarEventCreateWithoutLabelInput = {
@@ -744,6 +865,7 @@ export type TeacherCalendarEventCreateWithoutLabelInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   teacher: Prisma.UserCreateNestedOneWithoutTeacherCalendarEventsInput
+  class?: Prisma.ClassCreateNestedOneWithoutCalendarEventsInput
   participants?: Prisma.CalendarEventParticipantCreateNestedManyWithoutEventInput
   notifications?: Prisma.CalendarNotificationCreateNestedManyWithoutEventInput
 }
@@ -751,6 +873,7 @@ export type TeacherCalendarEventCreateWithoutLabelInput = {
 export type TeacherCalendarEventUncheckedCreateWithoutLabelInput = {
   id?: string
   teacherId: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -802,6 +925,7 @@ export type TeacherCalendarEventCreateWithoutParticipantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   teacher: Prisma.UserCreateNestedOneWithoutTeacherCalendarEventsInput
+  class?: Prisma.ClassCreateNestedOneWithoutCalendarEventsInput
   label?: Prisma.TeacherCalendarLabelCreateNestedOneWithoutEventsInput
   notifications?: Prisma.CalendarNotificationCreateNestedManyWithoutEventInput
 }
@@ -809,6 +933,7 @@ export type TeacherCalendarEventCreateWithoutParticipantsInput = {
 export type TeacherCalendarEventUncheckedCreateWithoutParticipantsInput = {
   id?: string
   teacherId: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -850,6 +975,7 @@ export type TeacherCalendarEventUpdateWithoutParticipantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teacher?: Prisma.UserUpdateOneRequiredWithoutTeacherCalendarEventsNestedInput
+  class?: Prisma.ClassUpdateOneWithoutCalendarEventsNestedInput
   label?: Prisma.TeacherCalendarLabelUpdateOneWithoutEventsNestedInput
   notifications?: Prisma.CalendarNotificationUpdateManyWithoutEventNestedInput
 }
@@ -857,6 +983,7 @@ export type TeacherCalendarEventUpdateWithoutParticipantsInput = {
 export type TeacherCalendarEventUncheckedUpdateWithoutParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -882,6 +1009,7 @@ export type TeacherCalendarEventCreateWithoutNotificationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   teacher: Prisma.UserCreateNestedOneWithoutTeacherCalendarEventsInput
+  class?: Prisma.ClassCreateNestedOneWithoutCalendarEventsInput
   label?: Prisma.TeacherCalendarLabelCreateNestedOneWithoutEventsInput
   participants?: Prisma.CalendarEventParticipantCreateNestedManyWithoutEventInput
 }
@@ -889,6 +1017,7 @@ export type TeacherCalendarEventCreateWithoutNotificationsInput = {
 export type TeacherCalendarEventUncheckedCreateWithoutNotificationsInput = {
   id?: string
   teacherId: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -930,6 +1059,7 @@ export type TeacherCalendarEventUpdateWithoutNotificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teacher?: Prisma.UserUpdateOneRequiredWithoutTeacherCalendarEventsNestedInput
+  class?: Prisma.ClassUpdateOneWithoutCalendarEventsNestedInput
   label?: Prisma.TeacherCalendarLabelUpdateOneWithoutEventsNestedInput
   participants?: Prisma.CalendarEventParticipantUpdateManyWithoutEventNestedInput
 }
@@ -937,6 +1067,7 @@ export type TeacherCalendarEventUpdateWithoutNotificationsInput = {
 export type TeacherCalendarEventUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -952,6 +1083,7 @@ export type TeacherCalendarEventUncheckedUpdateWithoutNotificationsInput = {
 
 export type TeacherCalendarEventCreateManyTeacherInput = {
   id?: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -975,6 +1107,7 @@ export type TeacherCalendarEventUpdateWithoutTeacherInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneWithoutCalendarEventsNestedInput
   label?: Prisma.TeacherCalendarLabelUpdateOneWithoutEventsNestedInput
   participants?: Prisma.CalendarEventParticipantUpdateManyWithoutEventNestedInput
   notifications?: Prisma.CalendarNotificationUpdateManyWithoutEventNestedInput
@@ -982,6 +1115,7 @@ export type TeacherCalendarEventUpdateWithoutTeacherInput = {
 
 export type TeacherCalendarEventUncheckedUpdateWithoutTeacherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -998,6 +1132,71 @@ export type TeacherCalendarEventUncheckedUpdateWithoutTeacherInput = {
 
 export type TeacherCalendarEventUncheckedUpdateManyWithoutTeacherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TeacherCalendarEventCreateManyClassInput = {
+  id?: string
+  teacherId: string
+  title: string
+  address?: string | null
+  meetUrl?: string | null
+  startAt: Date | string
+  endAt: Date | string
+  labelId?: string | null
+  reminderMinutes?: number | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TeacherCalendarEventUpdateWithoutClassInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  teacher?: Prisma.UserUpdateOneRequiredWithoutTeacherCalendarEventsNestedInput
+  label?: Prisma.TeacherCalendarLabelUpdateOneWithoutEventsNestedInput
+  participants?: Prisma.CalendarEventParticipantUpdateManyWithoutEventNestedInput
+  notifications?: Prisma.CalendarNotificationUpdateManyWithoutEventNestedInput
+}
+
+export type TeacherCalendarEventUncheckedUpdateWithoutClassInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  participants?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutEventNestedInput
+  notifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type TeacherCalendarEventUncheckedUpdateManyWithoutClassInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1013,6 +1212,7 @@ export type TeacherCalendarEventUncheckedUpdateManyWithoutTeacherInput = {
 export type TeacherCalendarEventCreateManyLabelInput = {
   id?: string
   teacherId: string
+  classId?: string | null
   title: string
   address?: string | null
   meetUrl?: string | null
@@ -1036,6 +1236,7 @@ export type TeacherCalendarEventUpdateWithoutLabelInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teacher?: Prisma.UserUpdateOneRequiredWithoutTeacherCalendarEventsNestedInput
+  class?: Prisma.ClassUpdateOneWithoutCalendarEventsNestedInput
   participants?: Prisma.CalendarEventParticipantUpdateManyWithoutEventNestedInput
   notifications?: Prisma.CalendarNotificationUpdateManyWithoutEventNestedInput
 }
@@ -1043,6 +1244,7 @@ export type TeacherCalendarEventUpdateWithoutLabelInput = {
 export type TeacherCalendarEventUncheckedUpdateWithoutLabelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1059,6 +1261,7 @@ export type TeacherCalendarEventUncheckedUpdateWithoutLabelInput = {
 export type TeacherCalendarEventUncheckedUpdateManyWithoutLabelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1113,6 +1316,7 @@ export type TeacherCalendarEventCountOutputTypeCountNotificationsArgs<ExtArgs ex
 export type TeacherCalendarEventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   teacherId?: boolean
+  classId?: boolean
   title?: boolean
   address?: boolean
   meetUrl?: boolean
@@ -1124,6 +1328,7 @@ export type TeacherCalendarEventSelect<ExtArgs extends runtime.Types.Extensions.
   createdAt?: boolean
   updatedAt?: boolean
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TeacherCalendarEvent$classArgs<ExtArgs>
   label?: boolean | Prisma.TeacherCalendarEvent$labelArgs<ExtArgs>
   participants?: boolean | Prisma.TeacherCalendarEvent$participantsArgs<ExtArgs>
   notifications?: boolean | Prisma.TeacherCalendarEvent$notificationsArgs<ExtArgs>
@@ -1133,6 +1338,7 @@ export type TeacherCalendarEventSelect<ExtArgs extends runtime.Types.Extensions.
 export type TeacherCalendarEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   teacherId?: boolean
+  classId?: boolean
   title?: boolean
   address?: boolean
   meetUrl?: boolean
@@ -1144,12 +1350,14 @@ export type TeacherCalendarEventSelectCreateManyAndReturn<ExtArgs extends runtim
   createdAt?: boolean
   updatedAt?: boolean
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TeacherCalendarEvent$classArgs<ExtArgs>
   label?: boolean | Prisma.TeacherCalendarEvent$labelArgs<ExtArgs>
 }, ExtArgs["result"]["teacherCalendarEvent"]>
 
 export type TeacherCalendarEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   teacherId?: boolean
+  classId?: boolean
   title?: boolean
   address?: boolean
   meetUrl?: boolean
@@ -1161,12 +1369,14 @@ export type TeacherCalendarEventSelectUpdateManyAndReturn<ExtArgs extends runtim
   createdAt?: boolean
   updatedAt?: boolean
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TeacherCalendarEvent$classArgs<ExtArgs>
   label?: boolean | Prisma.TeacherCalendarEvent$labelArgs<ExtArgs>
 }, ExtArgs["result"]["teacherCalendarEvent"]>
 
 export type TeacherCalendarEventSelectScalar = {
   id?: boolean
   teacherId?: boolean
+  classId?: boolean
   title?: boolean
   address?: boolean
   meetUrl?: boolean
@@ -1179,9 +1389,10 @@ export type TeacherCalendarEventSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TeacherCalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teacherId" | "title" | "address" | "meetUrl" | "startAt" | "endAt" | "labelId" | "reminderMinutes" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["teacherCalendarEvent"]>
+export type TeacherCalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teacherId" | "classId" | "title" | "address" | "meetUrl" | "startAt" | "endAt" | "labelId" | "reminderMinutes" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["teacherCalendarEvent"]>
 export type TeacherCalendarEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TeacherCalendarEvent$classArgs<ExtArgs>
   label?: boolean | Prisma.TeacherCalendarEvent$labelArgs<ExtArgs>
   participants?: boolean | Prisma.TeacherCalendarEvent$participantsArgs<ExtArgs>
   notifications?: boolean | Prisma.TeacherCalendarEvent$notificationsArgs<ExtArgs>
@@ -1189,10 +1400,12 @@ export type TeacherCalendarEventInclude<ExtArgs extends runtime.Types.Extensions
 }
 export type TeacherCalendarEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TeacherCalendarEvent$classArgs<ExtArgs>
   label?: boolean | Prisma.TeacherCalendarEvent$labelArgs<ExtArgs>
 }
 export type TeacherCalendarEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  class?: boolean | Prisma.TeacherCalendarEvent$classArgs<ExtArgs>
   label?: boolean | Prisma.TeacherCalendarEvent$labelArgs<ExtArgs>
 }
 
@@ -1200,6 +1413,7 @@ export type $TeacherCalendarEventPayload<ExtArgs extends runtime.Types.Extension
   name: "TeacherCalendarEvent"
   objects: {
     teacher: Prisma.$UserPayload<ExtArgs>
+    class: Prisma.$ClassPayload<ExtArgs> | null
     label: Prisma.$TeacherCalendarLabelPayload<ExtArgs> | null
     participants: Prisma.$CalendarEventParticipantPayload<ExtArgs>[]
     notifications: Prisma.$CalendarNotificationPayload<ExtArgs>[]
@@ -1207,6 +1421,7 @@ export type $TeacherCalendarEventPayload<ExtArgs extends runtime.Types.Extension
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     teacherId: string
+    classId: string | null
     title: string
     address: string | null
     meetUrl: string | null
@@ -1612,6 +1827,7 @@ readonly fields: TeacherCalendarEventFieldRefs;
 export interface Prisma__TeacherCalendarEventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   teacher<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  class<T extends Prisma.TeacherCalendarEvent$classArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeacherCalendarEvent$classArgs<ExtArgs>>): Prisma.Prisma__ClassClient<runtime.Types.Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   label<T extends Prisma.TeacherCalendarEvent$labelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeacherCalendarEvent$labelArgs<ExtArgs>>): Prisma.Prisma__TeacherCalendarLabelClient<runtime.Types.Result.GetResult<Prisma.$TeacherCalendarLabelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participants<T extends Prisma.TeacherCalendarEvent$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeacherCalendarEvent$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CalendarEventParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.TeacherCalendarEvent$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeacherCalendarEvent$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CalendarNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1646,6 +1862,7 @@ export interface Prisma__TeacherCalendarEventClient<T, Null = never, ExtArgs ext
 export interface TeacherCalendarEventFieldRefs {
   readonly id: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly teacherId: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
+  readonly classId: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly title: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly address: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly meetUrl: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
@@ -2054,6 +2271,25 @@ export type TeacherCalendarEventDeleteManyArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many TeacherCalendarEvents to delete.
    */
   limit?: number
+}
+
+/**
+ * TeacherCalendarEvent.class
+ */
+export type TeacherCalendarEvent$classArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Class
+   */
+  select?: Prisma.ClassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Class
+   */
+  omit?: Prisma.ClassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClassInclude<ExtArgs> | null
+  where?: Prisma.ClassWhereInput
 }
 
 /**

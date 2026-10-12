@@ -21,16 +21,20 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 export const ClassStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-  COMPLETED: 'COMPLETED'
+  COMPLETED: 'COMPLETED',
+  CLOSED: 'CLOSED'
 } as const
 
 export type ClassStatus = (typeof ClassStatus)[keyof typeof ClassStatus]
 
 
 export const MemberStatus = {
+  PENDING: 'PENDING',
   ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
-  LEFT: 'LEFT'
+  REJECTED: 'REJECTED',
+  LEFT: 'LEFT',
+  REMOVED: 'REMOVED',
+  INACTIVE: 'INACTIVE'
 } as const
 
 export type MemberStatus = (typeof MemberStatus)[keyof typeof MemberStatus]

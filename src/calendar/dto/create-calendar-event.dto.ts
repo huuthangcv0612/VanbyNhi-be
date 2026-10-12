@@ -60,6 +60,10 @@ export class CreateCalendarEventDto {
   note?: string;
 
   @IsOptional()
+  @IsString({ message: 'classId phải là chuỗi ký tự' })
+  classId?: string;
+
+  @IsOptional()
   @IsArray({ message: 'Danh sách học sinh phải là mảng chuỗi ID' })
   @IsString({ each: true, message: 'Mỗi học sinh ID phải là chuỗi ký tự' })
   studentIds?: string[];

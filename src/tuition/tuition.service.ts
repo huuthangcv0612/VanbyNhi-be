@@ -260,7 +260,7 @@ export class TuitionService {
       59,
     );
 
-    if (enrollment.joinedAt > billingPeriodEnd) {
+    if (enrollment.joinedAt && enrollment.joinedAt > billingPeriodEnd) {
       throw new BadRequestException(
         `Học sinh tham gia lớp sau kỳ tính phí tháng ${dto.billingMonth}/${dto.billingYear}`,
       );

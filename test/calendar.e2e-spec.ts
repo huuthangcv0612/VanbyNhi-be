@@ -639,6 +639,14 @@ describe('Teaching Calendar E2E Audit (12 Scenarios)', () => {
         },
       });
       testEventIds.push(tempEvent.id);
+      // Dọn dẹp thông báo cũ để không ảnh hưởng đếm số lượng thông báo được xử lý
+      await prisma.calendarNotification.deleteMany({
+        where: {
+          recipientId: {
+            in: [teacherA.id, student1.id, student2.id, student3.id],
+          },
+        },
+      });
 
       const dueNotif = await prisma.calendarNotification.create({
         data: {

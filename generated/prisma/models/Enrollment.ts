@@ -40,6 +40,9 @@ export type EnrollmentMinAggregateOutputType = {
   studentId: string | null
   tuitionOverride: runtime.Decimal | null
   status: $Enums.MemberStatus | null
+  requestedAt: Date | null
+  approvedAt: Date | null
+  rejectedAt: Date | null
   joinedAt: Date | null
   leftAt: Date | null
   createdAt: Date | null
@@ -52,6 +55,9 @@ export type EnrollmentMaxAggregateOutputType = {
   studentId: string | null
   tuitionOverride: runtime.Decimal | null
   status: $Enums.MemberStatus | null
+  requestedAt: Date | null
+  approvedAt: Date | null
+  rejectedAt: Date | null
   joinedAt: Date | null
   leftAt: Date | null
   createdAt: Date | null
@@ -64,6 +70,9 @@ export type EnrollmentCountAggregateOutputType = {
   studentId: number
   tuitionOverride: number
   status: number
+  requestedAt: number
+  approvedAt: number
+  rejectedAt: number
   joinedAt: number
   leftAt: number
   createdAt: number
@@ -86,6 +95,9 @@ export type EnrollmentMinAggregateInputType = {
   studentId?: true
   tuitionOverride?: true
   status?: true
+  requestedAt?: true
+  approvedAt?: true
+  rejectedAt?: true
   joinedAt?: true
   leftAt?: true
   createdAt?: true
@@ -98,6 +110,9 @@ export type EnrollmentMaxAggregateInputType = {
   studentId?: true
   tuitionOverride?: true
   status?: true
+  requestedAt?: true
+  approvedAt?: true
+  rejectedAt?: true
   joinedAt?: true
   leftAt?: true
   createdAt?: true
@@ -110,6 +125,9 @@ export type EnrollmentCountAggregateInputType = {
   studentId?: true
   tuitionOverride?: true
   status?: true
+  requestedAt?: true
+  approvedAt?: true
+  rejectedAt?: true
   joinedAt?: true
   leftAt?: true
   createdAt?: true
@@ -209,7 +227,10 @@ export type EnrollmentGroupByOutputType = {
   studentId: string
   tuitionOverride: runtime.Decimal | null
   status: $Enums.MemberStatus
-  joinedAt: Date
+  requestedAt: Date
+  approvedAt: Date | null
+  rejectedAt: Date | null
+  joinedAt: Date | null
   leftAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -244,7 +265,10 @@ export type EnrollmentWhereInput = {
   studentId?: Prisma.StringFilter<"Enrollment"> | string
   tuitionOverride?: Prisma.DecimalNullableFilter<"Enrollment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFilter<"Enrollment"> | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
+  requestedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
+  joinedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
   leftAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
@@ -259,7 +283,10 @@ export type EnrollmentOrderByWithRelationInput = {
   studentId?: Prisma.SortOrder
   tuitionOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  joinedAt?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  joinedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   leftAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -277,7 +304,10 @@ export type EnrollmentWhereUniqueInput = Prisma.AtLeast<{
   studentId?: Prisma.StringFilter<"Enrollment"> | string
   tuitionOverride?: Prisma.DecimalNullableFilter<"Enrollment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFilter<"Enrollment"> | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
+  requestedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
+  joinedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
   leftAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
@@ -292,7 +322,10 @@ export type EnrollmentOrderByWithAggregationInput = {
   studentId?: Prisma.SortOrder
   tuitionOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  joinedAt?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  joinedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   leftAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -312,7 +345,10 @@ export type EnrollmentScalarWhereWithAggregatesInput = {
   studentId?: Prisma.StringWithAggregatesFilter<"Enrollment"> | string
   tuitionOverride?: Prisma.DecimalNullableWithAggregatesFilter<"Enrollment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusWithAggregatesFilter<"Enrollment"> | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeWithAggregatesFilter<"Enrollment"> | Date | string
+  requestedAt?: Prisma.DateTimeWithAggregatesFilter<"Enrollment"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Enrollment"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Enrollment"> | Date | string | null
+  joinedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Enrollment"> | Date | string | null
   leftAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Enrollment"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Enrollment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Enrollment"> | Date | string
@@ -322,7 +358,10 @@ export type EnrollmentCreateInput = {
   id?: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -337,7 +376,10 @@ export type EnrollmentUncheckedCreateInput = {
   studentId: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -348,7 +390,10 @@ export type EnrollmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -363,7 +408,10 @@ export type EnrollmentUncheckedUpdateInput = {
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,7 +424,10 @@ export type EnrollmentCreateManyInput = {
   studentId: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -386,7 +437,10 @@ export type EnrollmentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,7 +452,10 @@ export type EnrollmentUncheckedUpdateManyInput = {
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -420,6 +477,9 @@ export type EnrollmentCountOrderByAggregateInput = {
   studentId?: Prisma.SortOrder
   tuitionOverride?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -436,6 +496,9 @@ export type EnrollmentMaxOrderByAggregateInput = {
   studentId?: Prisma.SortOrder
   tuitionOverride?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -448,6 +511,9 @@ export type EnrollmentMinOrderByAggregateInput = {
   studentId?: Prisma.SortOrder
   tuitionOverride?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -577,7 +643,10 @@ export type EnrollmentCreateWithoutStudentInput = {
   id?: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -590,7 +659,10 @@ export type EnrollmentUncheckedCreateWithoutStudentInput = {
   classId: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -632,7 +704,10 @@ export type EnrollmentScalarWhereInput = {
   studentId?: Prisma.StringFilter<"Enrollment"> | string
   tuitionOverride?: Prisma.DecimalNullableFilter<"Enrollment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFilter<"Enrollment"> | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
+  requestedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
+  joinedAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
   leftAt?: Prisma.DateTimeNullableFilter<"Enrollment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Enrollment"> | Date | string
@@ -642,7 +717,10 @@ export type EnrollmentCreateWithoutClassInput = {
   id?: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -655,7 +733,10 @@ export type EnrollmentUncheckedCreateWithoutClassInput = {
   studentId: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -692,7 +773,10 @@ export type EnrollmentCreateWithoutTuitionFeesInput = {
   id?: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -706,7 +790,10 @@ export type EnrollmentUncheckedCreateWithoutTuitionFeesInput = {
   studentId: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -732,7 +819,10 @@ export type EnrollmentUpdateWithoutTuitionFeesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -746,7 +836,10 @@ export type EnrollmentUncheckedUpdateWithoutTuitionFeesInput = {
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -757,7 +850,10 @@ export type EnrollmentCreateManyStudentInput = {
   classId: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -767,7 +863,10 @@ export type EnrollmentUpdateWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -780,7 +879,10 @@ export type EnrollmentUncheckedUpdateWithoutStudentInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -792,7 +894,10 @@ export type EnrollmentUncheckedUpdateManyWithoutStudentInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -803,7 +908,10 @@ export type EnrollmentCreateManyClassInput = {
   studentId: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: $Enums.MemberStatus
-  joinedAt?: Date | string
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -813,7 +921,10 @@ export type EnrollmentUpdateWithoutClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -826,7 +937,10 @@ export type EnrollmentUncheckedUpdateWithoutClassInput = {
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -838,7 +952,10 @@ export type EnrollmentUncheckedUpdateManyWithoutClassInput = {
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
-  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -881,6 +998,9 @@ export type EnrollmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   studentId?: boolean
   tuitionOverride?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  rejectedAt?: boolean
   joinedAt?: boolean
   leftAt?: boolean
   createdAt?: boolean
@@ -897,6 +1017,9 @@ export type EnrollmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   studentId?: boolean
   tuitionOverride?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  rejectedAt?: boolean
   joinedAt?: boolean
   leftAt?: boolean
   createdAt?: boolean
@@ -911,6 +1034,9 @@ export type EnrollmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   studentId?: boolean
   tuitionOverride?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  rejectedAt?: boolean
   joinedAt?: boolean
   leftAt?: boolean
   createdAt?: boolean
@@ -925,13 +1051,16 @@ export type EnrollmentSelectScalar = {
   studentId?: boolean
   tuitionOverride?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  rejectedAt?: boolean
   joinedAt?: boolean
   leftAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EnrollmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "studentId" | "tuitionOverride" | "status" | "joinedAt" | "leftAt" | "createdAt" | "updatedAt", ExtArgs["result"]["enrollment"]>
+export type EnrollmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "studentId" | "tuitionOverride" | "status" | "requestedAt" | "approvedAt" | "rejectedAt" | "joinedAt" | "leftAt" | "createdAt" | "updatedAt", ExtArgs["result"]["enrollment"]>
 export type EnrollmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -960,7 +1089,10 @@ export type $EnrollmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     studentId: string
     tuitionOverride: runtime.Decimal | null
     status: $Enums.MemberStatus
-    joinedAt: Date
+    requestedAt: Date
+    approvedAt: Date | null
+    rejectedAt: Date | null
+    joinedAt: Date | null
     leftAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1395,6 +1527,9 @@ export interface EnrollmentFieldRefs {
   readonly studentId: Prisma.FieldRef<"Enrollment", 'String'>
   readonly tuitionOverride: Prisma.FieldRef<"Enrollment", 'Decimal'>
   readonly status: Prisma.FieldRef<"Enrollment", 'MemberStatus'>
+  readonly requestedAt: Prisma.FieldRef<"Enrollment", 'DateTime'>
+  readonly approvedAt: Prisma.FieldRef<"Enrollment", 'DateTime'>
+  readonly rejectedAt: Prisma.FieldRef<"Enrollment", 'DateTime'>
   readonly joinedAt: Prisma.FieldRef<"Enrollment", 'DateTime'>
   readonly leftAt: Prisma.FieldRef<"Enrollment", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Enrollment", 'DateTime'>

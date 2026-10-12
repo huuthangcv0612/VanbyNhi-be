@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import {
   UserRole,
   CalendarNotificationStatus,
+  MemberStatus,
 } from '../../generated/prisma/client.js';
 import type { QueryCalendarEventsDto } from './dto/query-calendar-events.dto.js';
 import type { CreateCalendarEventDto } from './dto/create-calendar-event.dto.js';
@@ -199,10 +200,40 @@ export class CalendarService {
       }
     }
 
-    // Xác minh danh sách học sinh nếu có
-    const studentIds = dto.studentIds
-      ? Array.from(new Set(dto.studentIds))
-      : [];
+    // Xác minh và nạp danh sách học sinh ACTIVE nếu có truyền classId
+    const studentIdSet = new Set(dto.studentIds ?? []);
+
+    if (dto.classId) {
+      const classEntity = await this.prisma.class.findUnique({
+        where: { id: dto.classId },
+      });
+
+      if (!classEntity) {
+        throw new NotFoundException(
+          `Không tìm thấy lớp học với ID ${dto.classId}`,
+        );
+      }
+
+      if (classEntity.teacherId !== teacherId) {
+        throw new ForbiddenException(
+          'Bạn không thể tạo ca dạy cho lớp học của giáo viên khác',
+        );
+      }
+
+      const activeMembers = await this.prisma.enrollment.findMany({
+        where: {
+          classId: dto.classId,
+          status: MemberStatus.ACTIVE,
+        },
+        select: { studentId: true },
+      });
+
+      for (const m of activeMembers) {
+        studentIdSet.add(m.studentId);
+      }
+    }
+
+    const studentIds = Array.from(studentIdSet);
     if (studentIds.length > 0) {
       const students = await this.prisma.user.findMany({
         where: {
@@ -258,6 +289,7 @@ export class CalendarService {
       const event = await tx.teacherCalendarEvent.create({
         data: {
           teacherId,
+          classId: dto.classId,
           title: dto.title,
           address: dto.address,
           meetUrl: dto.meetUrl,

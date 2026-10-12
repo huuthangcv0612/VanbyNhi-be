@@ -19,12 +19,16 @@ enum ClassStatus {
   ACTIVE
   INACTIVE
   COMPLETED
+  CLOSED
 }
 
 enum MemberStatus {
+  PENDING
   ACTIVE
-  INACTIVE
+  REJECTED
   LEFT
+  REMOVED
+  INACTIVE
 }
 
 enum SessionStatus {
@@ -137,6 +141,8 @@ model Class {
   name           String
   description    String?
   classCode      String      @unique @default(cuid())
+  joinCode       String      @unique @default(cuid())
+  maxStudents    Int?
   defaultMeetUrl String?
   monthlyTuition Decimal     @default(0) @db.Decimal(12, 2)
   status         ClassStatus @default(ACTIVE)
@@ -145,16 +151,18 @@ model Class {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
-  creator     User            @relation("ClassCreator", fields: [createdById], references: [id], onDelete: Restrict)
-  teacher     User            @relation("ClassTeacher", fields: [teacherId], references: [id], onDelete: Restrict)
-  members     Enrollment[]
-  sessions    ClassSession[]
-  materials   ClassMaterial[]
-  assignments Assignment[]
+  creator        User                   @relation("ClassCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  teacher        User                   @relation("ClassTeacher", fields: [teacherId], references: [id], onDelete: Restrict)
+  members        Enrollment[]
+  sessions       ClassSession[]
+  materials      ClassMaterial[]
+  assignments    Assignment[]
+  calendarEvents TeacherCalendarEvent[]
 
   @@index([teacherId, status])
   @@index([createdById])
   @@index([name])
+  @@index([joinCode])
 }
 
 model Enrollment {
@@ -163,7 +171,10 @@ model Enrollment {
   studentId       String
   tuitionOverride Decimal?     @db.Decimal(12, 2)
   status          MemberStatus @default(ACTIVE)
-  joinedAt        DateTime     @default(now())
+  requestedAt     DateTime     @default(now())
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  joinedAt        DateTime?
   leftAt          DateTime?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
@@ -421,6 +432,7 @@ model TeacherCalendarLabel {
 model TeacherCalendarEvent {
   id              String   @id @default(cuid())
   teacherId       String
+  classId         String?
   title           String
   address         String?
   meetUrl         String?
@@ -433,6 +445,7 @@ model TeacherCalendarEvent {
   updatedAt       DateTime @updatedAt
 
   teacher       User                       @relation("TeacherCalendarEvents", fields: [teacherId], references: [id], onDelete: Restrict)
+  class         Class?                     @relation(fields: [classId], references: [id], onDelete: SetNull)
   label         TeacherCalendarLabel?      @relation(fields: [labelId], references: [id], onDelete: SetNull)
   participants  CalendarEventParticipant[]
   notifications CalendarNotification[]
@@ -440,6 +453,7 @@ model TeacherCalendarEvent {
   @@index([teacherId, startAt])
   @@index([teacherId, endAt])
   @@index([labelId])
+  @@index([classId])
 }
 
 model CalendarEventParticipant {

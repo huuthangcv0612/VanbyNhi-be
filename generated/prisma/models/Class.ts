@@ -27,10 +27,12 @@ export type AggregateClass = {
 }
 
 export type ClassAvgAggregateOutputType = {
+  maxStudents: number | null
   monthlyTuition: runtime.Decimal | null
 }
 
 export type ClassSumAggregateOutputType = {
+  maxStudents: number | null
   monthlyTuition: runtime.Decimal | null
 }
 
@@ -39,6 +41,8 @@ export type ClassMinAggregateOutputType = {
   name: string | null
   description: string | null
   classCode: string | null
+  joinCode: string | null
+  maxStudents: number | null
   defaultMeetUrl: string | null
   monthlyTuition: runtime.Decimal | null
   status: $Enums.ClassStatus | null
@@ -53,6 +57,8 @@ export type ClassMaxAggregateOutputType = {
   name: string | null
   description: string | null
   classCode: string | null
+  joinCode: string | null
+  maxStudents: number | null
   defaultMeetUrl: string | null
   monthlyTuition: runtime.Decimal | null
   status: $Enums.ClassStatus | null
@@ -67,6 +73,8 @@ export type ClassCountAggregateOutputType = {
   name: number
   description: number
   classCode: number
+  joinCode: number
+  maxStudents: number
   defaultMeetUrl: number
   monthlyTuition: number
   status: number
@@ -79,10 +87,12 @@ export type ClassCountAggregateOutputType = {
 
 
 export type ClassAvgAggregateInputType = {
+  maxStudents?: true
   monthlyTuition?: true
 }
 
 export type ClassSumAggregateInputType = {
+  maxStudents?: true
   monthlyTuition?: true
 }
 
@@ -91,6 +101,8 @@ export type ClassMinAggregateInputType = {
   name?: true
   description?: true
   classCode?: true
+  joinCode?: true
+  maxStudents?: true
   defaultMeetUrl?: true
   monthlyTuition?: true
   status?: true
@@ -105,6 +117,8 @@ export type ClassMaxAggregateInputType = {
   name?: true
   description?: true
   classCode?: true
+  joinCode?: true
+  maxStudents?: true
   defaultMeetUrl?: true
   monthlyTuition?: true
   status?: true
@@ -119,6 +133,8 @@ export type ClassCountAggregateInputType = {
   name?: true
   description?: true
   classCode?: true
+  joinCode?: true
+  maxStudents?: true
   defaultMeetUrl?: true
   monthlyTuition?: true
   status?: true
@@ -220,6 +236,8 @@ export type ClassGroupByOutputType = {
   name: string
   description: string | null
   classCode: string
+  joinCode: string
+  maxStudents: number | null
   defaultMeetUrl: string | null
   monthlyTuition: runtime.Decimal
   status: $Enums.ClassStatus
@@ -257,6 +275,8 @@ export type ClassWhereInput = {
   name?: Prisma.StringFilter<"Class"> | string
   description?: Prisma.StringNullableFilter<"Class"> | string | null
   classCode?: Prisma.StringFilter<"Class"> | string
+  joinCode?: Prisma.StringFilter<"Class"> | string
+  maxStudents?: Prisma.IntNullableFilter<"Class"> | number | null
   defaultMeetUrl?: Prisma.StringNullableFilter<"Class"> | string | null
   monthlyTuition?: Prisma.DecimalFilter<"Class"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFilter<"Class"> | $Enums.ClassStatus
@@ -270,6 +290,7 @@ export type ClassWhereInput = {
   sessions?: Prisma.ClassSessionListRelationFilter
   materials?: Prisma.ClassMaterialListRelationFilter
   assignments?: Prisma.AssignmentListRelationFilter
+  calendarEvents?: Prisma.TeacherCalendarEventListRelationFilter
 }
 
 export type ClassOrderByWithRelationInput = {
@@ -277,6 +298,8 @@ export type ClassOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   classCode?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
+  maxStudents?: Prisma.SortOrderInput | Prisma.SortOrder
   defaultMeetUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   monthlyTuition?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -290,16 +313,19 @@ export type ClassOrderByWithRelationInput = {
   sessions?: Prisma.ClassSessionOrderByRelationAggregateInput
   materials?: Prisma.ClassMaterialOrderByRelationAggregateInput
   assignments?: Prisma.AssignmentOrderByRelationAggregateInput
+  calendarEvents?: Prisma.TeacherCalendarEventOrderByRelationAggregateInput
 }
 
 export type ClassWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   classCode?: string
+  joinCode?: string
   AND?: Prisma.ClassWhereInput | Prisma.ClassWhereInput[]
   OR?: Prisma.ClassWhereInput[]
   NOT?: Prisma.ClassWhereInput | Prisma.ClassWhereInput[]
   name?: Prisma.StringFilter<"Class"> | string
   description?: Prisma.StringNullableFilter<"Class"> | string | null
+  maxStudents?: Prisma.IntNullableFilter<"Class"> | number | null
   defaultMeetUrl?: Prisma.StringNullableFilter<"Class"> | string | null
   monthlyTuition?: Prisma.DecimalFilter<"Class"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFilter<"Class"> | $Enums.ClassStatus
@@ -313,13 +339,16 @@ export type ClassWhereUniqueInput = Prisma.AtLeast<{
   sessions?: Prisma.ClassSessionListRelationFilter
   materials?: Prisma.ClassMaterialListRelationFilter
   assignments?: Prisma.AssignmentListRelationFilter
-}, "id" | "classCode">
+  calendarEvents?: Prisma.TeacherCalendarEventListRelationFilter
+}, "id" | "classCode" | "joinCode">
 
 export type ClassOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   classCode?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
+  maxStudents?: Prisma.SortOrderInput | Prisma.SortOrder
   defaultMeetUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   monthlyTuition?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -342,6 +371,8 @@ export type ClassScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Class"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null
   classCode?: Prisma.StringWithAggregatesFilter<"Class"> | string
+  joinCode?: Prisma.StringWithAggregatesFilter<"Class"> | string
+  maxStudents?: Prisma.IntNullableWithAggregatesFilter<"Class"> | number | null
   defaultMeetUrl?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null
   monthlyTuition?: Prisma.DecimalWithAggregatesFilter<"Class"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusWithAggregatesFilter<"Class"> | $Enums.ClassStatus
@@ -356,6 +387,8 @@ export type ClassCreateInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -367,6 +400,7 @@ export type ClassCreateInput = {
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateInput = {
@@ -374,6 +408,8 @@ export type ClassUncheckedCreateInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -385,6 +421,7 @@ export type ClassUncheckedCreateInput = {
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassUpdateInput = {
@@ -392,6 +429,8 @@ export type ClassUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -403,6 +442,7 @@ export type ClassUpdateInput = {
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateInput = {
@@ -410,6 +450,8 @@ export type ClassUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -421,6 +463,7 @@ export type ClassUncheckedUpdateInput = {
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateManyInput = {
@@ -428,6 +471,8 @@ export type ClassCreateManyInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -442,6 +487,8 @@ export type ClassUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -454,6 +501,8 @@ export type ClassUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -478,6 +527,8 @@ export type ClassCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   classCode?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
+  maxStudents?: Prisma.SortOrder
   defaultMeetUrl?: Prisma.SortOrder
   monthlyTuition?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -488,6 +539,7 @@ export type ClassCountOrderByAggregateInput = {
 }
 
 export type ClassAvgOrderByAggregateInput = {
+  maxStudents?: Prisma.SortOrder
   monthlyTuition?: Prisma.SortOrder
 }
 
@@ -496,6 +548,8 @@ export type ClassMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   classCode?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
+  maxStudents?: Prisma.SortOrder
   defaultMeetUrl?: Prisma.SortOrder
   monthlyTuition?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -510,6 +564,8 @@ export type ClassMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   classCode?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
+  maxStudents?: Prisma.SortOrder
   defaultMeetUrl?: Prisma.SortOrder
   monthlyTuition?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -520,12 +576,18 @@ export type ClassMinOrderByAggregateInput = {
 }
 
 export type ClassSumOrderByAggregateInput = {
+  maxStudents?: Prisma.SortOrder
   monthlyTuition?: Prisma.SortOrder
 }
 
 export type ClassScalarRelationFilter = {
   is?: Prisma.ClassWhereInput
   isNot?: Prisma.ClassWhereInput
+}
+
+export type ClassNullableScalarRelationFilter = {
+  is?: Prisma.ClassWhereInput | null
+  isNot?: Prisma.ClassWhereInput | null
 }
 
 export type ClassCreateNestedManyWithoutCreatorInput = {
@@ -612,6 +674,14 @@ export type ClassUncheckedUpdateManyWithoutTeacherNestedInput = {
   deleteMany?: Prisma.ClassScalarWhereInput | Prisma.ClassScalarWhereInput[]
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type DecimalFieldUpdateOperationsInput = {
   set?: runtime.Decimal | runtime.DecimalJsLike | number | string
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -680,11 +750,29 @@ export type ClassUpdateOneRequiredWithoutMaterialsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClassUpdateToOneWithWhereWithoutMaterialsInput, Prisma.ClassUpdateWithoutMaterialsInput>, Prisma.ClassUncheckedUpdateWithoutMaterialsInput>
 }
 
+export type ClassCreateNestedOneWithoutCalendarEventsInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutCalendarEventsInput, Prisma.ClassUncheckedCreateWithoutCalendarEventsInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutCalendarEventsInput
+  connect?: Prisma.ClassWhereUniqueInput
+}
+
+export type ClassUpdateOneWithoutCalendarEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutCalendarEventsInput, Prisma.ClassUncheckedCreateWithoutCalendarEventsInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutCalendarEventsInput
+  upsert?: Prisma.ClassUpsertWithoutCalendarEventsInput
+  disconnect?: Prisma.ClassWhereInput | boolean
+  delete?: Prisma.ClassWhereInput | boolean
+  connect?: Prisma.ClassWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassUpdateToOneWithWhereWithoutCalendarEventsInput, Prisma.ClassUpdateWithoutCalendarEventsInput>, Prisma.ClassUncheckedUpdateWithoutCalendarEventsInput>
+}
+
 export type ClassCreateWithoutCreatorInput = {
   id?: string
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -695,6 +783,7 @@ export type ClassCreateWithoutCreatorInput = {
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutCreatorInput = {
@@ -702,6 +791,8 @@ export type ClassUncheckedCreateWithoutCreatorInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -712,6 +803,7 @@ export type ClassUncheckedCreateWithoutCreatorInput = {
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutCreatorInput = {
@@ -729,6 +821,8 @@ export type ClassCreateWithoutTeacherInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -739,6 +833,7 @@ export type ClassCreateWithoutTeacherInput = {
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutTeacherInput = {
@@ -746,6 +841,8 @@ export type ClassUncheckedCreateWithoutTeacherInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -756,6 +853,7 @@ export type ClassUncheckedCreateWithoutTeacherInput = {
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutTeacherInput = {
@@ -792,6 +890,8 @@ export type ClassScalarWhereInput = {
   name?: Prisma.StringFilter<"Class"> | string
   description?: Prisma.StringNullableFilter<"Class"> | string | null
   classCode?: Prisma.StringFilter<"Class"> | string
+  joinCode?: Prisma.StringFilter<"Class"> | string
+  maxStudents?: Prisma.IntNullableFilter<"Class"> | number | null
   defaultMeetUrl?: Prisma.StringNullableFilter<"Class"> | string | null
   monthlyTuition?: Prisma.DecimalFilter<"Class"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFilter<"Class"> | $Enums.ClassStatus
@@ -822,6 +922,8 @@ export type ClassCreateWithoutMembersInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -832,6 +934,7 @@ export type ClassCreateWithoutMembersInput = {
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutMembersInput = {
@@ -839,6 +942,8 @@ export type ClassUncheckedCreateWithoutMembersInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -849,6 +954,7 @@ export type ClassUncheckedCreateWithoutMembersInput = {
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutMembersInput = {
@@ -872,6 +978,8 @@ export type ClassUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -882,6 +990,7 @@ export type ClassUpdateWithoutMembersInput = {
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutMembersInput = {
@@ -889,6 +998,8 @@ export type ClassUncheckedUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -899,6 +1010,7 @@ export type ClassUncheckedUpdateWithoutMembersInput = {
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateWithoutSessionsInput = {
@@ -906,6 +1018,8 @@ export type ClassCreateWithoutSessionsInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -916,6 +1030,7 @@ export type ClassCreateWithoutSessionsInput = {
   members?: Prisma.EnrollmentCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutSessionsInput = {
@@ -923,6 +1038,8 @@ export type ClassUncheckedCreateWithoutSessionsInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -933,6 +1050,7 @@ export type ClassUncheckedCreateWithoutSessionsInput = {
   members?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutSessionsInput = {
@@ -956,6 +1074,8 @@ export type ClassUpdateWithoutSessionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -966,6 +1086,7 @@ export type ClassUpdateWithoutSessionsInput = {
   members?: Prisma.EnrollmentUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutSessionsInput = {
@@ -973,6 +1094,8 @@ export type ClassUncheckedUpdateWithoutSessionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -983,6 +1106,7 @@ export type ClassUncheckedUpdateWithoutSessionsInput = {
   members?: Prisma.EnrollmentUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateWithoutAssignmentsInput = {
@@ -990,6 +1114,8 @@ export type ClassCreateWithoutAssignmentsInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -1000,6 +1126,7 @@ export type ClassCreateWithoutAssignmentsInput = {
   members?: Prisma.EnrollmentCreateNestedManyWithoutClassInput
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutAssignmentsInput = {
@@ -1007,6 +1134,8 @@ export type ClassUncheckedCreateWithoutAssignmentsInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -1017,6 +1146,7 @@ export type ClassUncheckedCreateWithoutAssignmentsInput = {
   members?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutClassInput
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutAssignmentsInput = {
@@ -1040,6 +1170,8 @@ export type ClassUpdateWithoutAssignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1050,6 +1182,7 @@ export type ClassUpdateWithoutAssignmentsInput = {
   members?: Prisma.EnrollmentUpdateManyWithoutClassNestedInput
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutAssignmentsInput = {
@@ -1057,6 +1190,8 @@ export type ClassUncheckedUpdateWithoutAssignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1067,6 +1202,7 @@ export type ClassUncheckedUpdateWithoutAssignmentsInput = {
   members?: Prisma.EnrollmentUncheckedUpdateManyWithoutClassNestedInput
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateWithoutMaterialsInput = {
@@ -1074,6 +1210,8 @@ export type ClassCreateWithoutMaterialsInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -1084,6 +1222,7 @@ export type ClassCreateWithoutMaterialsInput = {
   members?: Prisma.EnrollmentCreateNestedManyWithoutClassInput
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutMaterialsInput = {
@@ -1091,6 +1230,8 @@ export type ClassUncheckedCreateWithoutMaterialsInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -1101,6 +1242,7 @@ export type ClassUncheckedCreateWithoutMaterialsInput = {
   members?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutClassInput
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutMaterialsInput = {
@@ -1124,6 +1266,8 @@ export type ClassUpdateWithoutMaterialsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1134,6 +1278,7 @@ export type ClassUpdateWithoutMaterialsInput = {
   members?: Prisma.EnrollmentUpdateManyWithoutClassNestedInput
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutMaterialsInput = {
@@ -1141,6 +1286,8 @@ export type ClassUncheckedUpdateWithoutMaterialsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1151,6 +1298,103 @@ export type ClassUncheckedUpdateWithoutMaterialsInput = {
   members?: Prisma.EnrollmentUncheckedUpdateManyWithoutClassNestedInput
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+}
+
+export type ClassCreateWithoutCalendarEventsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  creator: Prisma.UserCreateNestedOneWithoutCreatedClassesInput
+  teacher: Prisma.UserCreateNestedOneWithoutTeachingClassesInput
+  members?: Prisma.EnrollmentCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+}
+
+export type ClassUncheckedCreateWithoutCalendarEventsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdById: string
+  teacherId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+}
+
+export type ClassCreateOrConnectWithoutCalendarEventsInput = {
+  where: Prisma.ClassWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassCreateWithoutCalendarEventsInput, Prisma.ClassUncheckedCreateWithoutCalendarEventsInput>
+}
+
+export type ClassUpsertWithoutCalendarEventsInput = {
+  update: Prisma.XOR<Prisma.ClassUpdateWithoutCalendarEventsInput, Prisma.ClassUncheckedUpdateWithoutCalendarEventsInput>
+  create: Prisma.XOR<Prisma.ClassCreateWithoutCalendarEventsInput, Prisma.ClassUncheckedCreateWithoutCalendarEventsInput>
+  where?: Prisma.ClassWhereInput
+}
+
+export type ClassUpdateToOneWithWhereWithoutCalendarEventsInput = {
+  where?: Prisma.ClassWhereInput
+  data: Prisma.XOR<Prisma.ClassUpdateWithoutCalendarEventsInput, Prisma.ClassUncheckedUpdateWithoutCalendarEventsInput>
+}
+
+export type ClassUpdateWithoutCalendarEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  creator?: Prisma.UserUpdateOneRequiredWithoutCreatedClassesNestedInput
+  teacher?: Prisma.UserUpdateOneRequiredWithoutTeachingClassesNestedInput
+  members?: Prisma.EnrollmentUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateWithoutCalendarEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.EnrollmentUncheckedUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateManyCreatorInput = {
@@ -1158,6 +1402,8 @@ export type ClassCreateManyCreatorInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -1171,6 +1417,8 @@ export type ClassCreateManyTeacherInput = {
   name: string
   description?: string | null
   classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
   defaultMeetUrl?: string | null
   monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.ClassStatus
@@ -1184,6 +1432,8 @@ export type ClassUpdateWithoutCreatorInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1194,6 +1444,7 @@ export type ClassUpdateWithoutCreatorInput = {
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutCreatorInput = {
@@ -1201,6 +1452,8 @@ export type ClassUncheckedUpdateWithoutCreatorInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1211,6 +1464,7 @@ export type ClassUncheckedUpdateWithoutCreatorInput = {
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateManyWithoutCreatorInput = {
@@ -1218,6 +1472,8 @@ export type ClassUncheckedUpdateManyWithoutCreatorInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1231,6 +1487,8 @@ export type ClassUpdateWithoutTeacherInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1241,6 +1499,7 @@ export type ClassUpdateWithoutTeacherInput = {
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutTeacherInput = {
@@ -1248,6 +1507,8 @@ export type ClassUncheckedUpdateWithoutTeacherInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1258,6 +1519,7 @@ export type ClassUncheckedUpdateWithoutTeacherInput = {
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateManyWithoutTeacherInput = {
@@ -1265,6 +1527,8 @@ export type ClassUncheckedUpdateManyWithoutTeacherInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
@@ -1283,6 +1547,7 @@ export type ClassCountOutputType = {
   sessions: number
   materials: number
   assignments: number
+  calendarEvents: number
 }
 
 export type ClassCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1290,6 +1555,7 @@ export type ClassCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   sessions?: boolean | ClassCountOutputTypeCountSessionsArgs
   materials?: boolean | ClassCountOutputTypeCountMaterialsArgs
   assignments?: boolean | ClassCountOutputTypeCountAssignmentsArgs
+  calendarEvents?: boolean | ClassCountOutputTypeCountCalendarEventsArgs
 }
 
 /**
@@ -1330,12 +1596,21 @@ export type ClassCountOutputTypeCountAssignmentsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.AssignmentWhereInput
 }
 
+/**
+ * ClassCountOutputType without action
+ */
+export type ClassCountOutputTypeCountCalendarEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeacherCalendarEventWhereInput
+}
+
 
 export type ClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
   classCode?: boolean
+  joinCode?: boolean
+  maxStudents?: boolean
   defaultMeetUrl?: boolean
   monthlyTuition?: boolean
   status?: boolean
@@ -1349,6 +1624,7 @@ export type ClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sessions?: boolean | Prisma.Class$sessionsArgs<ExtArgs>
   materials?: boolean | Prisma.Class$materialsArgs<ExtArgs>
   assignments?: boolean | Prisma.Class$assignmentsArgs<ExtArgs>
+  calendarEvents?: boolean | Prisma.Class$calendarEventsArgs<ExtArgs>
   _count?: boolean | Prisma.ClassCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["class"]>
 
@@ -1357,6 +1633,8 @@ export type ClassSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   name?: boolean
   description?: boolean
   classCode?: boolean
+  joinCode?: boolean
+  maxStudents?: boolean
   defaultMeetUrl?: boolean
   monthlyTuition?: boolean
   status?: boolean
@@ -1373,6 +1651,8 @@ export type ClassSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   name?: boolean
   description?: boolean
   classCode?: boolean
+  joinCode?: boolean
+  maxStudents?: boolean
   defaultMeetUrl?: boolean
   monthlyTuition?: boolean
   status?: boolean
@@ -1389,6 +1669,8 @@ export type ClassSelectScalar = {
   name?: boolean
   description?: boolean
   classCode?: boolean
+  joinCode?: boolean
+  maxStudents?: boolean
   defaultMeetUrl?: boolean
   monthlyTuition?: boolean
   status?: boolean
@@ -1398,7 +1680,7 @@ export type ClassSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "classCode" | "defaultMeetUrl" | "monthlyTuition" | "status" | "createdById" | "teacherId" | "createdAt" | "updatedAt", ExtArgs["result"]["class"]>
+export type ClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "classCode" | "joinCode" | "maxStudents" | "defaultMeetUrl" | "monthlyTuition" | "status" | "createdById" | "teacherId" | "createdAt" | "updatedAt", ExtArgs["result"]["class"]>
 export type ClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1406,6 +1688,7 @@ export type ClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   sessions?: boolean | Prisma.Class$sessionsArgs<ExtArgs>
   materials?: boolean | Prisma.Class$materialsArgs<ExtArgs>
   assignments?: boolean | Prisma.Class$assignmentsArgs<ExtArgs>
+  calendarEvents?: boolean | Prisma.Class$calendarEventsArgs<ExtArgs>
   _count?: boolean | Prisma.ClassCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClassIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1426,12 +1709,15 @@ export type $ClassPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     sessions: Prisma.$ClassSessionPayload<ExtArgs>[]
     materials: Prisma.$ClassMaterialPayload<ExtArgs>[]
     assignments: Prisma.$AssignmentPayload<ExtArgs>[]
+    calendarEvents: Prisma.$TeacherCalendarEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     description: string | null
     classCode: string
+    joinCode: string
+    maxStudents: number | null
     defaultMeetUrl: string | null
     monthlyTuition: runtime.Decimal
     status: $Enums.ClassStatus
@@ -1839,6 +2125,7 @@ export interface Prisma__ClassClient<T, Null = never, ExtArgs extends runtime.Ty
   sessions<T extends Prisma.Class$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   materials<T extends Prisma.Class$materialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignments<T extends Prisma.Class$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  calendarEvents<T extends Prisma.Class$calendarEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$calendarEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1872,6 +2159,8 @@ export interface ClassFieldRefs {
   readonly name: Prisma.FieldRef<"Class", 'String'>
   readonly description: Prisma.FieldRef<"Class", 'String'>
   readonly classCode: Prisma.FieldRef<"Class", 'String'>
+  readonly joinCode: Prisma.FieldRef<"Class", 'String'>
+  readonly maxStudents: Prisma.FieldRef<"Class", 'Int'>
   readonly defaultMeetUrl: Prisma.FieldRef<"Class", 'String'>
   readonly monthlyTuition: Prisma.FieldRef<"Class", 'Decimal'>
   readonly status: Prisma.FieldRef<"Class", 'ClassStatus'>
@@ -2373,6 +2662,30 @@ export type Class$assignmentsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.AssignmentScalarFieldEnum | Prisma.AssignmentScalarFieldEnum[]
+}
+
+/**
+ * Class.calendarEvents
+ */
+export type Class$calendarEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeacherCalendarEvent
+   */
+  select?: Prisma.TeacherCalendarEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeacherCalendarEvent
+   */
+  omit?: Prisma.TeacherCalendarEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeacherCalendarEventInclude<ExtArgs> | null
+  where?: Prisma.TeacherCalendarEventWhereInput
+  orderBy?: Prisma.TeacherCalendarEventOrderByWithRelationInput | Prisma.TeacherCalendarEventOrderByWithRelationInput[]
+  cursor?: Prisma.TeacherCalendarEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeacherCalendarEventScalarFieldEnum | Prisma.TeacherCalendarEventScalarFieldEnum[]
 }
 
 /**
