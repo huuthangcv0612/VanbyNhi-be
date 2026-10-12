@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import {
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { TuitionService } from './tuition.service.js';
 import { TuitionStatus, Prisma } from '../../generated/prisma/client.js';
 
@@ -168,7 +172,9 @@ describe('TuitionService', () => {
         dueDate: new Date(2026, 10, 30),
         billingMonth: 10,
         billingYear: 2026,
-        payments: [{ id: 'p1', amount: new Prisma.Decimal(400000), isVoided: false }],
+        payments: [
+          { id: 'p1', amount: new Prisma.Decimal(400000), isVoided: false },
+        ],
         enrollment: {
           studentId: 'stu1',
           class: { name: 'Lớp 12A' },
@@ -199,7 +205,9 @@ describe('TuitionService', () => {
         id: 'fee1',
         amountDue: new Prisma.Decimal(1000000),
         dueDate: new Date(2026, 10, 30),
-        payments: [{ id: 'p1', amount: new Prisma.Decimal(700000), isVoided: false }],
+        payments: [
+          { id: 'p1', amount: new Prisma.Decimal(700000), isVoided: false },
+        ],
       };
       prismaMock.tuitionFee.findUnique.mockResolvedValue(fee);
 

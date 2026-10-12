@@ -27,12 +27,16 @@ export class RolesGuard implements CanActivate {
     const user = request.user as JwtPayload | undefined;
 
     if (!user || !user.role) {
-      throw new ForbiddenException('Bạn không có quyền truy cập tài nguyên này');
+      throw new ForbiddenException(
+        'Bạn không có quyền truy cập tài nguyên này',
+      );
     }
 
     const hasRole = requiredRoles.includes(user.role);
     if (!hasRole) {
-      throw new ForbiddenException('Quyền hạn của bạn không đủ để thực hiện thao tác này');
+      throw new ForbiddenException(
+        'Quyền hạn của bạn không đủ để thực hiện thao tác này',
+      );
     }
 
     return true;

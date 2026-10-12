@@ -31,7 +31,10 @@ describe('RolesGuard', () => {
   });
 
   it('cho phép truy cập khi user có role hợp lệ', () => {
-    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue([UserRole.ADMIN, UserRole.TEACHER]);
+    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue([
+      UserRole.ADMIN,
+      UserRole.TEACHER,
+    ]);
     const context = createMockContext(UserRole.TEACHER);
 
     expect(rolesGuard.canActivate(context)).toBe(true);
@@ -45,7 +48,9 @@ describe('RolesGuard', () => {
   });
 
   it('từ chối truy cập khi request không có user', () => {
-    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue([UserRole.STUDENT]);
+    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue([
+      UserRole.STUDENT,
+    ]);
     const context = createMockContext(undefined);
 
     expect(() => rolesGuard.canActivate(context)).toThrow(ForbiddenException);

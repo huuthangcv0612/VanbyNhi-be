@@ -2,7 +2,9 @@ import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class LoginDto {
-  @IsNotEmpty({ message: 'Tài khoản (email hoặc số điện thoại) không được để trống' })
+  @IsNotEmpty({
+    message: 'Tài khoản (email hoặc số điện thoại) không được để trống',
+  })
   @IsString({ message: 'Tài khoản phải là chuỗi ký tự' })
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   identifier: string;

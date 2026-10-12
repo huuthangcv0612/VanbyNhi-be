@@ -409,6 +409,50 @@ export type EnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
 }
 
+export type IntNullableFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
+}
+
+export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type EnumCalendarNotificationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CalendarNotificationStatus | Prisma.EnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCalendarNotificationStatusFilter<$PrismaModel> | $Enums.CalendarNotificationStatus
+}
+
+export type EnumCalendarNotificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CalendarNotificationStatus | Prisma.EnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCalendarNotificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.CalendarNotificationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCalendarNotificationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCalendarNotificationStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -826,6 +870,39 @@ export type NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
+}
+
+export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumCalendarNotificationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CalendarNotificationStatus | Prisma.EnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCalendarNotificationStatusFilter<$PrismaModel> | $Enums.CalendarNotificationStatus
+}
+
+export type NestedEnumCalendarNotificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CalendarNotificationStatus | Prisma.EnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCalendarNotificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.CalendarNotificationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCalendarNotificationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCalendarNotificationStatusFilter<$PrismaModel>
 }
 
 

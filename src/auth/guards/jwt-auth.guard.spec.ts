@@ -40,7 +40,10 @@ describe('JwtAuthGuard (Active User Check)', () => {
 
   it('cho phép request khi token hợp lệ và tài khoản đang hoạt động (isActive = true)', async () => {
     const context = createMockContext('Bearer valid-token');
-    jwtServiceMock.verifyAsync.mockResolvedValue({ sub: 'u1', role: 'STUDENT' });
+    jwtServiceMock.verifyAsync.mockResolvedValue({
+      sub: 'u1',
+      role: 'STUDENT',
+    });
     prismaMock.user.findUnique.mockResolvedValue({
       id: 'u1',
       role: 'STUDENT',
@@ -53,7 +56,10 @@ describe('JwtAuthGuard (Active User Check)', () => {
 
   it('chặn request khi tài khoản đã bị vô hiệu hóa (isActive = false)', async () => {
     const context = createMockContext('Bearer valid-token');
-    jwtServiceMock.verifyAsync.mockResolvedValue({ sub: 'u1', role: 'STUDENT' });
+    jwtServiceMock.verifyAsync.mockResolvedValue({
+      sub: 'u1',
+      role: 'STUDENT',
+    });
     prismaMock.user.findUnique.mockResolvedValue({
       id: 'u1',
       role: 'STUDENT',
@@ -67,7 +73,10 @@ describe('JwtAuthGuard (Active User Check)', () => {
 
   it('chặn request khi tài khoản không tồn tại trong database', async () => {
     const context = createMockContext('Bearer valid-token');
-    jwtServiceMock.verifyAsync.mockResolvedValue({ sub: 'u1', role: 'STUDENT' });
+    jwtServiceMock.verifyAsync.mockResolvedValue({
+      sub: 'u1',
+      role: 'STUDENT',
+    });
     prismaMock.user.findUnique.mockResolvedValue(null);
 
     await expect(jwtAuthGuard.canActivate(context)).rejects.toThrow(
@@ -77,17 +86,17 @@ describe('JwtAuthGuard (Active User Check)', () => {
 
   it('từ chối khi request không có header Authorization hoặc sai định dạng', async () => {
     const contextWithoutHeader = createMockContext();
-    await expect(jwtAuthGuard.canActivate(contextWithoutHeader)).rejects.toThrow(
-      UnauthorizedException,
-    );
-    await expect(jwtAuthGuard.canActivate(contextWithoutHeader)).rejects.toThrow(
-      'Yêu cầu xác thực: Token không được cung cấp',
-    );
+    await expect(
+      jwtAuthGuard.canActivate(contextWithoutHeader),
+    ).rejects.toThrow(UnauthorizedException);
+    await expect(
+      jwtAuthGuard.canActivate(contextWithoutHeader),
+    ).rejects.toThrow('Yêu cầu xác thực: Token không được cung cấp');
 
     const contextWithInvalidFormat = createMockContext('Basic 12345');
-    await expect(jwtAuthGuard.canActivate(contextWithInvalidFormat)).rejects.toThrow(
-      'Yêu cầu xác thực: Token không được cung cấp',
-    );
+    await expect(
+      jwtAuthGuard.canActivate(contextWithInvalidFormat),
+    ).rejects.toThrow('Yêu cầu xác thực: Token không được cung cấp');
   });
 
   it('báo lỗi khi thiếu JWT_ACCESS_SECRET trên máy chủ', async () => {

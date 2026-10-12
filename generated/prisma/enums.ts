@@ -90,7 +90,19 @@ export const NotificationType = {
   SESSION: 'SESSION',
   ASSIGNMENT: 'ASSIGNMENT',
   ATTENDANCE: 'ATTENDANCE',
-  SYSTEM: 'SYSTEM'
+  SYSTEM: 'SYSTEM',
+  CALENDAR: 'CALENDAR'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const CalendarNotificationStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SENT: 'SENT',
+  CANCELLED: 'CANCELLED',
+  FAILED: 'FAILED'
+} as const
+
+export type CalendarNotificationStatus = (typeof CalendarNotificationStatus)[keyof typeof CalendarNotificationStatus]

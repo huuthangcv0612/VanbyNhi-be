@@ -67,6 +67,15 @@ enum NotificationType {
   ASSIGNMENT
   ATTENDANCE
   SYSTEM
+  CALENDAR
+}
+
+enum CalendarNotificationStatus {
+  PENDING
+  PROCESSING
+  SENT
+  CANCELLED
+  FAILED
 }
 
 // ==================== MODELS ====================
@@ -100,6 +109,10 @@ model User {
   voidedTuitionPayments   TuitionPayment[]         @relation("PaymentVoider")
   notifications           Notification[]           @relation("UserNotifications")
   refreshTokens           RefreshToken[]
+  teacherCalendarEvents   TeacherCalendarEvent[]   @relation("TeacherCalendarEvents")
+  teacherCalendarLabels   TeacherCalendarLabel[]   @relation("TeacherCalendarLabels")
+  calendarParticipations  CalendarEventParticipant[] @relation("StudentCalendarParticipations")
+  calendarNotifications   CalendarNotification[]   @relation("CalendarNotificationRecipient")
 
   @@index([role, isActive])
   @@index([fullName])
@@ -387,4 +400,78 @@ model RefreshToken {
 
   @@index([userId, isRevoked])
   @@index([expiresAt])
+}
+
+model TeacherCalendarLabel {
+  id          String   @id @default(cuid())
+  teacherId   String
+  name        String
+  color       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  teacher User                   @relation("TeacherCalendarLabels", fields: [teacherId], references: [id], onDelete: Restrict)
+  events  TeacherCalendarEvent[]
+
+  @@unique([teacherId, name])
+  @@index([teacherId])
+}
+
+model TeacherCalendarEvent {
+  id              String   @id @default(cuid())
+  teacherId       String
+  title           String
+  address         String?
+  meetUrl         String?
+  startAt         DateTime
+  endAt           DateTime
+  labelId         String?
+  reminderMinutes Int?
+  note            String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  teacher       User                       @relation("TeacherCalendarEvents", fields: [teacherId], references: [id], onDelete: Restrict)
+  label         TeacherCalendarLabel?      @relation(fields: [labelId], references: [id], onDelete: SetNull)
+  participants  CalendarEventParticipant[]
+  notifications CalendarNotification[]
+
+  @@index([teacherId, startAt])
+  @@index([teacherId, endAt])
+  @@index([labelId])
+}
+
+model CalendarEventParticipant {
+  id        String   @id @default(cuid())
+  eventId   String
+  studentId String
+  createdAt DateTime @default(now())
+
+  event   TeacherCalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  student User                 @relation("StudentCalendarParticipations", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, studentId])
+  @@index([studentId])
+  @@index([eventId])
+}
+
+model CalendarNotification {
+  id          String                     @id @default(cuid())
+  eventId     String
+  recipientId String
+  scheduledAt DateTime
+  status      CalendarNotificationStatus @default(PENDING)
+  sentAt      DateTime?
+  error       String?
+  retryCount  Int                        @default(0)
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+
+  event     TeacherCalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  recipient User                 @relation("CalendarNotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledAt])
+  @@index([eventId, recipientId])
+  @@index([recipientId])
 }

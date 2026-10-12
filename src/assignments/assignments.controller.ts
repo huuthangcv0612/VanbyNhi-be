@@ -72,10 +72,7 @@ export class AssignmentsController {
    */
   @Patch(':id')
   @Roles(UserRole.ADMIN)
-  async update(
-    @Param('id') id: string,
-    @Body() dto: UpdateAssignmentDto,
-  ) {
+  async update(@Param('id') id: string, @Body() dto: UpdateAssignmentDto) {
     return this.assignmentsService.update(id, dto);
   }
 

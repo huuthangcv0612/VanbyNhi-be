@@ -119,12 +119,15 @@ export class EnrollmentsService {
     });
 
     if (!enrollment) {
-      throw new NotFoundException(`Không tìm thấy thông tin ghi danh với ID ${id}`);
+      throw new NotFoundException(
+        `Không tìm thấy thông tin ghi danh với ID ${id}`,
+      );
     }
 
     return {
       ...enrollment,
-      effectiveTuition: enrollment.tuitionOverride ?? enrollment.class.monthlyTuition,
+      effectiveTuition:
+        enrollment.tuitionOverride ?? enrollment.class.monthlyTuition,
     };
   }
 
@@ -142,7 +145,9 @@ export class EnrollmentsService {
     }
 
     if (classEntity.status !== ClassStatus.ACTIVE) {
-      throw new BadRequestException('Chỉ có thể ghi danh học sinh vào lớp học đang hoạt động (ACTIVE)');
+      throw new BadRequestException(
+        'Chỉ có thể ghi danh học sinh vào lớp học đang hoạt động (ACTIVE)',
+      );
     }
 
     // 2. Kiểm tra học sinh
@@ -156,7 +161,9 @@ export class EnrollmentsService {
     }
 
     if (student.role !== UserRole.STUDENT) {
-      throw new BadRequestException('Người dùng được chỉ định không có vai trò STUDENT');
+      throw new BadRequestException(
+        'Người dùng được chỉ định không có vai trò STUDENT',
+      );
     }
 
     if (!student.isActive) {
@@ -173,11 +180,14 @@ export class EnrollmentsService {
     });
 
     if (existingActive) {
-      throw new ConflictException('Học sinh này hiện đang có một lượt ghi danh đang hoạt động trong lớp học');
+      throw new ConflictException(
+        'Học sinh này hiện đang có một lượt ghi danh đang hoạt động trong lớp học',
+      );
     }
 
     const tuitionOverride =
-      createDto.tuitionOverride !== undefined && createDto.tuitionOverride !== null
+      createDto.tuitionOverride !== undefined &&
+      createDto.tuitionOverride !== null
         ? new Prisma.Decimal(createDto.tuitionOverride)
         : null;
 
@@ -214,13 +224,19 @@ export class EnrollmentsService {
         message: 'Ghi danh học sinh vào lớp thành công',
         enrollment: {
           ...enrollment,
-          effectiveTuition: enrollment.tuitionOverride ?? enrollment.class.monthlyTuition,
+          effectiveTuition:
+            enrollment.tuitionOverride ?? enrollment.class.monthlyTuition,
         },
       };
     } catch (error: any) {
       // Bắt lỗi vi phạm unique index unique_active_enrollment_per_student_class
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new ConflictException('Học sinh này hiện đang có một lượt ghi danh đang hoạt động trong lớp học');
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Học sinh này hiện đang có một lượt ghi danh đang hoạt động trong lớp học',
+        );
       }
       throw error;
     }
@@ -240,7 +256,9 @@ export class EnrollmentsService {
     });
 
     if (!enrollment) {
-      throw new NotFoundException(`Không tìm thấy thông tin ghi danh với ID ${id}`);
+      throw new NotFoundException(
+        `Không tìm thấy thông tin ghi danh với ID ${id}`,
+      );
     }
 
     if (enrollment.status === statusDto.status) {
@@ -256,7 +274,8 @@ export class EnrollmentsService {
 
     // Nếu chuyển sang LEFT hoặc INACTIVE, ghi nhận leftAt nếu chưa có
     if (
-      (statusDto.status === MemberStatus.LEFT || statusDto.status === MemberStatus.INACTIVE) &&
+      (statusDto.status === MemberStatus.LEFT ||
+        statusDto.status === MemberStatus.INACTIVE) &&
       !enrollment.leftAt
     ) {
       data.leftAt = new Date();
@@ -272,7 +291,9 @@ export class EnrollmentsService {
       });
 
       if (activeOther) {
-        throw new ConflictException('Học sinh này đã có một lượt ghi danh ACTIVE khác trong lớp');
+        throw new ConflictException(
+          'Học sinh này đã có một lượt ghi danh ACTIVE khác trong lớp',
+        );
       }
 
       data.leftAt = null;
@@ -305,12 +326,18 @@ export class EnrollmentsService {
         message: `Cập nhật trạng thái ghi danh thành ${statusDto.status} thành công`,
         enrollment: {
           ...updated,
-          effectiveTuition: updated.tuitionOverride ?? updated.class.monthlyTuition,
+          effectiveTuition:
+            updated.tuitionOverride ?? updated.class.monthlyTuition,
         },
       };
     } catch (error: any) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new ConflictException('Học sinh này đã có một lượt ghi danh ACTIVE khác trong lớp');
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Học sinh này đã có một lượt ghi danh ACTIVE khác trong lớp',
+        );
       }
       throw error;
     }
@@ -330,11 +357,14 @@ export class EnrollmentsService {
     });
 
     if (!enrollment) {
-      throw new NotFoundException(`Không tìm thấy thông tin ghi danh với ID ${id}`);
+      throw new NotFoundException(
+        `Không tìm thấy thông tin ghi danh với ID ${id}`,
+      );
     }
 
     const tuitionOverride =
-      tuitionDto.tuitionOverride !== undefined && tuitionDto.tuitionOverride !== null
+      tuitionDto.tuitionOverride !== undefined &&
+      tuitionDto.tuitionOverride !== null
         ? new Prisma.Decimal(tuitionDto.tuitionOverride)
         : null;
 
@@ -364,7 +394,8 @@ export class EnrollmentsService {
       message: 'Cập nhật học phí tùy chỉnh thành công',
       enrollment: {
         ...updated,
-        effectiveTuition: updated.tuitionOverride ?? updated.class.monthlyTuition,
+        effectiveTuition:
+          updated.tuitionOverride ?? updated.class.monthlyTuition,
       },
     };
   }

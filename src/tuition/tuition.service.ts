@@ -246,8 +246,19 @@ export class TuitionService {
 
     // Kiểm tra tính hợp lệ về thời gian enrollment đối với kỳ thu học phí:
     // Nếu học sinh đã rời lớp trước tháng tính phí -> không tạo phí
-    const billingPeriodStart = new Date(dto.billingYear, dto.billingMonth - 1, 1);
-    const billingPeriodEnd = new Date(dto.billingYear, dto.billingMonth, 0, 23, 59, 59);
+    const billingPeriodStart = new Date(
+      dto.billingYear,
+      dto.billingMonth - 1,
+      1,
+    );
+    const billingPeriodEnd = new Date(
+      dto.billingYear,
+      dto.billingMonth,
+      0,
+      23,
+      59,
+      59,
+    );
 
     if (enrollment.joinedAt > billingPeriodEnd) {
       throw new BadRequestException(
@@ -309,7 +320,10 @@ export class TuitionService {
         tuitionFee: fee,
       };
     } catch (error: any) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
         throw new ConflictException(
           `Khoản học phí cho tháng ${dto.billingMonth}/${dto.billingYear} của học sinh này đã tồn tại`,
         );
@@ -387,7 +401,11 @@ export class TuitionService {
       });
 
       // 5. Cập nhật lại status của TuitionFee
-      const newStatus = this.computeStatus(fee.amountDue, newTotalPaid, fee.dueDate);
+      const newStatus = this.computeStatus(
+        fee.amountDue,
+        newTotalPaid,
+        fee.dueDate,
+      );
       const updatedFee = await tx.tuitionFee.update({
         where: { id: tuitionFeeId },
         data: { status: newStatus },
@@ -455,7 +473,9 @@ export class TuitionService {
       });
 
       if (!payment) {
-        throw new NotFoundException(`Không tìm thấy bản ghi thanh toán với ID ${paymentId}`);
+        throw new NotFoundException(
+          `Không tìm thấy bản ghi thanh toán với ID ${paymentId}`,
+        );
       }
 
       if (payment.isVoided) {
@@ -499,7 +519,11 @@ export class TuitionService {
       }
 
       // 4. Cập nhật lại trạng thái TuitionFee
-      const newStatus = this.computeStatus(fee.amountDue, newTotalPaid, fee.dueDate);
+      const newStatus = this.computeStatus(
+        fee.amountDue,
+        newTotalPaid,
+        fee.dueDate,
+      );
       const updatedFee = await tx.tuitionFee.update({
         where: { id: fee.id },
         data: { status: newStatus },

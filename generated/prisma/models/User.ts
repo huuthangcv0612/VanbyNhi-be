@@ -246,6 +246,10 @@ export type UserWhereInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventListRelationFilter
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelListRelationFilter
+  calendarParticipations?: Prisma.CalendarEventParticipantListRelationFilter
+  calendarNotifications?: Prisma.CalendarNotificationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -276,6 +280,10 @@ export type UserOrderByWithRelationInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventOrderByRelationAggregateInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelOrderByRelationAggregateInput
+  calendarParticipations?: Prisma.CalendarEventParticipantOrderByRelationAggregateInput
+  calendarNotifications?: Prisma.CalendarNotificationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -309,6 +317,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   voidedTuitionPayments?: Prisma.TuitionPaymentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventListRelationFilter
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelListRelationFilter
+  calendarParticipations?: Prisma.CalendarEventParticipantListRelationFilter
+  calendarNotifications?: Prisma.CalendarNotificationListRelationFilter
 }, "id" | "phone" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -373,6 +385,10 @@ export type UserCreateInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -403,6 +419,10 @@ export type UserUncheckedCreateInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUpdateInput = {
@@ -433,6 +453,10 @@ export type UserUpdateInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -463,6 +487,10 @@ export type UserUncheckedUpdateInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -813,6 +841,62 @@ export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
 }
 
+export type UserCreateNestedOneWithoutTeacherCalendarLabelsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarLabelsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarLabelsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTeacherCalendarLabelsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTeacherCalendarLabelsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarLabelsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarLabelsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTeacherCalendarLabelsInput
+  upsert?: Prisma.UserUpsertWithoutTeacherCalendarLabelsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTeacherCalendarLabelsInput, Prisma.UserUpdateWithoutTeacherCalendarLabelsInput>, Prisma.UserUncheckedUpdateWithoutTeacherCalendarLabelsInput>
+}
+
+export type UserCreateNestedOneWithoutTeacherCalendarEventsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarEventsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarEventsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTeacherCalendarEventsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTeacherCalendarEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarEventsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarEventsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTeacherCalendarEventsInput
+  upsert?: Prisma.UserUpsertWithoutTeacherCalendarEventsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTeacherCalendarEventsInput, Prisma.UserUpdateWithoutTeacherCalendarEventsInput>, Prisma.UserUncheckedUpdateWithoutTeacherCalendarEventsInput>
+}
+
+export type UserCreateNestedOneWithoutCalendarParticipationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCalendarParticipationsInput, Prisma.UserUncheckedCreateWithoutCalendarParticipationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCalendarParticipationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCalendarParticipationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCalendarParticipationsInput, Prisma.UserUncheckedCreateWithoutCalendarParticipationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCalendarParticipationsInput
+  upsert?: Prisma.UserUpsertWithoutCalendarParticipationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCalendarParticipationsInput, Prisma.UserUpdateWithoutCalendarParticipationsInput>, Prisma.UserUncheckedUpdateWithoutCalendarParticipationsInput>
+}
+
+export type UserCreateNestedOneWithoutCalendarNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCalendarNotificationsInput, Prisma.UserUncheckedCreateWithoutCalendarNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCalendarNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCalendarNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCalendarNotificationsInput, Prisma.UserUncheckedCreateWithoutCalendarNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCalendarNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutCalendarNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCalendarNotificationsInput, Prisma.UserUpdateWithoutCalendarNotificationsInput>, Prisma.UserUncheckedUpdateWithoutCalendarNotificationsInput>
+}
+
 export type UserCreateWithoutAuthAccountsInput = {
   id?: string
   fullName: string
@@ -840,6 +924,10 @@ export type UserCreateWithoutAuthAccountsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutAuthAccountsInput = {
@@ -869,6 +957,10 @@ export type UserUncheckedCreateWithoutAuthAccountsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutAuthAccountsInput = {
@@ -914,6 +1006,10 @@ export type UserUpdateWithoutAuthAccountsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuthAccountsInput = {
@@ -943,6 +1039,10 @@ export type UserUncheckedUpdateWithoutAuthAccountsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutCreatedClassesInput = {
@@ -972,6 +1072,10 @@ export type UserCreateWithoutCreatedClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutCreatedClassesInput = {
@@ -1001,6 +1105,10 @@ export type UserUncheckedCreateWithoutCreatedClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutCreatedClassesInput = {
@@ -1035,6 +1143,10 @@ export type UserCreateWithoutTeachingClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutTeachingClassesInput = {
@@ -1064,6 +1176,10 @@ export type UserUncheckedCreateWithoutTeachingClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutTeachingClassesInput = {
@@ -1109,6 +1225,10 @@ export type UserUpdateWithoutCreatedClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedClassesInput = {
@@ -1138,6 +1258,10 @@ export type UserUncheckedUpdateWithoutCreatedClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUpsertWithoutTeachingClassesInput = {
@@ -1178,6 +1302,10 @@ export type UserUpdateWithoutTeachingClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeachingClassesInput = {
@@ -1207,6 +1335,10 @@ export type UserUncheckedUpdateWithoutTeachingClassesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutEnrollmentsInput = {
@@ -1236,6 +1368,10 @@ export type UserCreateWithoutEnrollmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutEnrollmentsInput = {
@@ -1265,6 +1401,10 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutEnrollmentsInput = {
@@ -1310,6 +1450,10 @@ export type UserUpdateWithoutEnrollmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEnrollmentsInput = {
@@ -1339,6 +1483,10 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutCreatedSessionsInput = {
@@ -1368,6 +1516,10 @@ export type UserCreateWithoutCreatedSessionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutCreatedSessionsInput = {
@@ -1397,6 +1549,10 @@ export type UserUncheckedCreateWithoutCreatedSessionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutCreatedSessionsInput = {
@@ -1442,6 +1598,10 @@ export type UserUpdateWithoutCreatedSessionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedSessionsInput = {
@@ -1471,6 +1631,10 @@ export type UserUncheckedUpdateWithoutCreatedSessionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutAttendancesInput = {
@@ -1500,6 +1664,10 @@ export type UserCreateWithoutAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutAttendancesInput = {
@@ -1529,6 +1697,10 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutAttendancesInput = {
@@ -1563,6 +1735,10 @@ export type UserCreateWithoutMarkedAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
@@ -1592,6 +1768,10 @@ export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutMarkedAttendancesInput = {
@@ -1637,6 +1817,10 @@ export type UserUpdateWithoutAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendancesInput = {
@@ -1666,6 +1850,10 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUpsertWithoutMarkedAttendancesInput = {
@@ -1706,6 +1894,10 @@ export type UserUpdateWithoutMarkedAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
@@ -1735,6 +1927,10 @@ export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutAttendanceChangesInput = {
@@ -1764,6 +1960,10 @@ export type UserCreateWithoutAttendanceChangesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutAttendanceChangesInput = {
@@ -1793,6 +1993,10 @@ export type UserUncheckedCreateWithoutAttendanceChangesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutAttendanceChangesInput = {
@@ -1838,6 +2042,10 @@ export type UserUpdateWithoutAttendanceChangesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendanceChangesInput = {
@@ -1867,6 +2075,10 @@ export type UserUncheckedUpdateWithoutAttendanceChangesInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutRecordedTuitionPaymentsInput = {
@@ -1896,6 +2108,10 @@ export type UserCreateWithoutRecordedTuitionPaymentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutRecordedTuitionPaymentsInput = {
@@ -1925,6 +2141,10 @@ export type UserUncheckedCreateWithoutRecordedTuitionPaymentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutRecordedTuitionPaymentsInput = {
@@ -1959,6 +2179,10 @@ export type UserCreateWithoutVoidedTuitionPaymentsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutVoidedTuitionPaymentsInput = {
@@ -1988,6 +2212,10 @@ export type UserUncheckedCreateWithoutVoidedTuitionPaymentsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutVoidedTuitionPaymentsInput = {
@@ -2033,6 +2261,10 @@ export type UserUpdateWithoutRecordedTuitionPaymentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecordedTuitionPaymentsInput = {
@@ -2062,6 +2294,10 @@ export type UserUncheckedUpdateWithoutRecordedTuitionPaymentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUpsertWithoutVoidedTuitionPaymentsInput = {
@@ -2102,6 +2338,10 @@ export type UserUpdateWithoutVoidedTuitionPaymentsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVoidedTuitionPaymentsInput = {
@@ -2131,6 +2371,10 @@ export type UserUncheckedUpdateWithoutVoidedTuitionPaymentsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutCreatedAssignmentsInput = {
@@ -2160,6 +2404,10 @@ export type UserCreateWithoutCreatedAssignmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutCreatedAssignmentsInput = {
@@ -2189,6 +2437,10 @@ export type UserUncheckedCreateWithoutCreatedAssignmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutCreatedAssignmentsInput = {
@@ -2234,6 +2486,10 @@ export type UserUpdateWithoutCreatedAssignmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedAssignmentsInput = {
@@ -2263,6 +2519,10 @@ export type UserUncheckedUpdateWithoutCreatedAssignmentsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutSubmissionsInput = {
@@ -2292,6 +2552,10 @@ export type UserCreateWithoutSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionsInput = {
@@ -2321,6 +2585,10 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionsInput = {
@@ -2355,6 +2623,10 @@ export type UserCreateWithoutGradedSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutGradedSubmissionsInput = {
@@ -2384,6 +2656,10 @@ export type UserUncheckedCreateWithoutGradedSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutGradedSubmissionsInput = {
@@ -2429,6 +2705,10 @@ export type UserUpdateWithoutSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionsInput = {
@@ -2458,6 +2738,10 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUpsertWithoutGradedSubmissionsInput = {
@@ -2498,6 +2782,10 @@ export type UserUpdateWithoutGradedSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGradedSubmissionsInput = {
@@ -2527,6 +2815,10 @@ export type UserUncheckedUpdateWithoutGradedSubmissionsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutUploadedMaterialsInput = {
@@ -2556,6 +2848,10 @@ export type UserCreateWithoutUploadedMaterialsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutUploadedMaterialsInput = {
@@ -2585,6 +2881,10 @@ export type UserUncheckedCreateWithoutUploadedMaterialsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutUploadedMaterialsInput = {
@@ -2630,6 +2930,10 @@ export type UserUpdateWithoutUploadedMaterialsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedMaterialsInput = {
@@ -2659,6 +2963,10 @@ export type UserUncheckedUpdateWithoutUploadedMaterialsInput = {
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2688,6 +2996,10 @@ export type UserCreateWithoutNotificationsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2717,6 +3029,10 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2762,6 +3078,10 @@ export type UserUpdateWithoutNotificationsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2791,6 +3111,10 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -2820,6 +3144,10 @@ export type UserCreateWithoutRefreshTokensInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
   voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -2849,6 +3177,10 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -2894,6 +3226,10 @@ export type UserUpdateWithoutRefreshTokensInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
   voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -2923,6 +3259,602 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserCreateWithoutTeacherCalendarLabelsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+}
+
+export type UserUncheckedCreateWithoutTeacherCalendarLabelsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+}
+
+export type UserCreateOrConnectWithoutTeacherCalendarLabelsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarLabelsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarLabelsInput>
+}
+
+export type UserUpsertWithoutTeacherCalendarLabelsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTeacherCalendarLabelsInput, Prisma.UserUncheckedUpdateWithoutTeacherCalendarLabelsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarLabelsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarLabelsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTeacherCalendarLabelsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTeacherCalendarLabelsInput, Prisma.UserUncheckedUpdateWithoutTeacherCalendarLabelsInput>
+}
+
+export type UserUpdateWithoutTeacherCalendarLabelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTeacherCalendarLabelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserCreateWithoutTeacherCalendarEventsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+}
+
+export type UserUncheckedCreateWithoutTeacherCalendarEventsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+}
+
+export type UserCreateOrConnectWithoutTeacherCalendarEventsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarEventsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarEventsInput>
+}
+
+export type UserUpsertWithoutTeacherCalendarEventsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTeacherCalendarEventsInput, Prisma.UserUncheckedUpdateWithoutTeacherCalendarEventsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTeacherCalendarEventsInput, Prisma.UserUncheckedCreateWithoutTeacherCalendarEventsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTeacherCalendarEventsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTeacherCalendarEventsInput, Prisma.UserUncheckedUpdateWithoutTeacherCalendarEventsInput>
+}
+
+export type UserUpdateWithoutTeacherCalendarEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTeacherCalendarEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserCreateWithoutCalendarParticipationsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+}
+
+export type UserUncheckedCreateWithoutCalendarParticipationsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+}
+
+export type UserCreateOrConnectWithoutCalendarParticipationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCalendarParticipationsInput, Prisma.UserUncheckedCreateWithoutCalendarParticipationsInput>
+}
+
+export type UserUpsertWithoutCalendarParticipationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCalendarParticipationsInput, Prisma.UserUncheckedUpdateWithoutCalendarParticipationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCalendarParticipationsInput, Prisma.UserUncheckedCreateWithoutCalendarParticipationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCalendarParticipationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCalendarParticipationsInput, Prisma.UserUncheckedUpdateWithoutCalendarParticipationsInput>
+}
+
+export type UserUpdateWithoutCalendarParticipationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCalendarParticipationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserCreateWithoutCalendarNotificationsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+}
+
+export type UserUncheckedCreateWithoutCalendarNotificationsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+}
+
+export type UserCreateOrConnectWithoutCalendarNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCalendarNotificationsInput, Prisma.UserUncheckedCreateWithoutCalendarNotificationsInput>
+}
+
+export type UserUpsertWithoutCalendarNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCalendarNotificationsInput, Prisma.UserUncheckedUpdateWithoutCalendarNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCalendarNotificationsInput, Prisma.UserUncheckedCreateWithoutCalendarNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCalendarNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCalendarNotificationsInput, Prisma.UserUncheckedUpdateWithoutCalendarNotificationsInput>
+}
+
+export type UserUpdateWithoutCalendarNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCalendarNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 
@@ -2947,6 +3879,10 @@ export type UserCountOutputType = {
   voidedTuitionPayments: number
   notifications: number
   refreshTokens: number
+  teacherCalendarEvents: number
+  teacherCalendarLabels: number
+  calendarParticipations: number
+  calendarNotifications: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2966,6 +3902,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   voidedTuitionPayments?: boolean | UserCountOutputTypeCountVoidedTuitionPaymentsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
+  teacherCalendarEvents?: boolean | UserCountOutputTypeCountTeacherCalendarEventsArgs
+  teacherCalendarLabels?: boolean | UserCountOutputTypeCountTeacherCalendarLabelsArgs
+  calendarParticipations?: boolean | UserCountOutputTypeCountCalendarParticipationsArgs
+  calendarNotifications?: boolean | UserCountOutputTypeCountCalendarNotificationsArgs
 }
 
 /**
@@ -3090,6 +4030,34 @@ export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Ty
   where?: Prisma.RefreshTokenWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTeacherCalendarEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeacherCalendarEventWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTeacherCalendarLabelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeacherCalendarLabelWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCalendarParticipationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CalendarEventParticipantWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCalendarNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CalendarNotificationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3119,6 +4087,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   voidedTuitionPayments?: boolean | Prisma.User$voidedTuitionPaymentsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  teacherCalendarEvents?: boolean | Prisma.User$teacherCalendarEventsArgs<ExtArgs>
+  teacherCalendarLabels?: boolean | Prisma.User$teacherCalendarLabelsArgs<ExtArgs>
+  calendarParticipations?: boolean | Prisma.User$calendarParticipationsArgs<ExtArgs>
+  calendarNotifications?: boolean | Prisma.User$calendarNotificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3182,6 +4154,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   voidedTuitionPayments?: boolean | Prisma.User$voidedTuitionPaymentsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  teacherCalendarEvents?: boolean | Prisma.User$teacherCalendarEventsArgs<ExtArgs>
+  teacherCalendarLabels?: boolean | Prisma.User$teacherCalendarLabelsArgs<ExtArgs>
+  calendarParticipations?: boolean | Prisma.User$calendarParticipationsArgs<ExtArgs>
+  calendarNotifications?: boolean | Prisma.User$calendarNotificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3206,6 +4182,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     voidedTuitionPayments: Prisma.$TuitionPaymentPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+    teacherCalendarEvents: Prisma.$TeacherCalendarEventPayload<ExtArgs>[]
+    teacherCalendarLabels: Prisma.$TeacherCalendarLabelPayload<ExtArgs>[]
+    calendarParticipations: Prisma.$CalendarEventParticipantPayload<ExtArgs>[]
+    calendarNotifications: Prisma.$CalendarNotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3629,6 +4609,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   voidedTuitionPayments<T extends Prisma.User$voidedTuitionPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$voidedTuitionPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TuitionPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  teacherCalendarEvents<T extends Prisma.User$teacherCalendarEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teacherCalendarEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  teacherCalendarLabels<T extends Prisma.User$teacherCalendarLabelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teacherCalendarLabelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherCalendarLabelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  calendarParticipations<T extends Prisma.User$calendarParticipationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$calendarParticipationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CalendarEventParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  calendarNotifications<T extends Prisma.User$calendarNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$calendarNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CalendarNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4443,6 +5427,102 @@ export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
+}
+
+/**
+ * User.teacherCalendarEvents
+ */
+export type User$teacherCalendarEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeacherCalendarEvent
+   */
+  select?: Prisma.TeacherCalendarEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeacherCalendarEvent
+   */
+  omit?: Prisma.TeacherCalendarEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeacherCalendarEventInclude<ExtArgs> | null
+  where?: Prisma.TeacherCalendarEventWhereInput
+  orderBy?: Prisma.TeacherCalendarEventOrderByWithRelationInput | Prisma.TeacherCalendarEventOrderByWithRelationInput[]
+  cursor?: Prisma.TeacherCalendarEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeacherCalendarEventScalarFieldEnum | Prisma.TeacherCalendarEventScalarFieldEnum[]
+}
+
+/**
+ * User.teacherCalendarLabels
+ */
+export type User$teacherCalendarLabelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeacherCalendarLabel
+   */
+  select?: Prisma.TeacherCalendarLabelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeacherCalendarLabel
+   */
+  omit?: Prisma.TeacherCalendarLabelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeacherCalendarLabelInclude<ExtArgs> | null
+  where?: Prisma.TeacherCalendarLabelWhereInput
+  orderBy?: Prisma.TeacherCalendarLabelOrderByWithRelationInput | Prisma.TeacherCalendarLabelOrderByWithRelationInput[]
+  cursor?: Prisma.TeacherCalendarLabelWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeacherCalendarLabelScalarFieldEnum | Prisma.TeacherCalendarLabelScalarFieldEnum[]
+}
+
+/**
+ * User.calendarParticipations
+ */
+export type User$calendarParticipationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CalendarEventParticipant
+   */
+  select?: Prisma.CalendarEventParticipantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CalendarEventParticipant
+   */
+  omit?: Prisma.CalendarEventParticipantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CalendarEventParticipantInclude<ExtArgs> | null
+  where?: Prisma.CalendarEventParticipantWhereInput
+  orderBy?: Prisma.CalendarEventParticipantOrderByWithRelationInput | Prisma.CalendarEventParticipantOrderByWithRelationInput[]
+  cursor?: Prisma.CalendarEventParticipantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CalendarEventParticipantScalarFieldEnum | Prisma.CalendarEventParticipantScalarFieldEnum[]
+}
+
+/**
+ * User.calendarNotifications
+ */
+export type User$calendarNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CalendarNotification
+   */
+  select?: Prisma.CalendarNotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CalendarNotification
+   */
+  omit?: Prisma.CalendarNotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CalendarNotificationInclude<ExtArgs> | null
+  where?: Prisma.CalendarNotificationWhereInput
+  orderBy?: Prisma.CalendarNotificationOrderByWithRelationInput | Prisma.CalendarNotificationOrderByWithRelationInput[]
+  cursor?: Prisma.CalendarNotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CalendarNotificationScalarFieldEnum | Prisma.CalendarNotificationScalarFieldEnum[]
 }
 
 /**

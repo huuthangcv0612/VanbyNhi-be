@@ -26,7 +26,9 @@ export class JwtAuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException('Yêu cầu xác thực: Token không được cung cấp');
+      throw new UnauthorizedException(
+        'Yêu cầu xác thực: Token không được cung cấp',
+      );
     }
 
     const secret = this.configService.get<string>('JWT_ACCESS_SECRET');
@@ -49,7 +51,9 @@ export class JwtAuthGuard implements CanActivate {
       });
 
       if (!user || !user.isActive) {
-        throw new UnauthorizedException('Tài khoản không tồn tại hoặc đã bị vô hiệu hóa');
+        throw new UnauthorizedException(
+          'Tài khoản không tồn tại hoặc đã bị vô hiệu hóa',
+        );
       }
 
       // Cập nhật lại role mới nhất nếu có thay đổi từ DB

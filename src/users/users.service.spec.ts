@@ -171,7 +171,9 @@ describe('UsersService', () => {
         usersService.updateStatus('admin-target', 'admin-caller', {
           isActive: false,
         }),
-      ).rejects.toThrow('Không thể vô hiệu hóa quản trị viên (ADMIN) cuối cùng');
+      ).rejects.toThrow(
+        'Không thể vô hiệu hóa quản trị viên (ADMIN) cuối cùng',
+      );
     });
   });
 

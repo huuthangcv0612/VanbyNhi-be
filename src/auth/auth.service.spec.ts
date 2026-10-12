@@ -37,14 +37,19 @@ describe('AuthService', () => {
 
     configServiceMock = {
       get: vi.fn((key: string) => {
-        if (key === 'JWT_ACCESS_SECRET') return 'super-secret-key-at-least-32-chars';
+        if (key === 'JWT_ACCESS_SECRET')
+          return 'super-secret-key-at-least-32-chars';
         if (key === 'JWT_ACCESS_EXPIRES_IN') return '15m';
         if (key === 'JWT_REFRESH_EXPIRES_DAYS') return '7';
         return null;
       }),
     };
 
-    authService = new AuthService(prismaMock, jwtServiceMock, configServiceMock);
+    authService = new AuthService(
+      prismaMock,
+      jwtServiceMock,
+      configServiceMock,
+    );
   });
 
   describe('Đăng nhập (Login)', () => {
@@ -194,7 +199,9 @@ describe('AuthService', () => {
           identifier: 'test@example.com',
           password: plainPassword,
         }),
-      ).rejects.toThrow('Lỗi cấu hình hệ thống: Không thể xử lý yêu cầu xác thực');
+      ).rejects.toThrow(
+        'Lỗi cấu hình hệ thống: Không thể xử lý yêu cầu xác thực',
+      );
     });
   });
 

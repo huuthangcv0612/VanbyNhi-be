@@ -27,7 +27,11 @@ export class SessionsService {
   /**
    * ADMIN tạo buổi học mới cho một lớp học
    */
-  async create(classId: string, adminId: string, createDto: CreateClassSessionDto) {
+  async create(
+    classId: string,
+    adminId: string,
+    createDto: CreateClassSessionDto,
+  ) {
     const classEntity = await this.prisma.class.findUnique({
       where: { id: classId },
       include: { teacher: true },
@@ -60,10 +64,7 @@ export class SessionsService {
         class: {
           teacherId: classEntity.teacherId,
         },
-        AND: [
-          { startTime: { lt: endTime } },
-          { endTime: { gt: startTime } },
-        ],
+        AND: [{ startTime: { lt: endTime } }, { endTime: { gt: startTime } }],
       },
       include: {
         class: { select: { name: true } },
@@ -263,8 +264,12 @@ export class SessionsService {
       throw new NotFoundException(`Không tìm thấy buổi học với ID ${id}`);
     }
 
-    const startTime = updateDto.startTime ? new Date(updateDto.startTime) : session.startTime;
-    const endTime = updateDto.endTime ? new Date(updateDto.endTime) : session.endTime;
+    const startTime = updateDto.startTime
+      ? new Date(updateDto.startTime)
+      : session.startTime;
+    const endTime = updateDto.endTime
+      ? new Date(updateDto.endTime)
+      : session.endTime;
 
     if (endTime <= startTime) {
       throw new BadRequestException(
@@ -281,10 +286,7 @@ export class SessionsService {
           class: {
             teacherId: session.class.teacherId,
           },
-          AND: [
-            { startTime: { lt: endTime } },
-            { endTime: { gt: startTime } },
-          ],
+          AND: [{ startTime: { lt: endTime } }, { endTime: { gt: startTime } }],
         },
         include: {
           class: { select: { name: true } },
@@ -300,7 +302,8 @@ export class SessionsService {
 
     const data: any = {};
     if (updateDto.title !== undefined) data.title = updateDto.title;
-    if (updateDto.description !== undefined) data.description = updateDto.description;
+    if (updateDto.description !== undefined)
+      data.description = updateDto.description;
     if (updateDto.startTime !== undefined) data.startTime = startTime;
     if (updateDto.endTime !== undefined) data.endTime = endTime;
     if (updateDto.meetUrl !== undefined) data.meetUrl = updateDto.meetUrl;
@@ -321,8 +324,11 @@ export class SessionsService {
 
     // Nếu có sự thay đổi về thời gian (lịch học), thông báo cho học sinh trong lớp
     const isScheduleChanged =
-      (updateDto.startTime && new Date(updateDto.startTime).getTime() !== session.startTime.getTime()) ||
-      (updateDto.endTime && new Date(updateDto.endTime).getTime() !== session.endTime.getTime());
+      (updateDto.startTime &&
+        new Date(updateDto.startTime).getTime() !==
+          session.startTime.getTime()) ||
+      (updateDto.endTime &&
+        new Date(updateDto.endTime).getTime() !== session.endTime.getTime());
 
     if (isScheduleChanged) {
       try {
@@ -388,7 +394,9 @@ export class SessionsService {
     });
 
     if (!session) {
-      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+      throw new NotFoundException(
+        `Không tìm thấy buổi học với ID ${sessionId}`,
+      );
     }
 
     const lessonRecord = await this.prisma.lessonRecord.findUnique({
@@ -413,7 +421,9 @@ export class SessionsService {
     });
 
     if (!session) {
-      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+      throw new NotFoundException(
+        `Không tìm thấy buổi học với ID ${sessionId}`,
+      );
     }
 
     const lessonRecord = await this.prisma.lessonRecord.upsert({

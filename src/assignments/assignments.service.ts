@@ -37,11 +37,15 @@ export class AssignmentsService {
     });
 
     if (!classEntity) {
-      throw new NotFoundException(`Không tìm thấy lớp học với ID ${dto.classId}`);
+      throw new NotFoundException(
+        `Không tìm thấy lớp học với ID ${dto.classId}`,
+      );
     }
 
     if (classEntity.status !== ClassStatus.ACTIVE) {
-      throw new BadRequestException('Chỉ có thể tạo bài tập cho lớp học đang hoạt động (ACTIVE)');
+      throw new BadRequestException(
+        'Chỉ có thể tạo bài tập cho lớp học đang hoạt động (ACTIVE)',
+      );
     }
 
     if (dto.sessionId) {
@@ -49,7 +53,9 @@ export class AssignmentsService {
         where: { id: dto.sessionId },
       });
       if (!session || session.classId !== dto.classId) {
-        throw new BadRequestException('Buổi học chỉ định không tồn tại hoặc không thuộc lớp này');
+        throw new BadRequestException(
+          'Buổi học chỉ định không tồn tại hoặc không thuộc lớp này',
+        );
       }
     }
 
@@ -93,7 +99,10 @@ export class AssignmentsService {
   /**
    * Lấy danh sách bài tập (ADMIN xem tất cả, STUDENT chỉ xem bài thuộc lớp mình đang theo học)
    */
-  async findAll(user: { id: string; role: UserRole }, query: QueryAssignmentsDto) {
+  async findAll(
+    user: { id: string; role: UserRole },
+    query: QueryAssignmentsDto,
+  ) {
     const page = Math.max(1, query.page ?? 1);
     const limit = Math.min(100, Math.max(1, query.limit ?? 10));
     const skip = (page - 1) * limit;
@@ -181,7 +190,9 @@ export class AssignmentsService {
       });
 
       if (!isEnrolled) {
-        throw new ForbiddenException('Bạn không có quyền truy cập bài tập của lớp này');
+        throw new ForbiddenException(
+          'Bạn không có quyền truy cập bài tập của lớp này',
+        );
       }
     }
 
@@ -205,7 +216,9 @@ export class AssignmentsService {
         where: { id: dto.sessionId },
       });
       if (!session || session.classId !== assignment.classId) {
-        throw new BadRequestException('Buổi học chỉ định không tồn tại hoặc không thuộc lớp này');
+        throw new BadRequestException(
+          'Buổi học chỉ định không tồn tại hoặc không thuộc lớp này',
+        );
       }
     }
 
@@ -246,7 +259,9 @@ export class AssignmentsService {
     });
 
     if (!assignment) {
-      throw new NotFoundException(`Không tìm thấy bài tập với ID ${assignmentId}`);
+      throw new NotFoundException(
+        `Không tìm thấy bài tập với ID ${assignmentId}`,
+      );
     }
 
     // 2. Kiểm tra quyền của học sinh trong lớp (phải có enrollment ACTIVE)
@@ -275,7 +290,9 @@ export class AssignmentsService {
     const hasUrl = dto.externalUrl && dto.externalUrl.trim().length > 0;
 
     if (!hasContent && !hasFiles && !hasUrl) {
-      throw new BadRequestException('Bài nộp phải có ít nhất nội dung văn bản, tệp đính kèm hoặc đường dẫn URL');
+      throw new BadRequestException(
+        'Bài nộp phải có ít nhất nội dung văn bản, tệp đính kèm hoặc đường dẫn URL',
+      );
     }
 
     // 4. Thực hiện tạo submission trong Transaction an toàn với attemptNumber tự tăng
@@ -314,7 +331,10 @@ export class AssignmentsService {
           submission,
         };
       } catch (error: any) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === 'P2002'
+        ) {
           throw new ConflictException(
             'Đang có một lượt nộp bài khác được ghi nhận cùng thời điểm, vui lòng thử lại',
           );
@@ -336,7 +356,9 @@ export class AssignmentsService {
     });
 
     if (!assignment) {
-      throw new NotFoundException(`Không tìm thấy bài tập với ID ${assignmentId}`);
+      throw new NotFoundException(
+        `Không tìm thấy bài tập với ID ${assignmentId}`,
+      );
     }
 
     const where: any = { assignmentId };
@@ -351,32 +373,38 @@ export class AssignmentsService {
         student: { select: { id: true, fullName: true, phone: true } },
         gradedBy: { select: { id: true, fullName: true } },
       },
-      orderBy: [
-        { studentId: 'asc' },
-        { attemptNumber: 'desc' },
-      ],
+      orderBy: [{ studentId: 'asc' }, { attemptNumber: 'desc' }],
     });
   }
 
   /**
    * Xem chi tiết một bài nộp (ADMIN xem tất cả, STUDENT chỉ xem bài của chính mình)
    */
-  async getSubmission(submissionId: string, user: { id: string; role: UserRole }) {
+  async getSubmission(
+    submissionId: string,
+    user: { id: string; role: UserRole },
+  ) {
     const submission = await this.prisma.assignmentSubmission.findUnique({
       where: { id: submissionId },
       include: {
-        assignment: { select: { id: true, title: true, dueDate: true, classId: true } },
+        assignment: {
+          select: { id: true, title: true, dueDate: true, classId: true },
+        },
         student: { select: { id: true, fullName: true, phone: true } },
         gradedBy: { select: { id: true, fullName: true } },
       },
     });
 
     if (!submission) {
-      throw new NotFoundException(`Không tìm thấy bài nộp với ID ${submissionId}`);
+      throw new NotFoundException(
+        `Không tìm thấy bài nộp với ID ${submissionId}`,
+      );
     }
 
     if (user.role === UserRole.STUDENT && submission.studentId !== user.id) {
-      throw new ForbiddenException('Bạn không có quyền xem bài nộp của học sinh khác');
+      throw new ForbiddenException(
+        'Bạn không có quyền xem bài nộp của học sinh khác',
+      );
     }
 
     return submission;
@@ -395,12 +423,16 @@ export class AssignmentsService {
     });
 
     if (!submission) {
-      throw new NotFoundException(`Không tìm thấy bài nộp với ID ${submissionId}`);
+      throw new NotFoundException(
+        `Không tìm thấy bài nộp với ID ${submissionId}`,
+      );
     }
 
     const scoreDecimal = new Prisma.Decimal(dto.score);
     if (scoreDecimal.lt(0) || scoreDecimal.gt(10)) {
-      throw new BadRequestException('Điểm số phải nằm trong khoảng từ 0.00 đến 10.00');
+      throw new BadRequestException(
+        'Điểm số phải nằm trong khoảng từ 0.00 đến 10.00',
+      );
     }
 
     const updated = await this.prisma.assignmentSubmission.update({

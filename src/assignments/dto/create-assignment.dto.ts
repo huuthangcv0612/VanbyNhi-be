@@ -27,7 +27,10 @@ export class CreateAssignmentDto {
 
   @IsOptional()
   @IsArray({ message: 'fileUrls phải là mảng chuỗi URL' })
-  @IsUrl({ require_protocol: true }, { each: true, message: 'URL tệp đính kèm không hợp lệ' })
+  @IsUrl(
+    { require_protocol: true },
+    { each: true, message: 'URL tệp đính kèm không hợp lệ' },
+  )
   fileUrls?: string[];
 
   @IsOptional()

@@ -92,3 +92,23 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type RefreshToken = Prisma.RefreshTokenModel
+/**
+ * Model TeacherCalendarLabel
+ * 
+ */
+export type TeacherCalendarLabel = Prisma.TeacherCalendarLabelModel
+/**
+ * Model TeacherCalendarEvent
+ * 
+ */
+export type TeacherCalendarEvent = Prisma.TeacherCalendarEventModel
+/**
+ * Model CalendarEventParticipant
+ * 
+ */
+export type CalendarEventParticipant = Prisma.CalendarEventParticipantModel
+/**
+ * Model CalendarNotification
+ * 
+ */
+export type CalendarNotification = Prisma.CalendarNotificationModel

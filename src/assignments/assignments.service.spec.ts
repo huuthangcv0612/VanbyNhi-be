@@ -99,9 +99,9 @@ describe('AssignmentsService', () => {
     it('ném NotFoundException nếu lớp không tồn tại', async () => {
       prismaMock.class.findUnique.mockResolvedValue(null);
 
-      await expect(assignmentsService.create('admin1', baseDto)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        assignmentsService.create('admin1', baseDto),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('ném BadRequestException nếu lớp không ở trạng thái ACTIVE', async () => {
@@ -110,17 +110,15 @@ describe('AssignmentsService', () => {
         status: ClassStatus.COMPLETED,
       });
 
-      await expect(assignmentsService.create('admin1', baseDto)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        assignmentsService.create('admin1', baseDto),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
   describe('findAll & findOne permissions', () => {
     it('STUDENT chỉ được xem bài tập của lớp mình tham gia', async () => {
-      prismaMock.enrollment.findMany.mockResolvedValue([
-        { classId: 'c1' },
-      ]);
+      prismaMock.enrollment.findMany.mockResolvedValue([{ classId: 'c1' }]);
       prismaMock.assignment.findMany.mockResolvedValue([]);
       prismaMock.assignment.count.mockResolvedValue(0);
 
@@ -139,9 +137,7 @@ describe('AssignmentsService', () => {
     });
 
     it('STUDENT bị chặn khi cố xem bài tập của lớp không tham gia', async () => {
-      prismaMock.enrollment.findMany.mockResolvedValue([
-        { classId: 'c1' },
-      ]);
+      prismaMock.enrollment.findMany.mockResolvedValue([{ classId: 'c1' }]);
 
       await expect(
         assignmentsService.findAll(
@@ -179,9 +175,15 @@ describe('AssignmentsService', () => {
         attemptNumber: 1,
         ...submitDto,
       };
-      prismaMock.assignmentSubmission.create.mockResolvedValue(createdSubmission);
+      prismaMock.assignmentSubmission.create.mockResolvedValue(
+        createdSubmission,
+      );
 
-      const result = await assignmentsService.submitAssignment('a1', 's1', submitDto);
+      const result = await assignmentsService.submitAssignment(
+        'a1',
+        's1',
+        submitDto,
+      );
 
       expect(result.submission.attemptNumber).toBe(1);
       expect(prismaMock.assignmentSubmission.create).toHaveBeenCalledWith(
@@ -216,9 +218,15 @@ describe('AssignmentsService', () => {
         attemptNumber: 2,
         ...submitDto,
       };
-      prismaMock.assignmentSubmission.create.mockResolvedValue(createdSubmission);
+      prismaMock.assignmentSubmission.create.mockResolvedValue(
+        createdSubmission,
+      );
 
-      const result = await assignmentsService.submitAssignment('a1', 's1', submitDto);
+      const result = await assignmentsService.submitAssignment(
+        'a1',
+        's1',
+        submitDto,
+      );
 
       expect(result.submission.attemptNumber).toBe(2);
       expect(prismaMock.assignmentSubmission.create).toHaveBeenCalledWith(
@@ -309,10 +317,14 @@ describe('AssignmentsService', () => {
       };
       prismaMock.assignmentSubmission.update.mockResolvedValue(updated);
 
-      const result = await assignmentsService.gradeSubmission('sub1', 'admin1', {
-        score: 8.5,
-        feedback: 'Bài làm phân tích sâu sắc',
-      });
+      const result = await assignmentsService.gradeSubmission(
+        'sub1',
+        'admin1',
+        {
+          score: 8.5,
+          feedback: 'Bài làm phân tích sâu sắc',
+        },
+      );
 
       expect(result.submission.score).toEqual(new Prisma.Decimal(8.5));
       expect(notificationsMock.createNotification).toHaveBeenCalledWith(

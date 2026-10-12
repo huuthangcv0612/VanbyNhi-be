@@ -65,7 +65,11 @@ export const ModelName = {
   AssignmentSubmission: 'AssignmentSubmission',
   ClassMaterial: 'ClassMaterial',
   Notification: 'Notification',
-  RefreshToken: 'RefreshToken'
+  RefreshToken: 'RefreshToken',
+  TeacherCalendarLabel: 'TeacherCalendarLabel',
+  TeacherCalendarEvent: 'TeacherCalendarEvent',
+  CalendarEventParticipant: 'CalendarEventParticipant',
+  CalendarNotification: 'CalendarNotification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -321,6 +325,63 @@ export const RefreshTokenScalarFieldEnum = {
 } as const
 
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
+
+export const TeacherCalendarLabelScalarFieldEnum = {
+  id: 'id',
+  teacherId: 'teacherId',
+  name: 'name',
+  color: 'color',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeacherCalendarLabelScalarFieldEnum = (typeof TeacherCalendarLabelScalarFieldEnum)[keyof typeof TeacherCalendarLabelScalarFieldEnum]
+
+
+export const TeacherCalendarEventScalarFieldEnum = {
+  id: 'id',
+  teacherId: 'teacherId',
+  title: 'title',
+  address: 'address',
+  meetUrl: 'meetUrl',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  labelId: 'labelId',
+  reminderMinutes: 'reminderMinutes',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeacherCalendarEventScalarFieldEnum = (typeof TeacherCalendarEventScalarFieldEnum)[keyof typeof TeacherCalendarEventScalarFieldEnum]
+
+
+export const CalendarEventParticipantScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  studentId: 'studentId',
+  createdAt: 'createdAt'
+} as const
+
+export type CalendarEventParticipantScalarFieldEnum = (typeof CalendarEventParticipantScalarFieldEnum)[keyof typeof CalendarEventParticipantScalarFieldEnum]
+
+
+export const CalendarNotificationScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  recipientId: 'recipientId',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  sentAt: 'sentAt',
+  error: 'error',
+  retryCount: 'retryCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CalendarNotificationScalarFieldEnum = (typeof CalendarNotificationScalarFieldEnum)[keyof typeof CalendarNotificationScalarFieldEnum]
 
 
 export const SortOrder = {

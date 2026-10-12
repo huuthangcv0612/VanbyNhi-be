@@ -1,11 +1,4 @@
-import {
-  IsEnum,
-  IsInt,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 import { UserRole } from '../../../generated/prisma/client.js';
 

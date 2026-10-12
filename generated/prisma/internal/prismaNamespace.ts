@@ -411,7 +411,11 @@ export const ModelName = {
   AssignmentSubmission: 'AssignmentSubmission',
   ClassMaterial: 'ClassMaterial',
   Notification: 'Notification',
-  RefreshToken: 'RefreshToken'
+  RefreshToken: 'RefreshToken',
+  TeacherCalendarLabel: 'TeacherCalendarLabel',
+  TeacherCalendarEvent: 'TeacherCalendarEvent',
+  CalendarEventParticipant: 'CalendarEventParticipant',
+  CalendarNotification: 'CalendarNotification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -427,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "classMaterial" | "notification" | "refreshToken"
+    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "classMaterial" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1541,6 +1545,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TeacherCalendarLabel: {
+      payload: Prisma.$TeacherCalendarLabelPayload<ExtArgs>
+      fields: Prisma.TeacherCalendarLabelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TeacherCalendarLabelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TeacherCalendarLabelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>
+        }
+        findFirst: {
+          args: Prisma.TeacherCalendarLabelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TeacherCalendarLabelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>
+        }
+        findMany: {
+          args: Prisma.TeacherCalendarLabelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>[]
+        }
+        create: {
+          args: Prisma.TeacherCalendarLabelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>
+        }
+        createMany: {
+          args: Prisma.TeacherCalendarLabelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TeacherCalendarLabelCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>[]
+        }
+        delete: {
+          args: Prisma.TeacherCalendarLabelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>
+        }
+        update: {
+          args: Prisma.TeacherCalendarLabelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>
+        }
+        deleteMany: {
+          args: Prisma.TeacherCalendarLabelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TeacherCalendarLabelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TeacherCalendarLabelUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>[]
+        }
+        upsert: {
+          args: Prisma.TeacherCalendarLabelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarLabelPayload>
+        }
+        aggregate: {
+          args: Prisma.TeacherCalendarLabelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTeacherCalendarLabel>
+        }
+        groupBy: {
+          args: Prisma.TeacherCalendarLabelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeacherCalendarLabelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TeacherCalendarLabelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeacherCalendarLabelCountAggregateOutputType> | number
+        }
+      }
+    }
+    TeacherCalendarEvent: {
+      payload: Prisma.$TeacherCalendarEventPayload<ExtArgs>
+      fields: Prisma.TeacherCalendarEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TeacherCalendarEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TeacherCalendarEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>
+        }
+        findFirst: {
+          args: Prisma.TeacherCalendarEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TeacherCalendarEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>
+        }
+        findMany: {
+          args: Prisma.TeacherCalendarEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>[]
+        }
+        create: {
+          args: Prisma.TeacherCalendarEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>
+        }
+        createMany: {
+          args: Prisma.TeacherCalendarEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TeacherCalendarEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>[]
+        }
+        delete: {
+          args: Prisma.TeacherCalendarEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>
+        }
+        update: {
+          args: Prisma.TeacherCalendarEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.TeacherCalendarEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TeacherCalendarEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TeacherCalendarEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.TeacherCalendarEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherCalendarEventPayload>
+        }
+        aggregate: {
+          args: Prisma.TeacherCalendarEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTeacherCalendarEvent>
+        }
+        groupBy: {
+          args: Prisma.TeacherCalendarEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeacherCalendarEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TeacherCalendarEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeacherCalendarEventCountAggregateOutputType> | number
+        }
+      }
+    }
+    CalendarEventParticipant: {
+      payload: Prisma.$CalendarEventParticipantPayload<ExtArgs>
+      fields: Prisma.CalendarEventParticipantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CalendarEventParticipantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CalendarEventParticipantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>
+        }
+        findFirst: {
+          args: Prisma.CalendarEventParticipantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CalendarEventParticipantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>
+        }
+        findMany: {
+          args: Prisma.CalendarEventParticipantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>[]
+        }
+        create: {
+          args: Prisma.CalendarEventParticipantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>
+        }
+        createMany: {
+          args: Prisma.CalendarEventParticipantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CalendarEventParticipantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>[]
+        }
+        delete: {
+          args: Prisma.CalendarEventParticipantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>
+        }
+        update: {
+          args: Prisma.CalendarEventParticipantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>
+        }
+        deleteMany: {
+          args: Prisma.CalendarEventParticipantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CalendarEventParticipantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CalendarEventParticipantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>[]
+        }
+        upsert: {
+          args: Prisma.CalendarEventParticipantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarEventParticipantPayload>
+        }
+        aggregate: {
+          args: Prisma.CalendarEventParticipantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCalendarEventParticipant>
+        }
+        groupBy: {
+          args: Prisma.CalendarEventParticipantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CalendarEventParticipantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CalendarEventParticipantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CalendarEventParticipantCountAggregateOutputType> | number
+        }
+      }
+    }
+    CalendarNotification: {
+      payload: Prisma.$CalendarNotificationPayload<ExtArgs>
+      fields: Prisma.CalendarNotificationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CalendarNotificationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CalendarNotificationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>
+        }
+        findFirst: {
+          args: Prisma.CalendarNotificationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CalendarNotificationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>
+        }
+        findMany: {
+          args: Prisma.CalendarNotificationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>[]
+        }
+        create: {
+          args: Prisma.CalendarNotificationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>
+        }
+        createMany: {
+          args: Prisma.CalendarNotificationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CalendarNotificationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>[]
+        }
+        delete: {
+          args: Prisma.CalendarNotificationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>
+        }
+        update: {
+          args: Prisma.CalendarNotificationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>
+        }
+        deleteMany: {
+          args: Prisma.CalendarNotificationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CalendarNotificationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CalendarNotificationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>[]
+        }
+        upsert: {
+          args: Prisma.CalendarNotificationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarNotificationPayload>
+        }
+        aggregate: {
+          args: Prisma.CalendarNotificationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCalendarNotification>
+        }
+        groupBy: {
+          args: Prisma.CalendarNotificationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CalendarNotificationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CalendarNotificationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CalendarNotificationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1819,6 +2119,63 @@ export const RefreshTokenScalarFieldEnum = {
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
+export const TeacherCalendarLabelScalarFieldEnum = {
+  id: 'id',
+  teacherId: 'teacherId',
+  name: 'name',
+  color: 'color',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeacherCalendarLabelScalarFieldEnum = (typeof TeacherCalendarLabelScalarFieldEnum)[keyof typeof TeacherCalendarLabelScalarFieldEnum]
+
+
+export const TeacherCalendarEventScalarFieldEnum = {
+  id: 'id',
+  teacherId: 'teacherId',
+  title: 'title',
+  address: 'address',
+  meetUrl: 'meetUrl',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  labelId: 'labelId',
+  reminderMinutes: 'reminderMinutes',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeacherCalendarEventScalarFieldEnum = (typeof TeacherCalendarEventScalarFieldEnum)[keyof typeof TeacherCalendarEventScalarFieldEnum]
+
+
+export const CalendarEventParticipantScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  studentId: 'studentId',
+  createdAt: 'createdAt'
+} as const
+
+export type CalendarEventParticipantScalarFieldEnum = (typeof CalendarEventParticipantScalarFieldEnum)[keyof typeof CalendarEventParticipantScalarFieldEnum]
+
+
+export const CalendarNotificationScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  recipientId: 'recipientId',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  sentAt: 'sentAt',
+  error: 'error',
+  retryCount: 'retryCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CalendarNotificationScalarFieldEnum = (typeof CalendarNotificationScalarFieldEnum)[keyof typeof CalendarNotificationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2053,6 +2410,20 @@ export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'CalendarNotificationStatus'
+ */
+export type EnumCalendarNotificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CalendarNotificationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CalendarNotificationStatus[]'
+ */
+export type ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CalendarNotificationStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2231,6 +2602,10 @@ export type GlobalOmitConfig = {
   classMaterial?: Prisma.ClassMaterialOmit
   notification?: Prisma.NotificationOmit
   refreshToken?: Prisma.RefreshTokenOmit
+  teacherCalendarLabel?: Prisma.TeacherCalendarLabelOmit
+  teacherCalendarEvent?: Prisma.TeacherCalendarEventOmit
+  calendarEventParticipant?: Prisma.CalendarEventParticipantOmit
+  calendarNotification?: Prisma.CalendarNotificationOmit
 }
 
 /* Types for Logging */

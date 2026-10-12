@@ -56,10 +56,15 @@ describe('EnrollmentsService', () => {
       prismaMock.enrollment.findMany.mockResolvedValue(mockEnrollments);
       prismaMock.enrollment.count.mockResolvedValue(1);
 
-      const result = await enrollmentsService.findByClass('c1', { page: 1, limit: 10 });
+      const result = await enrollmentsService.findByClass('c1', {
+        page: 1,
+        limit: 10,
+      });
 
       expect(result.items).toHaveLength(1);
-      expect(result.items[0].effectiveTuition).toEqual(new Prisma.Decimal(500000));
+      expect(result.items[0].effectiveTuition).toEqual(
+        new Prisma.Decimal(500000),
+      );
       expect(result.pagination.total).toBe(1);
     });
 
@@ -89,7 +94,9 @@ describe('EnrollmentsService', () => {
     it('ném NotFoundException khi không tìm thấy enrollment', async () => {
       prismaMock.enrollment.findUnique.mockResolvedValue(null);
 
-      await expect(enrollmentsService.findOne('e999')).rejects.toThrow(NotFoundException);
+      await expect(enrollmentsService.findOne('e999')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -122,7 +129,9 @@ describe('EnrollmentsService', () => {
       const result = await enrollmentsService.create('c1', { studentId: 's1' });
 
       expect(result.enrollment.id).toBe('e1');
-      expect(result.enrollment.effectiveTuition).toEqual(new Prisma.Decimal(500000));
+      expect(result.enrollment.effectiveTuition).toEqual(
+        new Prisma.Decimal(500000),
+      );
     });
 
     it('báo BadRequestException nếu lớp không ở trạng thái ACTIVE', async () => {
@@ -253,7 +262,9 @@ describe('EnrollmentsService', () => {
         tuitionOverride: 450000,
       });
 
-      expect(result.enrollment.tuitionOverride).toEqual(new Prisma.Decimal(450000));
+      expect(result.enrollment.tuitionOverride).toEqual(
+        new Prisma.Decimal(450000),
+      );
     });
   });
 });

@@ -84,7 +84,9 @@ export class NotificationsService {
     });
 
     if (!notification) {
-      throw new NotFoundException(`Không tìm thấy thông báo với ID ${notificationId}`);
+      throw new NotFoundException(
+        `Không tìm thấy thông báo với ID ${notificationId}`,
+      );
     }
 
     if (notification.recipientId !== userId) {

@@ -104,7 +104,9 @@ export class UsersService {
    */
   async create(createUserDto: CreateUserDto) {
     const phone = createUserDto.phone.trim();
-    const email = createUserDto.email ? createUserDto.email.trim().toLowerCase() : null;
+    const email = createUserDto.email
+      ? createUserDto.email.trim().toLowerCase()
+      : null;
 
     // Kiểm tra trùng lặp phone
     const existingPhone = await this.prisma.user.findUnique({
@@ -125,7 +127,8 @@ export class UsersService {
     }
 
     // Mật khẩu khởi tạo: nếu admin không truyền thì tạo ngẫu nhiên 8 ký tự an toàn
-    const rawPassword = createUserDto.initialPassword ?? crypto.randomBytes(4).toString('hex');
+    const rawPassword =
+      createUserDto.initialPassword ?? crypto.randomBytes(4).toString('hex');
     const passwordHash = await bcrypt.hash(rawPassword, 10);
 
     try {
@@ -168,17 +171,23 @@ export class UsersService {
       data.avatarUrl = updateUserDto.avatarUrl;
     }
     if (updateUserDto.dateOfBirth !== undefined) {
-      data.dateOfBirth = updateUserDto.dateOfBirth ? new Date(updateUserDto.dateOfBirth) : null;
+      data.dateOfBirth = updateUserDto.dateOfBirth
+        ? new Date(updateUserDto.dateOfBirth)
+        : null;
     }
 
     if (updateUserDto.email !== undefined) {
-      const email = updateUserDto.email ? updateUserDto.email.trim().toLowerCase() : null;
+      const email = updateUserDto.email
+        ? updateUserDto.email.trim().toLowerCase()
+        : null;
       if (email) {
         const existingEmail = await this.prisma.user.findFirst({
           where: { email, NOT: { id } },
         });
         if (existingEmail) {
-          throw new ConflictException('Email này đã được người dùng khác sử dụng');
+          throw new ConflictException(
+            'Email này đã được người dùng khác sử dụng',
+          );
         }
       }
       data.email = email;
@@ -206,12 +215,18 @@ export class UsersService {
   /**
    * ADMIN bật/tắt trạng thái hoạt động (isActive)
    */
-  async updateStatus(targetUserId: string, currentAdminId: string, statusDto: UpdateUserStatusDto) {
+  async updateStatus(
+    targetUserId: string,
+    currentAdminId: string,
+    statusDto: UpdateUserStatusDto,
+  ) {
     const targetUser = await this.findOne(targetUserId);
 
     // Không cho phép ADMIN tự vô hiệu hóa tài khoản của chính mình
     if (targetUserId === currentAdminId && statusDto.isActive === false) {
-      throw new BadRequestException('Không thể tự vô hiệu hóa tài khoản của chính mình');
+      throw new BadRequestException(
+        'Không thể tự vô hiệu hóa tài khoản của chính mình',
+      );
     }
 
     // Nếu vô hiệu hóa một ADMIN, kiểm tra xem có phải là ADMIN duy nhất còn hoạt động không
@@ -220,7 +235,9 @@ export class UsersService {
         where: { role: UserRole.ADMIN, isActive: true },
       });
       if (activeAdminCount <= 1) {
-        throw new BadRequestException('Không thể vô hiệu hóa quản trị viên (ADMIN) cuối cùng của hệ thống');
+        throw new BadRequestException(
+          'Không thể vô hiệu hóa quản trị viên (ADMIN) cuối cùng của hệ thống',
+        );
       }
     }
 
@@ -263,16 +280,24 @@ export class UsersService {
       throw new NotFoundException('Không tìm thấy tài khoản người dùng');
     }
 
-    const isMatch = await bcrypt.compare(changePasswordDto.currentPassword, user.passwordHash);
+    const isMatch = await bcrypt.compare(
+      changePasswordDto.currentPassword,
+      user.passwordHash,
+    );
     if (!isMatch) {
       throw new UnauthorizedException('Mật khẩu hiện tại không chính xác');
     }
 
     if (changePasswordDto.currentPassword === changePasswordDto.newPassword) {
-      throw new BadRequestException('Mật khẩu mới không được trùng với mật khẩu hiện tại');
+      throw new BadRequestException(
+        'Mật khẩu mới không được trùng với mật khẩu hiện tại',
+      );
     }
 
-    const newPasswordHash = await bcrypt.hash(changePasswordDto.newPassword, 10);
+    const newPasswordHash = await bcrypt.hash(
+      changePasswordDto.newPassword,
+      10,
+    );
 
     // Đổi mật khẩu và thu hồi toàn bộ refresh token cũ để buộc các phiên khác đăng nhập lại
     await this.prisma.$transaction([
@@ -287,7 +312,8 @@ export class UsersService {
     ]);
 
     return {
-      message: 'Đổi mật khẩu thành công. Các phiên đăng nhập khác đã được thu hồi.',
+      message:
+        'Đổi mật khẩu thành công. Các phiên đăng nhập khác đã được thu hồi.',
     };
   }
 }

@@ -25,6 +25,9 @@ export class UpdateUserDto {
   avatarUrl?: string;
 
   @IsOptional()
-  @IsDateString({}, { message: 'Ngày sinh không đúng định dạng ISO (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'Ngày sinh không đúng định dạng ISO (YYYY-MM-DD)' },
+  )
   dateOfBirth?: string;
 }

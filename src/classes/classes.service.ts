@@ -134,11 +134,15 @@ export class ClassesService {
     }
 
     if (teacher.role !== UserRole.TEACHER) {
-      throw new BadRequestException('Người dùng được chỉ định không có vai trò TEACHER');
+      throw new BadRequestException(
+        'Người dùng được chỉ định không có vai trò TEACHER',
+      );
     }
 
     if (!teacher.isActive) {
-      throw new BadRequestException('Tài khoản giáo viên này đã bị vô hiệu hóa');
+      throw new BadRequestException(
+        'Tài khoản giáo viên này đã bị vô hiệu hóa',
+      );
     }
 
     const monthlyTuition =
@@ -205,10 +209,14 @@ export class ClassesService {
         throw new BadRequestException('Giáo viên được chỉ định không tồn tại');
       }
       if (teacher.role !== UserRole.TEACHER) {
-        throw new BadRequestException('Người dùng được chỉ định không có vai trò TEACHER');
+        throw new BadRequestException(
+          'Người dùng được chỉ định không có vai trò TEACHER',
+        );
       }
       if (!teacher.isActive) {
-        throw new BadRequestException('Tài khoản giáo viên này đã bị vô hiệu hóa');
+        throw new BadRequestException(
+          'Tài khoản giáo viên này đã bị vô hiệu hóa',
+        );
       }
 
       data.teacherId = updateClassDto.teacherId;

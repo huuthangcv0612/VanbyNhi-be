@@ -5,10 +5,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { SessionsService } from './sessions.service.js';
-import {
-  SessionStatus,
-  ClassStatus,
-} from '../../generated/prisma/client.js';
+import { SessionStatus, ClassStatus } from '../../generated/prisma/client.js';
 
 describe('SessionsService', () => {
   let sessionsService: SessionsService;
@@ -74,7 +71,9 @@ describe('SessionsService', () => {
       const result = await sessionsService.create('c1', 'admin1', baseDto);
 
       expect(result.session.id).toBe('s1');
-      expect(result.session.effectiveMeetUrl).toBe('https://meet.google.com/session-url');
+      expect(result.session.effectiveMeetUrl).toBe(
+        'https://meet.google.com/session-url',
+      );
     });
 
     it('ném NotFoundException nếu lớp không tồn tại', async () => {
@@ -148,9 +147,14 @@ describe('SessionsService', () => {
       ]);
       prismaMock.classSession.count.mockResolvedValue(1);
 
-      const result = await sessionsService.findByClass('c1', { page: 1, limit: 10 });
+      const result = await sessionsService.findByClass('c1', {
+        page: 1,
+        limit: 10,
+      });
 
-      expect(result.items[0].effectiveMeetUrl).toBe('https://meet.google.com/class-default');
+      expect(result.items[0].effectiveMeetUrl).toBe(
+        'https://meet.google.com/class-default',
+      );
     });
   });
 
@@ -165,13 +169,17 @@ describe('SessionsService', () => {
       });
 
       const result = await sessionsService.findOne('s1');
-      expect(result.effectiveMeetUrl).toBe('https://meet.google.com/session-specific');
+      expect(result.effectiveMeetUrl).toBe(
+        'https://meet.google.com/session-specific',
+      );
     });
 
     it('ném NotFoundException nếu buổi học không tồn tại', async () => {
       prismaMock.classSession.findUnique.mockResolvedValue(null);
 
-      await expect(sessionsService.findOne('s999')).rejects.toThrow(NotFoundException);
+      await expect(sessionsService.findOne('s999')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -202,7 +210,9 @@ describe('SessionsService', () => {
       });
 
       expect(result.session.title).toBe('Tiêu đề cập nhật');
-      expect(result.session.effectiveMeetUrl).toBe('https://meet.google.com/new-session-url');
+      expect(result.session.effectiveMeetUrl).toBe(
+        'https://meet.google.com/new-session-url',
+      );
       expect(prismaMock.classSession.update).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
@@ -296,8 +306,13 @@ describe('SessionsService', () => {
       expect(prismaMock.lessonRecord.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { sessionId: 's1' },
-          create: expect.objectContaining({ sessionId: 's1', content: 'Bài giảng Chiếc thuyền ngoài xa' }),
-          update: expect.objectContaining({ content: 'Bài giảng Chiếc thuyền ngoài xa' }),
+          create: expect.objectContaining({
+            sessionId: 's1',
+            content: 'Bài giảng Chiếc thuyền ngoài xa',
+          }),
+          update: expect.objectContaining({
+            content: 'Bài giảng Chiếc thuyền ngoài xa',
+          }),
         }),
       );
     });

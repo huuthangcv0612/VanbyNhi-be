@@ -1,10 +1,4 @@
-import {
-  IsOptional,
-  IsInt,
-  Min,
-  IsBoolean,
-  IsEnum,
-} from 'class-validator';
+import { IsOptional, IsInt, Min, IsBoolean, IsEnum } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 import { NotificationType } from '../../../generated/prisma/client.js';
 

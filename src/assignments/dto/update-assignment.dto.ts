@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsOptional,
-  IsArray,
-  IsUrl,
-  IsDate,
-} from 'class-validator';
+import { IsString, IsOptional, IsArray, IsUrl, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class UpdateAssignmentDto {
@@ -22,7 +16,10 @@ export class UpdateAssignmentDto {
 
   @IsOptional()
   @IsArray({ message: 'fileUrls phải là mảng chuỗi URL' })
-  @IsUrl({ require_protocol: true }, { each: true, message: 'URL tệp đính kèm không hợp lệ' })
+  @IsUrl(
+    { require_protocol: true },
+    { each: true, message: 'URL tệp đính kèm không hợp lệ' },
+  )
   fileUrls?: string[];
 
   @IsOptional()

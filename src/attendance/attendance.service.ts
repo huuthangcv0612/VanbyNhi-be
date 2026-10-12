@@ -31,7 +31,9 @@ export class AttendanceService {
     });
 
     if (!session) {
-      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+      throw new NotFoundException(
+        `Không tìm thấy buổi học với ID ${sessionId}`,
+      );
     }
 
     // Lấy danh sách học sinh có enrollment trong lớp (ưu tiên ACTIVE, hoặc tham gia trước buổi học)
@@ -107,7 +109,9 @@ export class AttendanceService {
     });
 
     if (!session) {
-      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+      throw new NotFoundException(
+        `Không tìm thấy buổi học với ID ${sessionId}`,
+      );
     }
 
     const [totalActiveStudents, counts] = await Promise.all([
@@ -158,11 +162,15 @@ export class AttendanceService {
     });
 
     if (!session) {
-      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+      throw new NotFoundException(
+        `Không tìm thấy buổi học với ID ${sessionId}`,
+      );
     }
 
     if (session.status === SessionStatus.CANCELLED) {
-      throw new BadRequestException('Không thể điểm danh cho buổi học đã bị hủy (CANCELLED)');
+      throw new BadRequestException(
+        'Không thể điểm danh cho buổi học đã bị hủy (CANCELLED)',
+      );
     }
 
     // 1. Kiểm tra tính hợp lệ của tất cả học sinh trong danh sách: phải thuộc lớp của session
@@ -176,7 +184,9 @@ export class AttendanceService {
       select: { studentId: true, status: true },
     });
 
-    const enrolledStudentIds = new Set(validEnrollments.map((e) => e.studentId));
+    const enrolledStudentIds = new Set(
+      validEnrollments.map((e) => e.studentId),
+    );
 
     for (const sid of studentIds) {
       if (!enrolledStudentIds.has(sid)) {
@@ -215,7 +225,9 @@ export class AttendanceService {
               status: record.status,
               checkedInAt:
                 record.checkedInAt ??
-                (record.status === AttendanceStatus.PRESENT ? new Date() : null),
+                (record.status === AttendanceStatus.PRESENT
+                  ? new Date()
+                  : null),
               markedById: markerId,
               note: record.note,
             },
@@ -230,7 +242,8 @@ export class AttendanceService {
               checkedInAt:
                 record.checkedInAt !== undefined
                   ? record.checkedInAt
-                  : record.status === AttendanceStatus.PRESENT && !existing.checkedInAt
+                  : record.status === AttendanceStatus.PRESENT &&
+                      !existing.checkedInAt
                     ? new Date()
                     : existing.checkedInAt,
               markedById: markerId,
@@ -303,7 +316,10 @@ export class AttendanceService {
 
       if (dto.checkedInAt !== undefined) {
         updateData.checkedInAt = dto.checkedInAt;
-      } else if (newStatus === AttendanceStatus.PRESENT && !attendance.checkedInAt) {
+      } else if (
+        newStatus === AttendanceStatus.PRESENT &&
+        !attendance.checkedInAt
+      ) {
         updateData.checkedInAt = new Date();
       }
 

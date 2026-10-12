@@ -74,15 +74,17 @@ describe('AttendanceService', () => {
 
       expect(result.session.id).toBe('s1');
       expect(result.students).toHaveLength(1);
-      expect(result.students[0].attendance?.status).toBe(AttendanceStatus.PRESENT);
+      expect(result.students[0].attendance?.status).toBe(
+        AttendanceStatus.PRESENT,
+      );
     });
 
     it('ném NotFoundException nếu session không tồn tại', async () => {
       prismaMock.classSession.findUnique.mockResolvedValue(null);
 
-      await expect(attendanceService.getSessionAttendance('s999')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        attendanceService.getSessionAttendance('s999'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -136,7 +138,9 @@ describe('AttendanceService', () => {
 
       await expect(
         attendanceService.batchSaveAttendance('s1', 'admin1', {
-          records: [{ studentId: 'stu_unknown', status: AttendanceStatus.PRESENT }],
+          records: [
+            { studentId: 'stu_unknown', status: AttendanceStatus.PRESENT },
+          ],
         }),
       ).rejects.toThrow(BadRequestException);
     });
@@ -159,9 +163,13 @@ describe('AttendanceService', () => {
       };
       prismaMock.attendance.create.mockResolvedValue(createdRecord);
 
-      const result = await attendanceService.batchSaveAttendance('s1', 'admin1', {
-        records: [{ studentId: 'stu1', status: AttendanceStatus.PRESENT }],
-      });
+      const result = await attendanceService.batchSaveAttendance(
+        's1',
+        'admin1',
+        {
+          records: [{ studentId: 'stu1', status: AttendanceStatus.PRESENT }],
+        },
+      );
 
       expect(result.count).toBe(1);
       expect(prismaMock.attendance.create).toHaveBeenCalled();
@@ -190,9 +198,13 @@ describe('AttendanceService', () => {
         status: AttendanceStatus.PRESENT,
       });
 
-      const result = await attendanceService.batchSaveAttendance('s1', 'admin1', {
-        records: [{ studentId: 'stu1', status: AttendanceStatus.PRESENT }],
-      });
+      const result = await attendanceService.batchSaveAttendance(
+        's1',
+        'admin1',
+        {
+          records: [{ studentId: 'stu1', status: AttendanceStatus.PRESENT }],
+        },
+      );
 
       expect(result.count).toBe(1);
       expect(prismaMock.attendance.update).toHaveBeenCalled();
@@ -223,10 +235,14 @@ describe('AttendanceService', () => {
         status: AttendanceStatus.PRESENT,
       });
 
-      const result = await attendanceService.updateAttendance('att1', 'admin1', {
-        status: AttendanceStatus.PRESENT,
-        reason: 'Học sinh vào muộn có phép',
-      });
+      const result = await attendanceService.updateAttendance(
+        'att1',
+        'admin1',
+        {
+          status: AttendanceStatus.PRESENT,
+          reason: 'Học sinh vào muộn có phép',
+        },
+      );
 
       expect(result.statusChanged).toBe(true);
       expect(prismaMock.$transaction).toHaveBeenCalled();

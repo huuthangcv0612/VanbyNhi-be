@@ -19,7 +19,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Số điện thoại không được để trống' })
   @IsString({ message: 'Số điện thoại phải là chuỗi ký tự' })
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
-  @Matches(/^[0-9+]{9,15}$/, { message: 'Số điện thoại không đúng định dạng hợp lệ' })
+  @Matches(/^[0-9+]{9,15}$/, {
+    message: 'Số điện thoại không đúng định dạng hợp lệ',
+  })
   phone: string;
 
   @IsOptional()

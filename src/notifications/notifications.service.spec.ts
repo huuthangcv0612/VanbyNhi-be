@@ -30,12 +30,20 @@ describe('NotificationsService', () => {
     it('lấy danh sách thông báo của user với phân trang', async () => {
       const mockNotifications = [
         { id: 'n1', recipientId: 'u1', title: 'Bài tập mới', isRead: false },
-        { id: 'n2', recipientId: 'u1', title: 'Học phí tháng 10', isRead: true },
+        {
+          id: 'n2',
+          recipientId: 'u1',
+          title: 'Học phí tháng 10',
+          isRead: true,
+        },
       ];
       prismaMock.notification.findMany.mockResolvedValue(mockNotifications);
       prismaMock.notification.count.mockResolvedValue(2);
 
-      const result = await notificationsService.findAll('u1', { page: 1, limit: 10 });
+      const result = await notificationsService.findAll('u1', {
+        page: 1,
+        limit: 10,
+      });
 
       expect(result.items).toHaveLength(2);
       expect(result.pagination.total).toBe(2);
@@ -127,9 +135,9 @@ describe('NotificationsService', () => {
     it('ném NotFoundException nếu thông báo không tồn tại', async () => {
       prismaMock.notification.findUnique.mockResolvedValue(null);
 
-      await expect(notificationsService.markAsRead('n999', 'u1')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        notificationsService.markAsRead('n999', 'u1'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 

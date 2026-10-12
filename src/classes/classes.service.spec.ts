@@ -1,7 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ClassesService } from './classes.service.js';
-import { UserRole, ClassStatus, Prisma } from '../../generated/prisma/client.js';
+import {
+  UserRole,
+  ClassStatus,
+  Prisma,
+} from '../../generated/prisma/client.js';
 
 describe('ClassesService', () => {
   let classesService: ClassesService;
@@ -44,7 +48,10 @@ describe('ClassesService', () => {
       prismaMock.class.findMany.mockResolvedValue([]);
       prismaMock.class.count.mockResolvedValue(0);
 
-      await classesService.findAll({ search: 'Văn 10', status: ClassStatus.ACTIVE });
+      await classesService.findAll({
+        search: 'Văn 10',
+        status: ClassStatus.ACTIVE,
+      });
 
       expect(prismaMock.class.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -71,7 +78,9 @@ describe('ClassesService', () => {
     it('ném NotFoundException khi lớp học không tồn tại', async () => {
       prismaMock.class.findUnique.mockResolvedValue(null);
 
-      await expect(classesService.findOne('c999')).rejects.toThrow(NotFoundException);
+      await expect(classesService.findOne('c999')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

@@ -83,10 +83,13 @@ describe('AuthController', () => {
         password: 'password123',
       };
 
-      const transformed: RegisterDto = await validationPipe.transform(rawPayload, {
-        type: 'body',
-        metatype: RegisterDto,
-      });
+      const transformed: RegisterDto = await validationPipe.transform(
+        rawPayload,
+        {
+          type: 'body',
+          metatype: RegisterDto,
+        },
+      );
 
       expect(transformed.fullName).toBe('Nguyễn Văn A');
       expect(transformed.email).toBe('nguyenvana@example.com');

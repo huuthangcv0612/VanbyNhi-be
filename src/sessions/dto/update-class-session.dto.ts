@@ -1,9 +1,4 @@
-import {
-  IsString,
-  IsOptional,
-  IsUrl,
-  IsDate,
-} from 'class-validator';
+import { IsString, IsOptional, IsUrl, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class UpdateClassSessionDto {

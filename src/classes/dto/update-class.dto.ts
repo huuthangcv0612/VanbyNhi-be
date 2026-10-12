@@ -1,10 +1,4 @@
-import {
-  IsOptional,
-  IsString,
-  IsUrl,
-  IsNumber,
-  Min,
-} from 'class-validator';
+import { IsOptional, IsString, IsUrl, IsNumber, Min } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
 export class UpdateClassDto {
@@ -27,7 +21,10 @@ export class UpdateClassDto {
 
   @IsOptional()
   @Type(() => Number)
-  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Học phí hàng tháng phải là số hợp lệ' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Học phí hàng tháng phải là số hợp lệ' },
+  )
   @Min(0, { message: 'Học phí hàng tháng không được âm' })
   monthlyTuition?: number;
 }

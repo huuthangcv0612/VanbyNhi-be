@@ -18,7 +18,9 @@ export class CreateClassDto {
   @IsString({ message: 'Mô tả lớp học phải là chuỗi ký tự' })
   description?: string;
 
-  @IsNotEmpty({ message: 'Giáo viên phụ trách (teacherId) không được để trống' })
+  @IsNotEmpty({
+    message: 'Giáo viên phụ trách (teacherId) không được để trống',
+  })
   @IsString({ message: 'teacherId phải là chuỗi ký tự' })
   teacherId: string;
 
@@ -28,7 +30,10 @@ export class CreateClassDto {
 
   @IsOptional()
   @Type(() => Number)
-  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Học phí hàng tháng phải là số hợp lệ' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Học phí hàng tháng phải là số hợp lệ' },
+  )
   @Min(0, { message: 'Học phí hàng tháng không được âm' })
   monthlyTuition?: number = 0;
 }
