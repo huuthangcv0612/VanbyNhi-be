@@ -110,3 +110,21 @@ export const CalendarNotificationStatus = {
 } as const
 
 export type CalendarNotificationStatus = (typeof CalendarNotificationStatus)[keyof typeof CalendarNotificationStatus]
+
+
+export const MeetingType = {
+  ONLINE_MEET: 'ONLINE_MEET',
+  ONLINE_WEB: 'ONLINE_WEB',
+  IN_PERSON: 'IN_PERSON'
+} as const
+
+export type MeetingType = (typeof MeetingType)[keyof typeof MeetingType]
+
+
+export const ScheduleStatus = {
+  SCHEDULED: 'SCHEDULED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ScheduleStatus = (typeof ScheduleStatus)[keyof typeof ScheduleStatus]

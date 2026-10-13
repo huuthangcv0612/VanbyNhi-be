@@ -436,6 +436,40 @@ export type EnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
 }
 
+export type EnumMeetingTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingType | Prisma.EnumMeetingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingTypeFilter<$PrismaModel> | $Enums.MeetingType
+}
+
+export type EnumScheduleStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduleStatus | Prisma.EnumScheduleStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduleStatusFilter<$PrismaModel> | $Enums.ScheduleStatus
+}
+
+export type EnumMeetingTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingType | Prisma.EnumMeetingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingTypeWithAggregatesFilter<$PrismaModel> | $Enums.MeetingType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeetingTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeetingTypeFilter<$PrismaModel>
+}
+
+export type EnumScheduleStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduleStatus | Prisma.EnumScheduleStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduleStatusWithAggregatesFilter<$PrismaModel> | $Enums.ScheduleStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumScheduleStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumScheduleStatusFilter<$PrismaModel>
+}
+
 export type EnumCalendarNotificationStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.CalendarNotificationStatus | Prisma.EnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
   in?: $Enums.CalendarNotificationStatus[] | Prisma.ListEnumCalendarNotificationStatusFieldRefInput<$PrismaModel>
@@ -886,6 +920,40 @@ export type NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumMeetingTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingType | Prisma.EnumMeetingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingTypeFilter<$PrismaModel> | $Enums.MeetingType
+}
+
+export type NestedEnumScheduleStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduleStatus | Prisma.EnumScheduleStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduleStatusFilter<$PrismaModel> | $Enums.ScheduleStatus
+}
+
+export type NestedEnumMeetingTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingType | Prisma.EnumMeetingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingType[] | Prisma.ListEnumMeetingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingTypeWithAggregatesFilter<$PrismaModel> | $Enums.MeetingType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeetingTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeetingTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumScheduleStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduleStatus | Prisma.EnumScheduleStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduleStatus[] | Prisma.ListEnumScheduleStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduleStatusWithAggregatesFilter<$PrismaModel> | $Enums.ScheduleStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumScheduleStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumScheduleStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumCalendarNotificationStatusFilter<$PrismaModel = never> = {

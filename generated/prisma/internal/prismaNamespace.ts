@@ -2142,10 +2142,16 @@ export const TeacherCalendarEventScalarFieldEnum = {
   teacherId: 'teacherId',
   classId: 'classId',
   title: 'title',
+  description: 'description',
   address: 'address',
+  location: 'location',
   meetUrl: 'meetUrl',
+  meetingUrl: 'meetingUrl',
   startAt: 'startAt',
   endAt: 'endAt',
+  timezone: 'timezone',
+  meetingType: 'meetingType',
+  status: 'status',
   labelId: 'labelId',
   reminderMinutes: 'reminderMinutes',
   note: 'note',
@@ -2412,6 +2418,34 @@ export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'NotificationType[]'
  */
 export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetingType'
+ */
+export type EnumMeetingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingType'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetingType[]'
+ */
+export type ListEnumMeetingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ScheduleStatus'
+ */
+export type EnumScheduleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScheduleStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ScheduleStatus[]'
+ */
+export type ListEnumScheduleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScheduleStatus[]'>
     
 
 

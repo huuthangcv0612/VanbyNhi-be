@@ -82,6 +82,18 @@ enum CalendarNotificationStatus {
   FAILED
 }
 
+enum MeetingType {
+  ONLINE_MEET
+  ONLINE_WEB
+  IN_PERSON
+}
+
+enum ScheduleStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
 // ==================== MODELS ====================
 
 model User {
@@ -430,19 +442,25 @@ model TeacherCalendarLabel {
 }
 
 model TeacherCalendarEvent {
-  id              String   @id @default(cuid())
+  id              String         @id @default(cuid())
   teacherId       String
   classId         String?
   title           String
+  description     String?        @db.Text
   address         String?
+  location        String?
   meetUrl         String?
+  meetingUrl      String?
   startAt         DateTime
   endAt           DateTime
+  timezone        String         @default("Asia/Ho_Chi_Minh")
+  meetingType     MeetingType    @default(ONLINE_MEET)
+  status          ScheduleStatus @default(SCHEDULED)
   labelId         String?
   reminderMinutes Int?
-  note            String?  @db.Text
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  note            String?        @db.Text
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   teacher       User                       @relation("TeacherCalendarEvents", fields: [teacherId], references: [id], onDelete: Restrict)
   class         Class?                     @relation(fields: [classId], references: [id], onDelete: SetNull)
@@ -454,6 +472,7 @@ model TeacherCalendarEvent {
   @@index([teacherId, endAt])
   @@index([labelId])
   @@index([classId])
+  @@index([status])
 }
 
 model CalendarEventParticipant {

@@ -39,10 +39,16 @@ export type TeacherCalendarEventMinAggregateOutputType = {
   teacherId: string | null
   classId: string | null
   title: string | null
+  description: string | null
   address: string | null
+  location: string | null
   meetUrl: string | null
+  meetingUrl: string | null
   startAt: Date | null
   endAt: Date | null
+  timezone: string | null
+  meetingType: $Enums.MeetingType | null
+  status: $Enums.ScheduleStatus | null
   labelId: string | null
   reminderMinutes: number | null
   note: string | null
@@ -55,10 +61,16 @@ export type TeacherCalendarEventMaxAggregateOutputType = {
   teacherId: string | null
   classId: string | null
   title: string | null
+  description: string | null
   address: string | null
+  location: string | null
   meetUrl: string | null
+  meetingUrl: string | null
   startAt: Date | null
   endAt: Date | null
+  timezone: string | null
+  meetingType: $Enums.MeetingType | null
+  status: $Enums.ScheduleStatus | null
   labelId: string | null
   reminderMinutes: number | null
   note: string | null
@@ -71,10 +83,16 @@ export type TeacherCalendarEventCountAggregateOutputType = {
   teacherId: number
   classId: number
   title: number
+  description: number
   address: number
+  location: number
   meetUrl: number
+  meetingUrl: number
   startAt: number
   endAt: number
+  timezone: number
+  meetingType: number
+  status: number
   labelId: number
   reminderMinutes: number
   note: number
@@ -97,10 +115,16 @@ export type TeacherCalendarEventMinAggregateInputType = {
   teacherId?: true
   classId?: true
   title?: true
+  description?: true
   address?: true
+  location?: true
   meetUrl?: true
+  meetingUrl?: true
   startAt?: true
   endAt?: true
+  timezone?: true
+  meetingType?: true
+  status?: true
   labelId?: true
   reminderMinutes?: true
   note?: true
@@ -113,10 +137,16 @@ export type TeacherCalendarEventMaxAggregateInputType = {
   teacherId?: true
   classId?: true
   title?: true
+  description?: true
   address?: true
+  location?: true
   meetUrl?: true
+  meetingUrl?: true
   startAt?: true
   endAt?: true
+  timezone?: true
+  meetingType?: true
+  status?: true
   labelId?: true
   reminderMinutes?: true
   note?: true
@@ -129,10 +159,16 @@ export type TeacherCalendarEventCountAggregateInputType = {
   teacherId?: true
   classId?: true
   title?: true
+  description?: true
   address?: true
+  location?: true
   meetUrl?: true
+  meetingUrl?: true
   startAt?: true
   endAt?: true
+  timezone?: true
+  meetingType?: true
+  status?: true
   labelId?: true
   reminderMinutes?: true
   note?: true
@@ -232,10 +268,16 @@ export type TeacherCalendarEventGroupByOutputType = {
   teacherId: string
   classId: string | null
   title: string
+  description: string | null
   address: string | null
+  location: string | null
   meetUrl: string | null
+  meetingUrl: string | null
   startAt: Date
   endAt: Date
+  timezone: string
+  meetingType: $Enums.MeetingType
+  status: $Enums.ScheduleStatus
   labelId: string | null
   reminderMinutes: number | null
   note: string | null
@@ -271,10 +313,16 @@ export type TeacherCalendarEventWhereInput = {
   teacherId?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   classId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  description?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   address?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
+  location?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
+  meetingUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   startAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   endAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
+  timezone?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  meetingType?: Prisma.EnumMeetingTypeFilter<"TeacherCalendarEvent"> | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFilter<"TeacherCalendarEvent"> | $Enums.ScheduleStatus
   labelId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   reminderMinutes?: Prisma.IntNullableFilter<"TeacherCalendarEvent"> | number | null
   note?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
@@ -292,10 +340,16 @@ export type TeacherCalendarEventOrderByWithRelationInput = {
   teacherId?: Prisma.SortOrder
   classId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   meetUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  meetingType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   labelId?: Prisma.SortOrderInput | Prisma.SortOrder
   reminderMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -316,10 +370,16 @@ export type TeacherCalendarEventWhereUniqueInput = Prisma.AtLeast<{
   teacherId?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   classId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  description?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   address?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
+  location?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
+  meetingUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   startAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   endAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
+  timezone?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  meetingType?: Prisma.EnumMeetingTypeFilter<"TeacherCalendarEvent"> | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFilter<"TeacherCalendarEvent"> | $Enums.ScheduleStatus
   labelId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   reminderMinutes?: Prisma.IntNullableFilter<"TeacherCalendarEvent"> | number | null
   note?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
@@ -337,10 +397,16 @@ export type TeacherCalendarEventOrderByWithAggregationInput = {
   teacherId?: Prisma.SortOrder
   classId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   meetUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  meetingType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   labelId?: Prisma.SortOrderInput | Prisma.SortOrder
   reminderMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -361,10 +427,16 @@ export type TeacherCalendarEventScalarWhereWithAggregatesInput = {
   teacherId?: Prisma.StringWithAggregatesFilter<"TeacherCalendarEvent"> | string
   classId?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringWithAggregatesFilter<"TeacherCalendarEvent"> | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
+  meetingUrl?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
   startAt?: Prisma.DateTimeWithAggregatesFilter<"TeacherCalendarEvent"> | Date | string
   endAt?: Prisma.DateTimeWithAggregatesFilter<"TeacherCalendarEvent"> | Date | string
+  timezone?: Prisma.StringWithAggregatesFilter<"TeacherCalendarEvent"> | string
+  meetingType?: Prisma.EnumMeetingTypeWithAggregatesFilter<"TeacherCalendarEvent"> | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusWithAggregatesFilter<"TeacherCalendarEvent"> | $Enums.ScheduleStatus
   labelId?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
   reminderMinutes?: Prisma.IntNullableWithAggregatesFilter<"TeacherCalendarEvent"> | number | null
   note?: Prisma.StringNullableWithAggregatesFilter<"TeacherCalendarEvent"> | string | null
@@ -375,10 +447,16 @@ export type TeacherCalendarEventScalarWhereWithAggregatesInput = {
 export type TeacherCalendarEventCreateInput = {
   id?: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -395,10 +473,16 @@ export type TeacherCalendarEventUncheckedCreateInput = {
   teacherId: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -411,10 +495,16 @@ export type TeacherCalendarEventUncheckedCreateInput = {
 export type TeacherCalendarEventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -431,10 +521,16 @@ export type TeacherCalendarEventUncheckedUpdateInput = {
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -449,10 +545,16 @@ export type TeacherCalendarEventCreateManyInput = {
   teacherId: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -463,10 +565,16 @@ export type TeacherCalendarEventCreateManyInput = {
 export type TeacherCalendarEventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -478,10 +586,16 @@ export type TeacherCalendarEventUncheckedUpdateManyInput = {
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -504,10 +618,16 @@ export type TeacherCalendarEventCountOrderByAggregateInput = {
   teacherId?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   meetUrl?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  meetingType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   labelId?: Prisma.SortOrder
   reminderMinutes?: Prisma.SortOrder
   note?: Prisma.SortOrder
@@ -524,10 +644,16 @@ export type TeacherCalendarEventMaxOrderByAggregateInput = {
   teacherId?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   meetUrl?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  meetingType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   labelId?: Prisma.SortOrder
   reminderMinutes?: Prisma.SortOrder
   note?: Prisma.SortOrder
@@ -540,10 +666,16 @@ export type TeacherCalendarEventMinOrderByAggregateInput = {
   teacherId?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   meetUrl?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  meetingType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   labelId?: Prisma.SortOrder
   reminderMinutes?: Prisma.SortOrder
   note?: Prisma.SortOrder
@@ -686,6 +818,14 @@ export type TeacherCalendarEventUncheckedUpdateManyWithoutLabelNestedInput = {
   deleteMany?: Prisma.TeacherCalendarEventScalarWhereInput | Prisma.TeacherCalendarEventScalarWhereInput[]
 }
 
+export type EnumMeetingTypeFieldUpdateOperationsInput = {
+  set?: $Enums.MeetingType
+}
+
+export type EnumScheduleStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ScheduleStatus
+}
+
 export type TeacherCalendarEventCreateNestedOneWithoutParticipantsInput = {
   create?: Prisma.XOR<Prisma.TeacherCalendarEventCreateWithoutParticipantsInput, Prisma.TeacherCalendarEventUncheckedCreateWithoutParticipantsInput>
   connectOrCreate?: Prisma.TeacherCalendarEventCreateOrConnectWithoutParticipantsInput
@@ -717,10 +857,16 @@ export type TeacherCalendarEventUpdateOneRequiredWithoutNotificationsNestedInput
 export type TeacherCalendarEventCreateWithoutTeacherInput = {
   id?: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -735,10 +881,16 @@ export type TeacherCalendarEventUncheckedCreateWithoutTeacherInput = {
   id?: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -782,10 +934,16 @@ export type TeacherCalendarEventScalarWhereInput = {
   teacherId?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
   classId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   title?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  description?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   address?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
+  location?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   meetUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
+  meetingUrl?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   startAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
   endAt?: Prisma.DateTimeFilter<"TeacherCalendarEvent"> | Date | string
+  timezone?: Prisma.StringFilter<"TeacherCalendarEvent"> | string
+  meetingType?: Prisma.EnumMeetingTypeFilter<"TeacherCalendarEvent"> | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFilter<"TeacherCalendarEvent"> | $Enums.ScheduleStatus
   labelId?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
   reminderMinutes?: Prisma.IntNullableFilter<"TeacherCalendarEvent"> | number | null
   note?: Prisma.StringNullableFilter<"TeacherCalendarEvent"> | string | null
@@ -796,10 +954,16 @@ export type TeacherCalendarEventScalarWhereInput = {
 export type TeacherCalendarEventCreateWithoutClassInput = {
   id?: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -814,10 +978,16 @@ export type TeacherCalendarEventUncheckedCreateWithoutClassInput = {
   id?: string
   teacherId: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -856,10 +1026,16 @@ export type TeacherCalendarEventUpdateManyWithWhereWithoutClassInput = {
 export type TeacherCalendarEventCreateWithoutLabelInput = {
   id?: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -875,10 +1051,16 @@ export type TeacherCalendarEventUncheckedCreateWithoutLabelInput = {
   teacherId: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -916,10 +1098,16 @@ export type TeacherCalendarEventUpdateManyWithWhereWithoutLabelInput = {
 export type TeacherCalendarEventCreateWithoutParticipantsInput = {
   id?: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -935,10 +1123,16 @@ export type TeacherCalendarEventUncheckedCreateWithoutParticipantsInput = {
   teacherId: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -966,10 +1160,16 @@ export type TeacherCalendarEventUpdateToOneWithWhereWithoutParticipantsInput = {
 export type TeacherCalendarEventUpdateWithoutParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -985,10 +1185,16 @@ export type TeacherCalendarEventUncheckedUpdateWithoutParticipantsInput = {
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1000,10 +1206,16 @@ export type TeacherCalendarEventUncheckedUpdateWithoutParticipantsInput = {
 export type TeacherCalendarEventCreateWithoutNotificationsInput = {
   id?: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -1019,10 +1231,16 @@ export type TeacherCalendarEventUncheckedCreateWithoutNotificationsInput = {
   teacherId: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -1050,10 +1268,16 @@ export type TeacherCalendarEventUpdateToOneWithWhereWithoutNotificationsInput = 
 export type TeacherCalendarEventUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1069,10 +1293,16 @@ export type TeacherCalendarEventUncheckedUpdateWithoutNotificationsInput = {
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1085,10 +1315,16 @@ export type TeacherCalendarEventCreateManyTeacherInput = {
   id?: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -1099,10 +1335,16 @@ export type TeacherCalendarEventCreateManyTeacherInput = {
 export type TeacherCalendarEventUpdateWithoutTeacherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1117,10 +1359,16 @@ export type TeacherCalendarEventUncheckedUpdateWithoutTeacherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1134,10 +1382,16 @@ export type TeacherCalendarEventUncheckedUpdateManyWithoutTeacherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1149,10 +1403,16 @@ export type TeacherCalendarEventCreateManyClassInput = {
   id?: string
   teacherId: string
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   labelId?: string | null
   reminderMinutes?: number | null
   note?: string | null
@@ -1163,10 +1423,16 @@ export type TeacherCalendarEventCreateManyClassInput = {
 export type TeacherCalendarEventUpdateWithoutClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1181,10 +1447,16 @@ export type TeacherCalendarEventUncheckedUpdateWithoutClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1198,10 +1470,16 @@ export type TeacherCalendarEventUncheckedUpdateManyWithoutClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   labelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1214,10 +1492,16 @@ export type TeacherCalendarEventCreateManyLabelInput = {
   teacherId: string
   classId?: string | null
   title: string
+  description?: string | null
   address?: string | null
+  location?: string | null
   meetUrl?: string | null
+  meetingUrl?: string | null
   startAt: Date | string
   endAt: Date | string
+  timezone?: string
+  meetingType?: $Enums.MeetingType
+  status?: $Enums.ScheduleStatus
   reminderMinutes?: number | null
   note?: string | null
   createdAt?: Date | string
@@ -1227,10 +1511,16 @@ export type TeacherCalendarEventCreateManyLabelInput = {
 export type TeacherCalendarEventUpdateWithoutLabelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1246,10 +1536,16 @@ export type TeacherCalendarEventUncheckedUpdateWithoutLabelInput = {
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1263,10 +1559,16 @@ export type TeacherCalendarEventUncheckedUpdateManyWithoutLabelInput = {
   teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingType?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1318,10 +1620,16 @@ export type TeacherCalendarEventSelect<ExtArgs extends runtime.Types.Extensions.
   teacherId?: boolean
   classId?: boolean
   title?: boolean
+  description?: boolean
   address?: boolean
+  location?: boolean
   meetUrl?: boolean
+  meetingUrl?: boolean
   startAt?: boolean
   endAt?: boolean
+  timezone?: boolean
+  meetingType?: boolean
+  status?: boolean
   labelId?: boolean
   reminderMinutes?: boolean
   note?: boolean
@@ -1340,10 +1648,16 @@ export type TeacherCalendarEventSelectCreateManyAndReturn<ExtArgs extends runtim
   teacherId?: boolean
   classId?: boolean
   title?: boolean
+  description?: boolean
   address?: boolean
+  location?: boolean
   meetUrl?: boolean
+  meetingUrl?: boolean
   startAt?: boolean
   endAt?: boolean
+  timezone?: boolean
+  meetingType?: boolean
+  status?: boolean
   labelId?: boolean
   reminderMinutes?: boolean
   note?: boolean
@@ -1359,10 +1673,16 @@ export type TeacherCalendarEventSelectUpdateManyAndReturn<ExtArgs extends runtim
   teacherId?: boolean
   classId?: boolean
   title?: boolean
+  description?: boolean
   address?: boolean
+  location?: boolean
   meetUrl?: boolean
+  meetingUrl?: boolean
   startAt?: boolean
   endAt?: boolean
+  timezone?: boolean
+  meetingType?: boolean
+  status?: boolean
   labelId?: boolean
   reminderMinutes?: boolean
   note?: boolean
@@ -1378,10 +1698,16 @@ export type TeacherCalendarEventSelectScalar = {
   teacherId?: boolean
   classId?: boolean
   title?: boolean
+  description?: boolean
   address?: boolean
+  location?: boolean
   meetUrl?: boolean
+  meetingUrl?: boolean
   startAt?: boolean
   endAt?: boolean
+  timezone?: boolean
+  meetingType?: boolean
+  status?: boolean
   labelId?: boolean
   reminderMinutes?: boolean
   note?: boolean
@@ -1389,7 +1715,7 @@ export type TeacherCalendarEventSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TeacherCalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teacherId" | "classId" | "title" | "address" | "meetUrl" | "startAt" | "endAt" | "labelId" | "reminderMinutes" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["teacherCalendarEvent"]>
+export type TeacherCalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teacherId" | "classId" | "title" | "description" | "address" | "location" | "meetUrl" | "meetingUrl" | "startAt" | "endAt" | "timezone" | "meetingType" | "status" | "labelId" | "reminderMinutes" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["teacherCalendarEvent"]>
 export type TeacherCalendarEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   class?: boolean | Prisma.TeacherCalendarEvent$classArgs<ExtArgs>
@@ -1423,10 +1749,16 @@ export type $TeacherCalendarEventPayload<ExtArgs extends runtime.Types.Extension
     teacherId: string
     classId: string | null
     title: string
+    description: string | null
     address: string | null
+    location: string | null
     meetUrl: string | null
+    meetingUrl: string | null
     startAt: Date
     endAt: Date
+    timezone: string
+    meetingType: $Enums.MeetingType
+    status: $Enums.ScheduleStatus
     labelId: string | null
     reminderMinutes: number | null
     note: string | null
@@ -1864,10 +2196,16 @@ export interface TeacherCalendarEventFieldRefs {
   readonly teacherId: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly classId: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly title: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
+  readonly description: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly address: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
+  readonly location: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly meetUrl: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
+  readonly meetingUrl: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly startAt: Prisma.FieldRef<"TeacherCalendarEvent", 'DateTime'>
   readonly endAt: Prisma.FieldRef<"TeacherCalendarEvent", 'DateTime'>
+  readonly timezone: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
+  readonly meetingType: Prisma.FieldRef<"TeacherCalendarEvent", 'MeetingType'>
+  readonly status: Prisma.FieldRef<"TeacherCalendarEvent", 'ScheduleStatus'>
   readonly labelId: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
   readonly reminderMinutes: Prisma.FieldRef<"TeacherCalendarEvent", 'Int'>
   readonly note: Prisma.FieldRef<"TeacherCalendarEvent", 'String'>
