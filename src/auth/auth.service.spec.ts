@@ -13,6 +13,7 @@ describe('AuthService', () => {
   let prismaMock: any;
   let jwtServiceMock: any;
   let configServiceMock: any;
+  let zaloOAuthServiceMock: any;
 
   beforeEach(() => {
     prismaMock = {
@@ -20,12 +21,17 @@ describe('AuthService', () => {
         findFirst: vi.fn(),
         findUnique: vi.fn(),
         create: vi.fn(),
+        update: vi.fn(),
       },
       refreshToken: {
         create: vi.fn(),
         findUnique: vi.fn(),
         update: vi.fn(),
         updateMany: vi.fn().mockResolvedValue({ count: 1 }),
+      },
+      authAccount: {
+        upsert: vi.fn(),
+        deleteMany: vi.fn(),
       },
       $transaction: vi.fn((ops) => Promise.all(ops)),
     };
@@ -41,14 +47,29 @@ describe('AuthService', () => {
           return 'super-secret-key-at-least-32-chars';
         if (key === 'JWT_ACCESS_EXPIRES_IN') return '15m';
         if (key === 'JWT_REFRESH_EXPIRES_DAYS') return '7';
+        if (key === 'FRONTEND_URL') return 'http://localhost:5173';
         return null;
       }),
+    };
+
+    zaloOAuthServiceMock = {
+      getAuthorizationUrl: vi
+        .fn()
+        .mockReturnValue('https://oauth.zaloapp.com/v4/permission?mock=1'),
+      validateAndConsumeState: vi.fn(),
+      exchangeCodeForAccessToken: vi.fn(),
+      getZaloUserProfile: vi.fn(),
+      createExchangeTicket: vi.fn().mockReturnValue('mock-exchange-ticket'),
+      consumeExchangeTicket: vi.fn(),
+      createLinkTicket: vi.fn().mockReturnValue('mock-link-ticket'),
+      consumeLinkTicket: vi.fn(),
     };
 
     authService = new AuthService(
       prismaMock,
       jwtServiceMock,
       configServiceMock,
+      zaloOAuthServiceMock,
     );
   });
 
@@ -439,4 +460,427 @@ describe('AuthService', () => {
       );
     });
   });
+
+  describe('Zalo OAuth V4 Login & Callback', () => {
+    it('getZaloAuthorizationUrl gọi zaloOAuthService.getAuthorizationUrl', () => {
+      const url = authService.getZaloAuthorizationUrl();
+      expect(zaloOAuthServiceMock.getAuthorizationUrl).toHaveBeenCalled();
+      expect(url).toBe('https://oauth.zaloapp.com/v4/permission?mock=1');
+    });
+
+    it('xử lý từ chối cấp quyền khi client yêu cầu JSON (ném UnauthorizedException)', async () => {
+      const mockReq: any = {
+        query: { format: 'json' },
+        headers: { accept: 'application/json' },
+      };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await expect(
+        authService.handleZaloCallback(
+          { error: -14001, error_description: 'User denied permission' },
+          mockReq,
+          mockRes,
+        ),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('xử lý từ chối cấp quyền khi trình duyệt truy cập (chuyển hướng về FRONTEND_URL với lỗi)', async () => {
+      const mockReq: any = {
+        query: {},
+        headers: { accept: 'text/html' },
+      };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await authService.handleZaloCallback(
+        { error: -14001, error_description: 'User denied permission' },
+        mockReq,
+        mockRes,
+      );
+
+      expect(mockRes.redirect).toHaveBeenCalled();
+      const redirectArg = mockRes.redirect.mock.calls[0][0];
+      expect(redirectArg).toContain('http://localhost:5173/auth/zalo/callback');
+      expect(redirectArg).toContain('error=zalo_access_denied');
+    });
+
+    it('ném BadRequestException nếu mã state không hợp lệ hoặc đã hết hạn', async () => {
+      zaloOAuthServiceMock.validateAndConsumeState.mockReturnValue(null);
+      const mockReq: any = { query: { format: 'json' }, headers: {} };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await expect(
+        authService.handleZaloCallback(
+          { code: 'valid-code', state: 'invalid-state' },
+          mockReq,
+          mockRes,
+        ),
+      ).rejects.toThrow('Mã state không hợp lệ hoặc phiên đăng nhập Zalo đã hết hạn');
+    });
+
+    it('đăng nhập thành công khi tài khoản đã liên kết trước đó (isLinked = true)', async () => {
+      const zaloId = 'zalo-user-123';
+      const mockExistingUser = {
+        id: 'user-linked-1',
+        fullName: 'Nguyễn Văn Liên Kết',
+        phone: '0901234567',
+        email: 'linked@example.com',
+        role: 'STUDENT',
+        isActive: true,
+        zaloId,
+        avatarUrl: null,
+      };
+
+      zaloOAuthServiceMock.validateAndConsumeState.mockReturnValue('valid-verifier');
+      zaloOAuthServiceMock.exchangeCodeForAccessToken.mockResolvedValue('zalo-access-token');
+      zaloOAuthServiceMock.getZaloUserProfile.mockResolvedValue({
+        zaloId,
+        name: 'Nguyễn Văn Liên Kết',
+      });
+      prismaMock.user.findUnique.mockResolvedValue(mockExistingUser);
+      prismaMock.refreshToken.create.mockResolvedValue({ id: 'rt-1' });
+
+      // Trường hợp trả JSON
+      const mockReq: any = { query: { format: 'json' }, headers: {} };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await authService.handleZaloCallback(
+        { code: 'valid-code', state: 'valid-state' },
+        mockReq,
+        mockRes,
+      );
+
+      expect(mockRes.json).toHaveBeenCalled();
+      const responseData = mockRes.json.mock.calls[0][0];
+      expect(responseData.isLinked).toBe(true);
+      expect(responseData.user.id).toBe('user-linked-1');
+      expect(responseData.tokens.accessToken).toBe('mock-access-token');
+      expect(responseData.tokens.refreshToken).toBeDefined();
+    });
+
+    it('tài khoản đã liên kết nhưng bị khóa (isActive = false) thì từ chối đăng nhập', async () => {
+      const zaloId = 'zalo-user-locked';
+      const mockLockedUser = {
+        id: 'user-locked-1',
+        fullName: 'Người Dùng Khóa',
+        phone: '0909999999',
+        email: 'locked@example.com',
+        role: 'STUDENT',
+        isActive: false,
+        zaloId,
+      };
+
+      zaloOAuthServiceMock.validateAndConsumeState.mockReturnValue('valid-verifier');
+      zaloOAuthServiceMock.exchangeCodeForAccessToken.mockResolvedValue('zalo-access-token');
+      zaloOAuthServiceMock.getZaloUserProfile.mockResolvedValue({
+        zaloId,
+        name: 'Người Dùng Khóa',
+      });
+      prismaMock.user.findUnique.mockResolvedValue(mockLockedUser);
+
+      const mockReq: any = { query: { format: 'json' }, headers: {} };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await expect(
+        authService.handleZaloCallback(
+          { code: 'valid-code', state: 'valid-state' },
+          mockReq,
+          mockRes,
+        ),
+      ).rejects.toThrow('Tài khoản của bạn đã bị vô hiệu hóa hoặc khóa');
+    });
+
+    it('tài khoản CHƯA LIÊN KẾT: KHÔNG tự tạo user mới, cấp linkTicket yêu cầu xác minh tài khoản hiện có', async () => {
+      const zaloId = 'zalo-new-user-456';
+      zaloOAuthServiceMock.validateAndConsumeState.mockReturnValue('valid-verifier');
+      zaloOAuthServiceMock.exchangeCodeForAccessToken.mockResolvedValue('zalo-access-token');
+      zaloOAuthServiceMock.getZaloUserProfile.mockResolvedValue({
+        zaloId,
+        name: 'Zalo Brand New User',
+      });
+      // Không tìm thấy user nào có zaloId này
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      const mockReq: any = { query: { format: 'json' }, headers: {} };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await authService.handleZaloCallback(
+        { code: 'valid-code', state: 'valid-state' },
+        mockReq,
+        mockRes,
+      );
+
+      // QUAN TRỌNG: Không tự ý tạo user trong DB
+      expect(prismaMock.user.create).not.toHaveBeenCalled();
+      expect(zaloOAuthServiceMock.createLinkTicket).toHaveBeenCalledWith({
+        zaloId,
+        name: 'Zalo Brand New User',
+      });
+
+      expect(mockRes.json).toHaveBeenCalled();
+      const responseData = mockRes.json.mock.calls[0][0];
+      expect(responseData.isLinked).toBe(false);
+      expect(responseData.linkTicket).toBe('mock-link-ticket');
+      expect(responseData.instructions).toBeDefined();
+    });
+
+    it('sử dụng code_verifier đã lưu server-side khi gọi exchangeCodeForAccessToken, không dùng code_challenge từ callback', async () => {
+      const zaloId = 'zalo-pkce-test';
+      const mockUser = {
+        id: 'u-1',
+        fullName: 'User PKCE',
+        phone: '0901234567',
+        email: 'u1@test.com',
+        role: 'STUDENT',
+        isActive: true,
+        zaloId,
+        avatarUrl: null,
+      };
+
+      zaloOAuthServiceMock.validateAndConsumeState.mockReturnValue(
+        'server-stored-verifier-43-chars',
+      );
+      zaloOAuthServiceMock.exchangeCodeForAccessToken.mockResolvedValue(
+        'access-token',
+      );
+      zaloOAuthServiceMock.getZaloUserProfile.mockResolvedValue({
+        zaloId,
+        name: 'User PKCE',
+      });
+      prismaMock.user.findUnique.mockResolvedValue(mockUser);
+      prismaMock.refreshToken.create.mockResolvedValue({ id: 'rt-1' });
+
+      const mockReq: any = { query: { format: 'json' }, headers: {} };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await authService.handleZaloCallback(
+        {
+          code: 'zalo-auth-code-123',
+          state: 'csrf-state-abc',
+          code_challenge: 'client-or-zalo-sent-challenge',
+        },
+        mockReq,
+        mockRes,
+      );
+
+      // Khẳng định backend dùng server-stored-verifier chứ không dùng code_challenge
+      expect(zaloOAuthServiceMock.validateAndConsumeState).toHaveBeenCalledWith(
+        'csrf-state-abc',
+      );
+      expect(
+        zaloOAuthServiceMock.exchangeCodeForAccessToken,
+      ).toHaveBeenCalledWith(
+        'zalo-auth-code-123',
+        'server-stored-verifier-43-chars',
+      );
+    });
+
+    it('xử lý lỗi khi Zalo từ chối đổi authorization code', async () => {
+      zaloOAuthServiceMock.validateAndConsumeState.mockReturnValue(
+        'valid-verifier',
+      );
+      zaloOAuthServiceMock.exchangeCodeForAccessToken.mockRejectedValue(
+        new UnauthorizedException(
+          'Xác thực mã ủy quyền Zalo thất bại: Authorization code is invalid',
+        ),
+      );
+
+      const mockReq: any = { query: { format: 'json' }, headers: {} };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await expect(
+        authService.handleZaloCallback(
+          {
+            code: 'invalid-code',
+            state: 'valid-state',
+            code_challenge: 'test-challenge',
+          },
+          mockReq,
+          mockRes,
+        ),
+      ).rejects.toThrow('Xác thực mã ủy quyền Zalo thất bại');
+    });
+
+    it('xử lý lỗi khi Zalo Social API báo lỗi lấy profile', async () => {
+      zaloOAuthServiceMock.validateAndConsumeState.mockReturnValue(
+        'valid-verifier',
+      );
+      zaloOAuthServiceMock.exchangeCodeForAccessToken.mockResolvedValue(
+        'valid-token',
+      );
+      zaloOAuthServiceMock.getZaloUserProfile.mockRejectedValue(
+        new UnauthorizedException(
+          'Không thể lấy thông tin người dùng từ Zalo: Token expired',
+        ),
+      );
+
+      const mockReq: any = { query: { format: 'json' }, headers: {} };
+      const mockRes: any = { redirect: vi.fn(), json: vi.fn() };
+
+      await expect(
+        authService.handleZaloCallback(
+          { code: 'valid-code', state: 'valid-state' },
+          mockReq,
+          mockRes,
+        ),
+      ).rejects.toThrow('Không thể lấy thông tin người dùng từ Zalo');
+    });
+  });
+
+  describe('Xác minh tài khoản hiện có và liên kết (linkZaloAccount)', () => {
+    it('liên kết thành công khi thông tin tài khoản VanbyNhi và mật khẩu chính xác', async () => {
+      const rawPassword = 'correct-password-123';
+      const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+      const existingUser = {
+        id: 'user-vn-1',
+        fullName: 'Học viên VanbyNhi',
+        email: 'student@vanbynhi.com',
+        phone: '0912345678',
+        passwordHash: hashedPassword,
+        isActive: true,
+        role: 'STUDENT',
+        zaloId: null,
+      };
+
+      const zaloProfile = { zaloId: 'zalo-profile-789', name: 'Zalo User' };
+      zaloOAuthServiceMock.consumeLinkTicket.mockReturnValue(zaloProfile);
+
+      prismaMock.user.findFirst.mockResolvedValue(existingUser);
+      // Chưa ai sở hữu zaloId này
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.user.update.mockResolvedValue({
+        ...existingUser,
+        zaloId: zaloProfile.zaloId,
+      });
+      prismaMock.refreshToken.create.mockResolvedValue({ id: 'rt-1' });
+
+      const result = await authService.linkZaloAccount({
+        linkTicket: 'mock-valid-link-ticket',
+        identifier: 'student@vanbynhi.com',
+        password: rawPassword,
+      });
+
+      expect(result.message).toBe('Liên kết tài khoản Zalo thành công');
+      expect(result.tokens.accessToken).toBe('mock-access-token');
+      expect(result.tokens.refreshToken).toBeDefined();
+      expect(prismaMock.user.update).toHaveBeenCalledWith({
+        where: { id: existingUser.id },
+        data: { zaloId: zaloProfile.zaloId },
+      });
+    });
+
+    it('từ chối liên kết khi linkTicket không hợp lệ hoặc đã hết hạn', async () => {
+      zaloOAuthServiceMock.consumeLinkTicket.mockReturnValue(null);
+
+      await expect(
+        authService.linkZaloAccount({
+          linkTicket: 'invalid-ticket',
+          identifier: 'user@example.com',
+          password: 'password',
+        }),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('từ chối liên kết khi sai mật khẩu tài khoản VanbyNhi', async () => {
+      const hashedPassword = await bcrypt.hash('correct-password', 10);
+      const existingUser = {
+        id: 'user-vn-2',
+        email: 'user@vanbynhi.com',
+        phone: '0911223344',
+        passwordHash: hashedPassword,
+        isActive: true,
+      };
+
+      zaloOAuthServiceMock.consumeLinkTicket.mockReturnValue({
+        zaloId: 'zalo-id-1',
+      });
+      prismaMock.user.findFirst.mockResolvedValue(existingUser);
+
+      await expect(
+        authService.linkZaloAccount({
+          linkTicket: 'valid-ticket',
+          identifier: 'user@vanbynhi.com',
+          password: 'wrong-password',
+        }),
+      ).rejects.toThrow('Thông tin tài khoản xác minh không chính xác');
+    });
+
+    it('từ chối liên kết nếu tài khoản VanbyNhi đã được liên kết với một tài khoản Zalo khác', async () => {
+      const rawPassword = 'password123';
+      const hashedPassword = await bcrypt.hash(rawPassword, 10);
+      const existingUser = {
+        id: 'user-vn-3',
+        email: 'user3@vanbynhi.com',
+        phone: '0911223355',
+        passwordHash: hashedPassword,
+        isActive: true,
+        zaloId: 'already-linked-zalo-id',
+      };
+
+      zaloOAuthServiceMock.consumeLinkTicket.mockReturnValue({
+        zaloId: 'different-zalo-id',
+      });
+      prismaMock.user.findFirst.mockResolvedValue(existingUser);
+
+      await expect(
+        authService.linkZaloAccount({
+          linkTicket: 'valid-ticket',
+          identifier: 'user3@vanbynhi.com',
+          password: rawPassword,
+        }),
+      ).rejects.toThrow(ConflictException);
+    });
+  });
+
+  describe('Đổi ticket lấy JWT Tokens (exchangeZaloTicket)', () => {
+    it('đổi ticket thành công trả về token', async () => {
+      const mockPayload = {
+        tokens: { accessToken: 'jwt-token', refreshToken: 'rf-token' },
+        user: { id: 'u1' },
+      };
+      zaloOAuthServiceMock.consumeExchangeTicket.mockReturnValue(mockPayload);
+
+      const result = await authService.exchangeZaloTicket({
+        ticket: 'valid-ticket',
+      });
+      expect(result).toEqual(mockPayload);
+    });
+
+    it('ném UnauthorizedException khi ticket không hợp lệ', async () => {
+      zaloOAuthServiceMock.consumeExchangeTicket.mockReturnValue(null);
+
+      await expect(
+        authService.exchangeZaloTicket({ ticket: 'expired-ticket' }),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
+  describe('Hủy liên kết Zalo (unlinkZaloAccount)', () => {
+    it('hủy liên kết thành công', async () => {
+      prismaMock.user.findUnique.mockResolvedValue({
+        id: 'u1',
+        zaloId: 'zalo-u1',
+      });
+      prismaMock.user.update.mockResolvedValue({ id: 'u1', zaloId: null });
+
+      const result = await authService.unlinkZaloAccount('u1');
+      expect(result.message).toBe('Hủy liên kết tài khoản Zalo thành công');
+      expect(prismaMock.user.update).toHaveBeenCalledWith({
+        where: { id: 'u1' },
+        data: { zaloId: null },
+      });
+    });
+
+    it('ném BadRequestException nếu tài khoản chưa từng liên kết Zalo', async () => {
+      prismaMock.user.findUnique.mockResolvedValue({
+        id: 'u2',
+        zaloId: null,
+      });
+
+      await expect(authService.unlinkZaloAccount('u2')).rejects.toThrow(
+        'Tài khoản chưa được liên kết với Zalo',
+      );
+    });
+  });
 });
+

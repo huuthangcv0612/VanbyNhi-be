@@ -30,6 +30,7 @@ export type UserMinAggregateOutputType = {
   phone: string | null
   passwordHash: string | null
   email: string | null
+  zaloId: string | null
   avatarUrl: string | null
   dateOfBirth: Date | null
   role: $Enums.UserRole | null
@@ -44,6 +45,7 @@ export type UserMaxAggregateOutputType = {
   phone: string | null
   passwordHash: string | null
   email: string | null
+  zaloId: string | null
   avatarUrl: string | null
   dateOfBirth: Date | null
   role: $Enums.UserRole | null
@@ -58,6 +60,7 @@ export type UserCountAggregateOutputType = {
   phone: number
   passwordHash: number
   email: number
+  zaloId: number
   avatarUrl: number
   dateOfBirth: number
   role: number
@@ -74,6 +77,7 @@ export type UserMinAggregateInputType = {
   phone?: true
   passwordHash?: true
   email?: true
+  zaloId?: true
   avatarUrl?: true
   dateOfBirth?: true
   role?: true
@@ -88,6 +92,7 @@ export type UserMaxAggregateInputType = {
   phone?: true
   passwordHash?: true
   email?: true
+  zaloId?: true
   avatarUrl?: true
   dateOfBirth?: true
   role?: true
@@ -102,6 +107,7 @@ export type UserCountAggregateInputType = {
   phone?: true
   passwordHash?: true
   email?: true
+  zaloId?: true
   avatarUrl?: true
   dateOfBirth?: true
   role?: true
@@ -189,6 +195,7 @@ export type UserGroupByOutputType = {
   phone: string
   passwordHash: string
   email: string | null
+  zaloId: string | null
   avatarUrl: string | null
   dateOfBirth: Date | null
   role: $Enums.UserRole
@@ -224,6 +231,7 @@ export type UserWhereInput = {
   phone?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringNullableFilter<"User"> | string | null
+  zaloId?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
@@ -258,6 +266,7 @@ export type UserOrderByWithRelationInput = {
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  zaloId?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -290,6 +299,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   phone?: string
   email?: string
+  zaloId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -321,7 +331,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   teacherCalendarLabels?: Prisma.TeacherCalendarLabelListRelationFilter
   calendarParticipations?: Prisma.CalendarEventParticipantListRelationFilter
   calendarNotifications?: Prisma.CalendarNotificationListRelationFilter
-}, "id" | "phone" | "email">
+}, "id" | "phone" | "email" | "zaloId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -329,6 +339,7 @@ export type UserOrderByWithAggregationInput = {
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  zaloId?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -349,6 +360,7 @@ export type UserScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringWithAggregatesFilter<"User"> | string
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  zaloId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
@@ -363,6 +375,7 @@ export type UserCreateInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -397,6 +410,7 @@ export type UserUncheckedCreateInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -431,6 +445,7 @@ export type UserUpdateInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -465,6 +480,7 @@ export type UserUncheckedUpdateInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -499,6 +515,7 @@ export type UserCreateManyInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -513,6 +530,7 @@ export type UserUpdateManyMutationInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -527,6 +545,7 @@ export type UserUncheckedUpdateManyInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -541,6 +560,7 @@ export type UserCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  zaloId?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -555,6 +575,7 @@ export type UserMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  zaloId?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -569,6 +590,7 @@ export type UserMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  zaloId?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -903,6 +925,7 @@ export type UserCreateWithoutAuthAccountsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -936,6 +959,7 @@ export type UserUncheckedCreateWithoutAuthAccountsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -985,6 +1009,7 @@ export type UserUpdateWithoutAuthAccountsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1018,6 +1043,7 @@ export type UserUncheckedUpdateWithoutAuthAccountsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1051,6 +1077,7 @@ export type UserCreateWithoutCreatedClassesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1084,6 +1111,7 @@ export type UserUncheckedCreateWithoutCreatedClassesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1122,6 +1150,7 @@ export type UserCreateWithoutTeachingClassesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1155,6 +1184,7 @@ export type UserUncheckedCreateWithoutTeachingClassesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1204,6 +1234,7 @@ export type UserUpdateWithoutCreatedClassesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1237,6 +1268,7 @@ export type UserUncheckedUpdateWithoutCreatedClassesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1281,6 +1313,7 @@ export type UserUpdateWithoutTeachingClassesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1314,6 +1347,7 @@ export type UserUncheckedUpdateWithoutTeachingClassesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1347,6 +1381,7 @@ export type UserCreateWithoutEnrollmentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1380,6 +1415,7 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1429,6 +1465,7 @@ export type UserUpdateWithoutEnrollmentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1462,6 +1499,7 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1495,6 +1533,7 @@ export type UserCreateWithoutCreatedSessionsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1528,6 +1567,7 @@ export type UserUncheckedCreateWithoutCreatedSessionsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1577,6 +1617,7 @@ export type UserUpdateWithoutCreatedSessionsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1610,6 +1651,7 @@ export type UserUncheckedUpdateWithoutCreatedSessionsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1643,6 +1685,7 @@ export type UserCreateWithoutAttendancesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1676,6 +1719,7 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1714,6 +1758,7 @@ export type UserCreateWithoutMarkedAttendancesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1747,6 +1792,7 @@ export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1796,6 +1842,7 @@ export type UserUpdateWithoutAttendancesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1829,6 +1876,7 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1873,6 +1921,7 @@ export type UserUpdateWithoutMarkedAttendancesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1906,6 +1955,7 @@ export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -1939,6 +1989,7 @@ export type UserCreateWithoutAttendanceChangesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -1972,6 +2023,7 @@ export type UserUncheckedCreateWithoutAttendanceChangesInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2021,6 +2073,7 @@ export type UserUpdateWithoutAttendanceChangesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2054,6 +2107,7 @@ export type UserUncheckedUpdateWithoutAttendanceChangesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2087,6 +2141,7 @@ export type UserCreateWithoutRecordedTuitionPaymentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2120,6 +2175,7 @@ export type UserUncheckedCreateWithoutRecordedTuitionPaymentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2158,6 +2214,7 @@ export type UserCreateWithoutVoidedTuitionPaymentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2191,6 +2248,7 @@ export type UserUncheckedCreateWithoutVoidedTuitionPaymentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2240,6 +2298,7 @@ export type UserUpdateWithoutRecordedTuitionPaymentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2273,6 +2332,7 @@ export type UserUncheckedUpdateWithoutRecordedTuitionPaymentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2317,6 +2377,7 @@ export type UserUpdateWithoutVoidedTuitionPaymentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2350,6 +2411,7 @@ export type UserUncheckedUpdateWithoutVoidedTuitionPaymentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2383,6 +2445,7 @@ export type UserCreateWithoutCreatedAssignmentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2416,6 +2479,7 @@ export type UserUncheckedCreateWithoutCreatedAssignmentsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2465,6 +2529,7 @@ export type UserUpdateWithoutCreatedAssignmentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2498,6 +2563,7 @@ export type UserUncheckedUpdateWithoutCreatedAssignmentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2531,6 +2597,7 @@ export type UserCreateWithoutSubmissionsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2564,6 +2631,7 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2602,6 +2670,7 @@ export type UserCreateWithoutGradedSubmissionsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2635,6 +2704,7 @@ export type UserUncheckedCreateWithoutGradedSubmissionsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2684,6 +2754,7 @@ export type UserUpdateWithoutSubmissionsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2717,6 +2788,7 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2761,6 +2833,7 @@ export type UserUpdateWithoutGradedSubmissionsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2794,6 +2867,7 @@ export type UserUncheckedUpdateWithoutGradedSubmissionsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2827,6 +2901,7 @@ export type UserCreateWithoutUploadedMaterialsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2860,6 +2935,7 @@ export type UserUncheckedCreateWithoutUploadedMaterialsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -2909,6 +2985,7 @@ export type UserUpdateWithoutUploadedMaterialsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2942,6 +3019,7 @@ export type UserUncheckedUpdateWithoutUploadedMaterialsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -2975,6 +3053,7 @@ export type UserCreateWithoutNotificationsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3008,6 +3087,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3057,6 +3137,7 @@ export type UserUpdateWithoutNotificationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3090,6 +3171,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3123,6 +3205,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3156,6 +3239,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3205,6 +3289,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3238,6 +3323,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3271,6 +3357,7 @@ export type UserCreateWithoutTeacherCalendarLabelsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3304,6 +3391,7 @@ export type UserUncheckedCreateWithoutTeacherCalendarLabelsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3353,6 +3441,7 @@ export type UserUpdateWithoutTeacherCalendarLabelsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3386,6 +3475,7 @@ export type UserUncheckedUpdateWithoutTeacherCalendarLabelsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3419,6 +3509,7 @@ export type UserCreateWithoutTeacherCalendarEventsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3452,6 +3543,7 @@ export type UserUncheckedCreateWithoutTeacherCalendarEventsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3501,6 +3593,7 @@ export type UserUpdateWithoutTeacherCalendarEventsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3534,6 +3627,7 @@ export type UserUncheckedUpdateWithoutTeacherCalendarEventsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3567,6 +3661,7 @@ export type UserCreateWithoutCalendarParticipationsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3600,6 +3695,7 @@ export type UserUncheckedCreateWithoutCalendarParticipationsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3649,6 +3745,7 @@ export type UserUpdateWithoutCalendarParticipationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3682,6 +3779,7 @@ export type UserUncheckedUpdateWithoutCalendarParticipationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3715,6 +3813,7 @@ export type UserCreateWithoutCalendarNotificationsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3748,6 +3847,7 @@ export type UserUncheckedCreateWithoutCalendarNotificationsInput = {
   phone: string
   passwordHash: string
   email?: string | null
+  zaloId?: string | null
   avatarUrl?: string | null
   dateOfBirth?: Date | string | null
   role?: $Enums.UserRole
@@ -3797,6 +3897,7 @@ export type UserUpdateWithoutCalendarNotificationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -3830,6 +3931,7 @@ export type UserUncheckedUpdateWithoutCalendarNotificationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
@@ -4065,6 +4167,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   phone?: boolean
   passwordHash?: boolean
   email?: boolean
+  zaloId?: boolean
   avatarUrl?: boolean
   dateOfBirth?: boolean
   role?: boolean
@@ -4100,6 +4203,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   passwordHash?: boolean
   email?: boolean
+  zaloId?: boolean
   avatarUrl?: boolean
   dateOfBirth?: boolean
   role?: boolean
@@ -4114,6 +4218,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   passwordHash?: boolean
   email?: boolean
+  zaloId?: boolean
   avatarUrl?: boolean
   dateOfBirth?: boolean
   role?: boolean
@@ -4128,6 +4233,7 @@ export type UserSelectScalar = {
   phone?: boolean
   passwordHash?: boolean
   email?: boolean
+  zaloId?: boolean
   avatarUrl?: boolean
   dateOfBirth?: boolean
   role?: boolean
@@ -4136,7 +4242,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "phone" | "passwordHash" | "email" | "avatarUrl" | "dateOfBirth" | "role" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "phone" | "passwordHash" | "email" | "zaloId" | "avatarUrl" | "dateOfBirth" | "role" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   authAccounts?: boolean | Prisma.User$authAccountsArgs<ExtArgs>
   createdClasses?: boolean | Prisma.User$createdClassesArgs<ExtArgs>
@@ -4193,6 +4299,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     phone: string
     passwordHash: string
     email: string | null
+    zaloId: string | null
     avatarUrl: string | null
     dateOfBirth: Date | null
     role: $Enums.UserRole
@@ -4647,6 +4754,7 @@ export interface UserFieldRefs {
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
+  readonly zaloId: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly dateOfBirth: Prisma.FieldRef<"User", 'DateTime'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>

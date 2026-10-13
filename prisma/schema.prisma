@@ -102,6 +102,7 @@ model User {
   phone        String    @unique
   passwordHash String
   email        String?   @unique
+  zaloId       String?   @unique
   avatarUrl    String?
   dateOfBirth  DateTime?
   role         UserRole  @default(STUDENT)

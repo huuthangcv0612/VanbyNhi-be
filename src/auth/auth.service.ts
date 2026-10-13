@@ -3,17 +3,23 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   ConflictException,
+  BadRequestException,
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
+import type { Request, Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { UserRole } from '../../generated/prisma/client.js';
+import { ZaloOAuthService } from './zalo-oauth.service.js';
 import type { LoginDto } from './dto/login.dto.js';
 import type { RefreshTokenDto } from './dto/refresh-token.dto.js';
 import type { RegisterDto } from './dto/register.dto.js';
+import type { ZaloCallbackDto } from './dto/zalo-callback.dto.js';
+import type { LinkZaloDto } from './dto/link-zalo.dto.js';
+import type { ExchangeZaloTicketDto } from './dto/exchange-zalo-ticket.dto.js';
 import type { JwtPayload } from './interfaces/jwt-payload.interface.js';
 
 @Injectable()
@@ -24,6 +30,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly zaloOAuthService: ZaloOAuthService,
   ) {}
 
   /**
@@ -335,4 +342,340 @@ export class AuthService {
       throw error;
     }
   }
+
+  /**
+   * Khởi tạo URL xác thực Zalo OAuth V4
+   */
+  getZaloAuthorizationUrl(): string {
+    return this.zaloOAuthService.getAuthorizationUrl();
+  }
+
+  /**
+   * Xử lý callback sau khi người dùng phê duyệt hoặc từ chối tại Zalo
+   */
+  async handleZaloCallback(
+    query: ZaloCallbackDto,
+    req: Request,
+    res: Response,
+  ) {
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+    const prefersJson = this.prefersJson(req);
+
+    // 1. Xử lý trường hợp người dùng từ chối cấp quyền hoặc có lỗi trả về từ Zalo
+    if (
+      query.error !== undefined ||
+      query.error_description ||
+      query.error_reason
+    ) {
+      const errorMsg =
+        query.error_description ||
+        query.error_reason ||
+        'Người dùng đã hủy hoặc từ chối cấp quyền truy cập Zalo';
+      this.logger.warn(`Zalo OAuth bị từ chối hoặc phát sinh lỗi: ${errorMsg}`);
+
+      if (frontendUrl && !prefersJson) {
+        const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
+        redirectUrl.searchParams.set('error', 'zalo_access_denied');
+        redirectUrl.searchParams.set('error_description', errorMsg);
+        return res.redirect(redirectUrl.toString());
+      }
+
+      throw new UnauthorizedException(
+        `Người dùng đã từ chối cấp quyền truy cập Zalo: ${errorMsg}`,
+      );
+    }
+
+    // 2. Xác minh state chống CSRF
+    if (!query.state) {
+      if (frontendUrl && !prefersJson) {
+        const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
+        redirectUrl.searchParams.set('error', 'invalid_state');
+        redirectUrl.searchParams.set(
+          'error_description',
+          'Mã state không được cung cấp',
+        );
+        return res.redirect(redirectUrl.toString());
+      }
+      throw new BadRequestException('Mã state không được cung cấp');
+    }
+
+    const codeVerifier = this.zaloOAuthService.validateAndConsumeState(
+      query.state,
+    );
+    if (!codeVerifier) {
+      if (frontendUrl && !prefersJson) {
+        const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
+        redirectUrl.searchParams.set('error', 'state_expired');
+        redirectUrl.searchParams.set(
+          'error_description',
+          'Mã state không hợp lệ hoặc phiên đăng nhập Zalo đã hết hạn',
+        );
+        return res.redirect(redirectUrl.toString());
+      }
+      throw new BadRequestException(
+        'Mã state không hợp lệ hoặc phiên đăng nhập Zalo đã hết hạn',
+      );
+    }
+
+    // 3. Kiểm tra authorization code
+    if (!query.code) {
+      if (frontendUrl && !prefersJson) {
+        const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
+        redirectUrl.searchParams.set('error', 'missing_code');
+        redirectUrl.searchParams.set(
+          'error_description',
+          'Mã code xác thực không được cung cấp',
+        );
+        return res.redirect(redirectUrl.toString());
+      }
+      throw new BadRequestException('Mã code xác thực không được cung cấp');
+    }
+
+    // 4. Đổi authorization code lấy Access Token của Zalo
+    const zaloAccessToken =
+      await this.zaloOAuthService.exchangeCodeForAccessToken(
+        query.code,
+        codeVerifier,
+      );
+
+    // 5. Gọi Social API chính thức để lấy thông tin người dùng
+    const zaloProfile =
+      await this.zaloOAuthService.getZaloUserProfile(zaloAccessToken);
+
+    // 6. Tìm kiếm người dùng trong cơ sở dữ liệu theo zaloId
+    const existingUser = await this.prisma.user.findUnique({
+      where: { zaloId: zaloProfile.zaloId },
+    });
+
+    // Trường hợp A: Đã liên kết tài khoản
+    if (existingUser) {
+      if (!existingUser.isActive) {
+        this.logger.warn(
+          `Tài khoản user ${existingUser.id} đã bị vô hiệu hóa khi đăng nhập qua Zalo`,
+        );
+        if (frontendUrl && !prefersJson) {
+          const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
+          redirectUrl.searchParams.set('error', 'account_inactive');
+          redirectUrl.searchParams.set(
+            'error_description',
+            'Tài khoản của bạn đã bị vô hiệu hóa hoặc khóa',
+          );
+          return res.redirect(redirectUrl.toString());
+        }
+        throw new UnauthorizedException(
+          'Tài khoản của bạn đã bị vô hiệu hóa hoặc khóa',
+        );
+      }
+
+      const accessToken = await this.generateAccessToken(existingUser);
+      const refreshToken = await this.generateAndSaveRefreshToken(
+        existingUser.id,
+      );
+
+      const loginResult = {
+        message: 'Đăng nhập bằng Zalo thành công',
+        isLinked: true,
+        user: {
+          id: existingUser.id,
+          fullName: existingUser.fullName,
+          phone: existingUser.phone,
+          email: existingUser.email,
+          role: existingUser.role,
+          avatarUrl: existingUser.avatarUrl,
+        },
+        tokens: {
+          accessToken: accessToken.token,
+          tokenType: 'Bearer',
+          expiresIn: accessToken.expiresIn,
+          refreshToken: refreshToken.refreshToken,
+        },
+      };
+
+      if (frontendUrl && !prefersJson) {
+        // Sinh ticket đổi token 1 lần, không đưa token trực tiếp lên URL
+        const ticket = this.zaloOAuthService.createExchangeTicket(loginResult);
+        const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
+        redirectUrl.searchParams.set('ticket', ticket);
+        redirectUrl.searchParams.set('isLinked', 'true');
+        return res.redirect(redirectUrl.toString());
+      }
+
+      return res.json(loginResult);
+    }
+
+    // Trường hợp B: Chưa liên kết tài khoản -> Yêu cầu xác minh tài khoản VanbyNhi hiện có
+    // Không tự động tạo tài khoản mới theo yêu cầu nghiệp vụ
+    const linkTicket = this.zaloOAuthService.createLinkTicket(zaloProfile);
+
+    const unlinkedResult = {
+      message:
+        'Tài khoản Zalo chưa được liên kết với bất kỳ tài khoản VanbyNhi nào',
+      isLinked: false,
+      linkTicket,
+      zaloName: zaloProfile.name,
+      instructions:
+        'Vui lòng gọi API POST /auth/zalo/link với thông tin tài khoản hiện có (email/phone và mật khẩu) để hoàn tất liên kết',
+    };
+
+    if (frontendUrl && !prefersJson) {
+      const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
+      redirectUrl.searchParams.set('linkTicket', linkTicket);
+      redirectUrl.searchParams.set('isLinked', 'false');
+      return res.redirect(redirectUrl.toString());
+    }
+
+    return res.json(unlinkedResult);
+  }
+
+  /**
+   * Đổi vé ticket lấy JWT access token và refresh token
+   */
+  async exchangeZaloTicket(dto: ExchangeZaloTicketDto) {
+    const data = this.zaloOAuthService.consumeExchangeTicket(dto.ticket);
+    if (!data) {
+      throw new UnauthorizedException('Mã ticket không hợp lệ hoặc đã hết hạn');
+    }
+    return data;
+  }
+
+  /**
+   * Xác minh tài khoản VanbyNhi hiện có và liên kết với tài khoản Zalo
+   */
+  async linkZaloAccount(dto: LinkZaloDto) {
+    const zaloProfile = this.zaloOAuthService.consumeLinkTicket(dto.linkTicket);
+    if (!zaloProfile) {
+      throw new UnauthorizedException(
+        'Mã liên kết không hợp lệ hoặc đã hết hạn. Vui lòng thực hiện lại quy trình đăng nhập Zalo.',
+      );
+    }
+
+    const { email, phone } = this.normalizeIdentifier(dto.identifier);
+    const user = await this.prisma.user.findFirst({
+      where: email ? { email } : { phone },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException(
+        'Thông tin tài khoản xác minh không chính xác',
+      );
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        'Tài khoản của bạn đã bị vô hiệu hóa hoặc khóa',
+      );
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(
+        'Thông tin tài khoản xác minh không chính xác',
+      );
+    }
+
+    // Kiểm tra tài khoản này đã gắn zaloId khác chưa
+    if (user.zaloId && user.zaloId !== zaloProfile.zaloId) {
+      throw new ConflictException(
+        'Tài khoản này đã được liên kết với một tài khoản Zalo khác',
+      );
+    }
+
+    // Kiểm tra zaloId này có thuộc về người dùng khác hay không
+    const existingZaloUser = await this.prisma.user.findUnique({
+      where: { zaloId: zaloProfile.zaloId },
+    });
+    if (existingZaloUser && existingZaloUser.id !== user.id) {
+      throw new ConflictException(
+        'Tài khoản Zalo này đã được liên kết với một tài khoản người dùng khác',
+      );
+    }
+
+    // Cập nhật zaloId và ghi nhận AuthAccount trong database
+    const [updatedUser] = await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: user.id },
+        data: { zaloId: zaloProfile.zaloId },
+      }),
+      this.prisma.authAccount.upsert({
+        where: {
+          provider_providerAccountId: {
+            provider: 'zalo',
+            providerAccountId: zaloProfile.zaloId,
+          },
+        },
+        update: { userId: user.id },
+        create: {
+          userId: user.id,
+          provider: 'zalo',
+          providerAccountId: zaloProfile.zaloId,
+        },
+      }),
+    ]);
+
+    const accessToken = await this.generateAccessToken(updatedUser);
+    const refreshToken = await this.generateAndSaveRefreshToken(updatedUser.id);
+
+    return {
+      message: 'Liên kết tài khoản Zalo thành công',
+      user: {
+        id: updatedUser.id,
+        fullName: updatedUser.fullName,
+        phone: updatedUser.phone,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        avatarUrl: updatedUser.avatarUrl,
+      },
+      tokens: {
+        accessToken: accessToken.token,
+        tokenType: 'Bearer',
+        expiresIn: accessToken.expiresIn,
+        refreshToken: refreshToken.refreshToken,
+      },
+    };
+  }
+
+  /**
+   * Hủy liên kết tài khoản Zalo
+   */
+  async unlinkZaloAccount(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.zaloId) {
+      throw new BadRequestException('Tài khoản chưa được liên kết với Zalo');
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: userId },
+        data: { zaloId: null },
+      }),
+      this.prisma.authAccount.deleteMany({
+        where: { userId, provider: 'zalo' },
+      }),
+    ]);
+
+    return {
+      message: 'Hủy liên kết tài khoản Zalo thành công',
+    };
+  }
+
+  private buildFrontendRedirectUrl(frontendUrl: string): URL {
+    const url = new URL(frontendUrl);
+    if (url.pathname === '/' || url.pathname === '') {
+      url.pathname = '/auth/zalo/callback';
+    }
+    return url;
+  }
+
+  private prefersJson(req: Request): boolean {
+    if (req.query?.format === 'json') return true;
+    const accept = req.headers?.accept || '';
+    return accept.includes('application/json') && !accept.includes('text/html');
+  }
 }
+
