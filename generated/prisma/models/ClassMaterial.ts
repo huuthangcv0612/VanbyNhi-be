@@ -28,16 +28,19 @@ export type AggregateClassMaterial = {
 
 export type ClassMaterialAvgAggregateOutputType = {
   fileSize: number | null
+  order: number | null
 }
 
 export type ClassMaterialSumAggregateOutputType = {
   fileSize: bigint | null
+  order: number | null
 }
 
 export type ClassMaterialMinAggregateOutputType = {
   id: string | null
   classId: string | null
   sessionId: string | null
+  documentId: string | null
   uploadedById: string | null
   title: string | null
   description: string | null
@@ -47,7 +50,12 @@ export type ClassMaterialMinAggregateOutputType = {
   originalName: string | null
   mimeType: string | null
   fileSize: bigint | null
+  isPublished: boolean | null
   publishedAt: Date | null
+  order: number | null
+  accessStartTime: Date | null
+  accessEndTime: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +64,7 @@ export type ClassMaterialMaxAggregateOutputType = {
   id: string | null
   classId: string | null
   sessionId: string | null
+  documentId: string | null
   uploadedById: string | null
   title: string | null
   description: string | null
@@ -65,7 +74,12 @@ export type ClassMaterialMaxAggregateOutputType = {
   originalName: string | null
   mimeType: string | null
   fileSize: bigint | null
+  isPublished: boolean | null
   publishedAt: Date | null
+  order: number | null
+  accessStartTime: Date | null
+  accessEndTime: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +88,7 @@ export type ClassMaterialCountAggregateOutputType = {
   id: number
   classId: number
   sessionId: number
+  documentId: number
   uploadedById: number
   title: number
   description: number
@@ -83,7 +98,12 @@ export type ClassMaterialCountAggregateOutputType = {
   originalName: number
   mimeType: number
   fileSize: number
+  isPublished: number
   publishedAt: number
+  order: number
+  accessStartTime: number
+  accessEndTime: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -92,16 +112,19 @@ export type ClassMaterialCountAggregateOutputType = {
 
 export type ClassMaterialAvgAggregateInputType = {
   fileSize?: true
+  order?: true
 }
 
 export type ClassMaterialSumAggregateInputType = {
   fileSize?: true
+  order?: true
 }
 
 export type ClassMaterialMinAggregateInputType = {
   id?: true
   classId?: true
   sessionId?: true
+  documentId?: true
   uploadedById?: true
   title?: true
   description?: true
@@ -111,7 +134,12 @@ export type ClassMaterialMinAggregateInputType = {
   originalName?: true
   mimeType?: true
   fileSize?: true
+  isPublished?: true
   publishedAt?: true
+  order?: true
+  accessStartTime?: true
+  accessEndTime?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -120,6 +148,7 @@ export type ClassMaterialMaxAggregateInputType = {
   id?: true
   classId?: true
   sessionId?: true
+  documentId?: true
   uploadedById?: true
   title?: true
   description?: true
@@ -129,7 +158,12 @@ export type ClassMaterialMaxAggregateInputType = {
   originalName?: true
   mimeType?: true
   fileSize?: true
+  isPublished?: true
   publishedAt?: true
+  order?: true
+  accessStartTime?: true
+  accessEndTime?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -138,6 +172,7 @@ export type ClassMaterialCountAggregateInputType = {
   id?: true
   classId?: true
   sessionId?: true
+  documentId?: true
   uploadedById?: true
   title?: true
   description?: true
@@ -147,7 +182,12 @@ export type ClassMaterialCountAggregateInputType = {
   originalName?: true
   mimeType?: true
   fileSize?: true
+  isPublished?: true
   publishedAt?: true
+  order?: true
+  accessStartTime?: true
+  accessEndTime?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -243,6 +283,7 @@ export type ClassMaterialGroupByOutputType = {
   id: string
   classId: string
   sessionId: string | null
+  documentId: string | null
   uploadedById: string
   title: string
   description: string | null
@@ -252,7 +293,12 @@ export type ClassMaterialGroupByOutputType = {
   originalName: string | null
   mimeType: string | null
   fileSize: bigint | null
+  isPublished: boolean
   publishedAt: Date | null
+  order: number
+  accessStartTime: Date | null
+  accessEndTime: Date | null
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ClassMaterialCountAggregateOutputType | null
@@ -284,6 +330,7 @@ export type ClassMaterialWhereInput = {
   id?: Prisma.StringFilter<"ClassMaterial"> | string
   classId?: Prisma.StringFilter<"ClassMaterial"> | string
   sessionId?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
+  documentId?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   uploadedById?: Prisma.StringFilter<"ClassMaterial"> | string
   title?: Prisma.StringFilter<"ClassMaterial"> | string
   description?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
@@ -293,18 +340,25 @@ export type ClassMaterialWhereInput = {
   originalName?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   mimeType?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   fileSize?: Prisma.BigIntNullableFilter<"ClassMaterial"> | bigint | number | null
+  isPublished?: Prisma.BoolFilter<"ClassMaterial"> | boolean
   publishedAt?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  order?: Prisma.IntFilter<"ClassMaterial"> | number
+  accessStartTime?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  accessEndTime?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ClassMaterial"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClassMaterial"> | Date | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   session?: Prisma.XOR<Prisma.ClassSessionNullableScalarRelationFilter, Prisma.ClassSessionWhereInput> | null
   uploadedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  document?: Prisma.XOR<Prisma.DocumentNullableScalarRelationFilter, Prisma.DocumentWhereInput> | null
 }
 
 export type ClassMaterialOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentId?: Prisma.SortOrderInput | Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -314,12 +368,18 @@ export type ClassMaterialOrderByWithRelationInput = {
   originalName?: Prisma.SortOrderInput | Prisma.SortOrder
   mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   fileSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
+  accessStartTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  accessEndTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   class?: Prisma.ClassOrderByWithRelationInput
   session?: Prisma.ClassSessionOrderByWithRelationInput
   uploadedBy?: Prisma.UserOrderByWithRelationInput
+  document?: Prisma.DocumentOrderByWithRelationInput
 }
 
 export type ClassMaterialWhereUniqueInput = Prisma.AtLeast<{
@@ -329,6 +389,7 @@ export type ClassMaterialWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ClassMaterialWhereInput | Prisma.ClassMaterialWhereInput[]
   classId?: Prisma.StringFilter<"ClassMaterial"> | string
   sessionId?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
+  documentId?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   uploadedById?: Prisma.StringFilter<"ClassMaterial"> | string
   title?: Prisma.StringFilter<"ClassMaterial"> | string
   description?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
@@ -338,18 +399,25 @@ export type ClassMaterialWhereUniqueInput = Prisma.AtLeast<{
   originalName?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   mimeType?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   fileSize?: Prisma.BigIntNullableFilter<"ClassMaterial"> | bigint | number | null
+  isPublished?: Prisma.BoolFilter<"ClassMaterial"> | boolean
   publishedAt?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  order?: Prisma.IntFilter<"ClassMaterial"> | number
+  accessStartTime?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  accessEndTime?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ClassMaterial"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClassMaterial"> | Date | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   session?: Prisma.XOR<Prisma.ClassSessionNullableScalarRelationFilter, Prisma.ClassSessionWhereInput> | null
   uploadedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  document?: Prisma.XOR<Prisma.DocumentNullableScalarRelationFilter, Prisma.DocumentWhereInput> | null
 }, "id">
 
 export type ClassMaterialOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentId?: Prisma.SortOrderInput | Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -359,7 +427,12 @@ export type ClassMaterialOrderByWithAggregationInput = {
   originalName?: Prisma.SortOrderInput | Prisma.SortOrder
   mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   fileSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
+  accessStartTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  accessEndTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClassMaterialCountOrderByAggregateInput
@@ -376,6 +449,7 @@ export type ClassMaterialScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ClassMaterial"> | string
   classId?: Prisma.StringWithAggregatesFilter<"ClassMaterial"> | string
   sessionId?: Prisma.StringNullableWithAggregatesFilter<"ClassMaterial"> | string | null
+  documentId?: Prisma.StringNullableWithAggregatesFilter<"ClassMaterial"> | string | null
   uploadedById?: Prisma.StringWithAggregatesFilter<"ClassMaterial"> | string
   title?: Prisma.StringWithAggregatesFilter<"ClassMaterial"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"ClassMaterial"> | string | null
@@ -385,7 +459,12 @@ export type ClassMaterialScalarWhereWithAggregatesInput = {
   originalName?: Prisma.StringNullableWithAggregatesFilter<"ClassMaterial"> | string | null
   mimeType?: Prisma.StringNullableWithAggregatesFilter<"ClassMaterial"> | string | null
   fileSize?: Prisma.BigIntNullableWithAggregatesFilter<"ClassMaterial"> | bigint | number | null
+  isPublished?: Prisma.BoolWithAggregatesFilter<"ClassMaterial"> | boolean
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ClassMaterial"> | Date | string | null
+  order?: Prisma.IntWithAggregatesFilter<"ClassMaterial"> | number
+  accessStartTime?: Prisma.DateTimeNullableWithAggregatesFilter<"ClassMaterial"> | Date | string | null
+  accessEndTime?: Prisma.DateTimeNullableWithAggregatesFilter<"ClassMaterial"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ClassMaterial"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClassMaterial"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ClassMaterial"> | Date | string
 }
@@ -394,34 +473,46 @@ export type ClassMaterialCreateInput = {
   id?: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutMaterialsInput
   session?: Prisma.ClassSessionCreateNestedOneWithoutMaterialsInput
   uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedMaterialsInput
+  document?: Prisma.DocumentCreateNestedOneWithoutMaterialsInput
 }
 
 export type ClassMaterialUncheckedCreateInput = {
   id?: string
   classId: string
   sessionId?: string | null
+  documentId?: string | null
   uploadedById: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -436,18 +527,25 @@ export type ClassMaterialUpdateInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutMaterialsNestedInput
   session?: Prisma.ClassSessionUpdateOneWithoutMaterialsNestedInput
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedMaterialsNestedInput
+  document?: Prisma.DocumentUpdateOneWithoutMaterialsNestedInput
 }
 
 export type ClassMaterialUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -457,7 +555,12 @@ export type ClassMaterialUncheckedUpdateInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -466,16 +569,22 @@ export type ClassMaterialCreateManyInput = {
   id?: string
   classId: string
   sessionId?: string | null
+  documentId?: string | null
   uploadedById: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -490,7 +599,12 @@ export type ClassMaterialUpdateManyMutationInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -499,6 +613,7 @@ export type ClassMaterialUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -508,7 +623,12 @@ export type ClassMaterialUncheckedUpdateManyInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -527,6 +647,7 @@ export type ClassMaterialCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
+  documentId?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -536,19 +657,26 @@ export type ClassMaterialCountOrderByAggregateInput = {
   originalName?: Prisma.SortOrder
   mimeType?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  accessStartTime?: Prisma.SortOrder
+  accessEndTime?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type ClassMaterialAvgOrderByAggregateInput = {
   fileSize?: Prisma.SortOrder
+  order?: Prisma.SortOrder
 }
 
 export type ClassMaterialMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
+  documentId?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -558,7 +686,12 @@ export type ClassMaterialMaxOrderByAggregateInput = {
   originalName?: Prisma.SortOrder
   mimeType?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  accessStartTime?: Prisma.SortOrder
+  accessEndTime?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -567,6 +700,7 @@ export type ClassMaterialMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
+  documentId?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -576,13 +710,19 @@ export type ClassMaterialMinOrderByAggregateInput = {
   originalName?: Prisma.SortOrder
   mimeType?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  accessStartTime?: Prisma.SortOrder
+  accessEndTime?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type ClassMaterialSumOrderByAggregateInput = {
   fileSize?: Prisma.SortOrder
+  order?: Prisma.SortOrder
 }
 
 export type ClassMaterialCreateNestedManyWithoutUploadedByInput = {
@@ -723,36 +863,90 @@ export type NullableBigIntFieldUpdateOperationsInput = {
   divide?: bigint | number
 }
 
+export type ClassMaterialCreateNestedManyWithoutDocumentInput = {
+  create?: Prisma.XOR<Prisma.ClassMaterialCreateWithoutDocumentInput, Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput> | Prisma.ClassMaterialCreateWithoutDocumentInput[] | Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput[]
+  connectOrCreate?: Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput | Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput[]
+  createMany?: Prisma.ClassMaterialCreateManyDocumentInputEnvelope
+  connect?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+}
+
+export type ClassMaterialUncheckedCreateNestedManyWithoutDocumentInput = {
+  create?: Prisma.XOR<Prisma.ClassMaterialCreateWithoutDocumentInput, Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput> | Prisma.ClassMaterialCreateWithoutDocumentInput[] | Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput[]
+  connectOrCreate?: Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput | Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput[]
+  createMany?: Prisma.ClassMaterialCreateManyDocumentInputEnvelope
+  connect?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+}
+
+export type ClassMaterialUpdateManyWithoutDocumentNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassMaterialCreateWithoutDocumentInput, Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput> | Prisma.ClassMaterialCreateWithoutDocumentInput[] | Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput[]
+  connectOrCreate?: Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput | Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput[]
+  upsert?: Prisma.ClassMaterialUpsertWithWhereUniqueWithoutDocumentInput | Prisma.ClassMaterialUpsertWithWhereUniqueWithoutDocumentInput[]
+  createMany?: Prisma.ClassMaterialCreateManyDocumentInputEnvelope
+  set?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  disconnect?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  delete?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  connect?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  update?: Prisma.ClassMaterialUpdateWithWhereUniqueWithoutDocumentInput | Prisma.ClassMaterialUpdateWithWhereUniqueWithoutDocumentInput[]
+  updateMany?: Prisma.ClassMaterialUpdateManyWithWhereWithoutDocumentInput | Prisma.ClassMaterialUpdateManyWithWhereWithoutDocumentInput[]
+  deleteMany?: Prisma.ClassMaterialScalarWhereInput | Prisma.ClassMaterialScalarWhereInput[]
+}
+
+export type ClassMaterialUncheckedUpdateManyWithoutDocumentNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassMaterialCreateWithoutDocumentInput, Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput> | Prisma.ClassMaterialCreateWithoutDocumentInput[] | Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput[]
+  connectOrCreate?: Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput | Prisma.ClassMaterialCreateOrConnectWithoutDocumentInput[]
+  upsert?: Prisma.ClassMaterialUpsertWithWhereUniqueWithoutDocumentInput | Prisma.ClassMaterialUpsertWithWhereUniqueWithoutDocumentInput[]
+  createMany?: Prisma.ClassMaterialCreateManyDocumentInputEnvelope
+  set?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  disconnect?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  delete?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  connect?: Prisma.ClassMaterialWhereUniqueInput | Prisma.ClassMaterialWhereUniqueInput[]
+  update?: Prisma.ClassMaterialUpdateWithWhereUniqueWithoutDocumentInput | Prisma.ClassMaterialUpdateWithWhereUniqueWithoutDocumentInput[]
+  updateMany?: Prisma.ClassMaterialUpdateManyWithWhereWithoutDocumentInput | Prisma.ClassMaterialUpdateManyWithWhereWithoutDocumentInput[]
+  deleteMany?: Prisma.ClassMaterialScalarWhereInput | Prisma.ClassMaterialScalarWhereInput[]
+}
+
 export type ClassMaterialCreateWithoutUploadedByInput = {
   id?: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutMaterialsInput
   session?: Prisma.ClassSessionCreateNestedOneWithoutMaterialsInput
+  document?: Prisma.DocumentCreateNestedOneWithoutMaterialsInput
 }
 
 export type ClassMaterialUncheckedCreateWithoutUploadedByInput = {
   id?: string
   classId: string
   sessionId?: string | null
+  documentId?: string | null
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -790,6 +984,7 @@ export type ClassMaterialScalarWhereInput = {
   id?: Prisma.StringFilter<"ClassMaterial"> | string
   classId?: Prisma.StringFilter<"ClassMaterial"> | string
   sessionId?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
+  documentId?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   uploadedById?: Prisma.StringFilter<"ClassMaterial"> | string
   title?: Prisma.StringFilter<"ClassMaterial"> | string
   description?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
@@ -799,7 +994,12 @@ export type ClassMaterialScalarWhereInput = {
   originalName?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   mimeType?: Prisma.StringNullableFilter<"ClassMaterial"> | string | null
   fileSize?: Prisma.BigIntNullableFilter<"ClassMaterial"> | bigint | number | null
+  isPublished?: Prisma.BoolFilter<"ClassMaterial"> | boolean
   publishedAt?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  order?: Prisma.IntFilter<"ClassMaterial"> | number
+  accessStartTime?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  accessEndTime?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"ClassMaterial"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ClassMaterial"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClassMaterial"> | Date | string
 }
@@ -808,32 +1008,44 @@ export type ClassMaterialCreateWithoutClassInput = {
   id?: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   session?: Prisma.ClassSessionCreateNestedOneWithoutMaterialsInput
   uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedMaterialsInput
+  document?: Prisma.DocumentCreateNestedOneWithoutMaterialsInput
 }
 
 export type ClassMaterialUncheckedCreateWithoutClassInput = {
   id?: string
   sessionId?: string | null
+  documentId?: string | null
   uploadedById: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -868,32 +1080,44 @@ export type ClassMaterialCreateWithoutSessionInput = {
   id?: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutMaterialsInput
   uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedMaterialsInput
+  document?: Prisma.DocumentCreateNestedOneWithoutMaterialsInput
 }
 
 export type ClassMaterialUncheckedCreateWithoutSessionInput = {
   id?: string
   classId: string
+  documentId?: string | null
   uploadedById: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -924,19 +1148,97 @@ export type ClassMaterialUpdateManyWithWhereWithoutSessionInput = {
   data: Prisma.XOR<Prisma.ClassMaterialUpdateManyMutationInput, Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionInput>
 }
 
-export type ClassMaterialCreateManyUploadedByInput = {
+export type ClassMaterialCreateWithoutDocumentInput = {
   id?: string
-  classId: string
-  sessionId?: string | null
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  class: Prisma.ClassCreateNestedOneWithoutMaterialsInput
+  session?: Prisma.ClassSessionCreateNestedOneWithoutMaterialsInput
+  uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedMaterialsInput
+}
+
+export type ClassMaterialUncheckedCreateWithoutDocumentInput = {
+  id?: string
+  classId: string
+  sessionId?: string | null
+  uploadedById: string
+  title: string
+  description?: string | null
+  type?: $Enums.MaterialType
+  fileUrl?: string | null
+  externalUrl?: string | null
+  originalName?: string | null
+  mimeType?: string | null
+  fileSize?: bigint | number | null
+  isPublished?: boolean
+  publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ClassMaterialCreateOrConnectWithoutDocumentInput = {
+  where: Prisma.ClassMaterialWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassMaterialCreateWithoutDocumentInput, Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput>
+}
+
+export type ClassMaterialCreateManyDocumentInputEnvelope = {
+  data: Prisma.ClassMaterialCreateManyDocumentInput | Prisma.ClassMaterialCreateManyDocumentInput[]
+  skipDuplicates?: boolean
+}
+
+export type ClassMaterialUpsertWithWhereUniqueWithoutDocumentInput = {
+  where: Prisma.ClassMaterialWhereUniqueInput
+  update: Prisma.XOR<Prisma.ClassMaterialUpdateWithoutDocumentInput, Prisma.ClassMaterialUncheckedUpdateWithoutDocumentInput>
+  create: Prisma.XOR<Prisma.ClassMaterialCreateWithoutDocumentInput, Prisma.ClassMaterialUncheckedCreateWithoutDocumentInput>
+}
+
+export type ClassMaterialUpdateWithWhereUniqueWithoutDocumentInput = {
+  where: Prisma.ClassMaterialWhereUniqueInput
+  data: Prisma.XOR<Prisma.ClassMaterialUpdateWithoutDocumentInput, Prisma.ClassMaterialUncheckedUpdateWithoutDocumentInput>
+}
+
+export type ClassMaterialUpdateManyWithWhereWithoutDocumentInput = {
+  where: Prisma.ClassMaterialScalarWhereInput
+  data: Prisma.XOR<Prisma.ClassMaterialUpdateManyMutationInput, Prisma.ClassMaterialUncheckedUpdateManyWithoutDocumentInput>
+}
+
+export type ClassMaterialCreateManyUploadedByInput = {
+  id?: string
+  classId: string
+  sessionId?: string | null
+  documentId?: string | null
+  title: string
+  description?: string | null
+  type?: $Enums.MaterialType
+  fileUrl?: string | null
+  externalUrl?: string | null
+  originalName?: string | null
+  mimeType?: string | null
+  fileSize?: bigint | number | null
+  isPublished?: boolean
+  publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -951,17 +1253,24 @@ export type ClassMaterialUpdateWithoutUploadedByInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutMaterialsNestedInput
   session?: Prisma.ClassSessionUpdateOneWithoutMaterialsNestedInput
+  document?: Prisma.DocumentUpdateOneWithoutMaterialsNestedInput
 }
 
 export type ClassMaterialUncheckedUpdateWithoutUploadedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaterialTypeFieldUpdateOperationsInput | $Enums.MaterialType
@@ -970,7 +1279,12 @@ export type ClassMaterialUncheckedUpdateWithoutUploadedByInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -979,6 +1293,7 @@ export type ClassMaterialUncheckedUpdateManyWithoutUploadedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaterialTypeFieldUpdateOperationsInput | $Enums.MaterialType
@@ -987,7 +1302,12 @@ export type ClassMaterialUncheckedUpdateManyWithoutUploadedByInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -995,16 +1315,22 @@ export type ClassMaterialUncheckedUpdateManyWithoutUploadedByInput = {
 export type ClassMaterialCreateManyClassInput = {
   id?: string
   sessionId?: string | null
+  documentId?: string | null
   uploadedById: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1019,16 +1345,23 @@ export type ClassMaterialUpdateWithoutClassInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   session?: Prisma.ClassSessionUpdateOneWithoutMaterialsNestedInput
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedMaterialsNestedInput
+  document?: Prisma.DocumentUpdateOneWithoutMaterialsNestedInput
 }
 
 export type ClassMaterialUncheckedUpdateWithoutClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1038,7 +1371,12 @@ export type ClassMaterialUncheckedUpdateWithoutClassInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1046,6 +1384,7 @@ export type ClassMaterialUncheckedUpdateWithoutClassInput = {
 export type ClassMaterialUncheckedUpdateManyWithoutClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1055,7 +1394,12 @@ export type ClassMaterialUncheckedUpdateManyWithoutClassInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1063,16 +1407,22 @@ export type ClassMaterialUncheckedUpdateManyWithoutClassInput = {
 export type ClassMaterialCreateManySessionInput = {
   id?: string
   classId: string
+  documentId?: string | null
   uploadedById: string
   title: string
   description?: string | null
-  type: $Enums.MaterialType
+  type?: $Enums.MaterialType
   fileUrl?: string | null
   externalUrl?: string | null
   originalName?: string | null
   mimeType?: string | null
   fileSize?: bigint | number | null
+  isPublished?: boolean
   publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1087,16 +1437,23 @@ export type ClassMaterialUpdateWithoutSessionInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutMaterialsNestedInput
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedMaterialsNestedInput
+  document?: Prisma.DocumentUpdateOneWithoutMaterialsNestedInput
 }
 
 export type ClassMaterialUncheckedUpdateWithoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1106,7 +1463,12 @@ export type ClassMaterialUncheckedUpdateWithoutSessionInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1114,6 +1476,7 @@ export type ClassMaterialUncheckedUpdateWithoutSessionInput = {
 export type ClassMaterialUncheckedUpdateManyWithoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1123,7 +1486,104 @@ export type ClassMaterialUncheckedUpdateManyWithoutSessionInput = {
   originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ClassMaterialCreateManyDocumentInput = {
+  id?: string
+  classId: string
+  sessionId?: string | null
+  uploadedById: string
+  title: string
+  description?: string | null
+  type?: $Enums.MaterialType
+  fileUrl?: string | null
+  externalUrl?: string | null
+  originalName?: string | null
+  mimeType?: string | null
+  fileSize?: bigint | number | null
+  isPublished?: boolean
+  publishedAt?: Date | string | null
+  order?: number
+  accessStartTime?: Date | string | null
+  accessEndTime?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ClassMaterialUpdateWithoutDocumentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumMaterialTypeFieldUpdateOperationsInput | $Enums.MaterialType
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneRequiredWithoutMaterialsNestedInput
+  session?: Prisma.ClassSessionUpdateOneWithoutMaterialsNestedInput
+  uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedMaterialsNestedInput
+}
+
+export type ClassMaterialUncheckedUpdateWithoutDocumentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumMaterialTypeFieldUpdateOperationsInput | $Enums.MaterialType
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ClassMaterialUncheckedUpdateManyWithoutDocumentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumMaterialTypeFieldUpdateOperationsInput | $Enums.MaterialType
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  originalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accessStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1134,6 +1594,7 @@ export type ClassMaterialSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   classId?: boolean
   sessionId?: boolean
+  documentId?: boolean
   uploadedById?: boolean
   title?: boolean
   description?: boolean
@@ -1143,18 +1604,25 @@ export type ClassMaterialSelect<ExtArgs extends runtime.Types.Extensions.Interna
   originalName?: boolean
   mimeType?: boolean
   fileSize?: boolean
+  isPublished?: boolean
   publishedAt?: boolean
+  order?: boolean
+  accessStartTime?: boolean
+  accessEndTime?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   session?: boolean | Prisma.ClassMaterial$sessionArgs<ExtArgs>
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  document?: boolean | Prisma.ClassMaterial$documentArgs<ExtArgs>
 }, ExtArgs["result"]["classMaterial"]>
 
 export type ClassMaterialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   classId?: boolean
   sessionId?: boolean
+  documentId?: boolean
   uploadedById?: boolean
   title?: boolean
   description?: boolean
@@ -1164,18 +1632,25 @@ export type ClassMaterialSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   originalName?: boolean
   mimeType?: boolean
   fileSize?: boolean
+  isPublished?: boolean
   publishedAt?: boolean
+  order?: boolean
+  accessStartTime?: boolean
+  accessEndTime?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   session?: boolean | Prisma.ClassMaterial$sessionArgs<ExtArgs>
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  document?: boolean | Prisma.ClassMaterial$documentArgs<ExtArgs>
 }, ExtArgs["result"]["classMaterial"]>
 
 export type ClassMaterialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   classId?: boolean
   sessionId?: boolean
+  documentId?: boolean
   uploadedById?: boolean
   title?: boolean
   description?: boolean
@@ -1185,18 +1660,25 @@ export type ClassMaterialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   originalName?: boolean
   mimeType?: boolean
   fileSize?: boolean
+  isPublished?: boolean
   publishedAt?: boolean
+  order?: boolean
+  accessStartTime?: boolean
+  accessEndTime?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   session?: boolean | Prisma.ClassMaterial$sessionArgs<ExtArgs>
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  document?: boolean | Prisma.ClassMaterial$documentArgs<ExtArgs>
 }, ExtArgs["result"]["classMaterial"]>
 
 export type ClassMaterialSelectScalar = {
   id?: boolean
   classId?: boolean
   sessionId?: boolean
+  documentId?: boolean
   uploadedById?: boolean
   title?: boolean
   description?: boolean
@@ -1206,26 +1688,34 @@ export type ClassMaterialSelectScalar = {
   originalName?: boolean
   mimeType?: boolean
   fileSize?: boolean
+  isPublished?: boolean
   publishedAt?: boolean
+  order?: boolean
+  accessStartTime?: boolean
+  accessEndTime?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClassMaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "sessionId" | "uploadedById" | "title" | "description" | "type" | "fileUrl" | "externalUrl" | "originalName" | "mimeType" | "fileSize" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["classMaterial"]>
+export type ClassMaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "sessionId" | "documentId" | "uploadedById" | "title" | "description" | "type" | "fileUrl" | "externalUrl" | "originalName" | "mimeType" | "fileSize" | "isPublished" | "publishedAt" | "order" | "accessStartTime" | "accessEndTime" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["classMaterial"]>
 export type ClassMaterialInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   session?: boolean | Prisma.ClassMaterial$sessionArgs<ExtArgs>
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  document?: boolean | Prisma.ClassMaterial$documentArgs<ExtArgs>
 }
 export type ClassMaterialIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   session?: boolean | Prisma.ClassMaterial$sessionArgs<ExtArgs>
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  document?: boolean | Prisma.ClassMaterial$documentArgs<ExtArgs>
 }
 export type ClassMaterialIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   session?: boolean | Prisma.ClassMaterial$sessionArgs<ExtArgs>
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  document?: boolean | Prisma.ClassMaterial$documentArgs<ExtArgs>
 }
 
 export type $ClassMaterialPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1234,11 +1724,13 @@ export type $ClassMaterialPayload<ExtArgs extends runtime.Types.Extensions.Inter
     class: Prisma.$ClassPayload<ExtArgs>
     session: Prisma.$ClassSessionPayload<ExtArgs> | null
     uploadedBy: Prisma.$UserPayload<ExtArgs>
+    document: Prisma.$DocumentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     classId: string
     sessionId: string | null
+    documentId: string | null
     uploadedById: string
     title: string
     description: string | null
@@ -1248,7 +1740,12 @@ export type $ClassMaterialPayload<ExtArgs extends runtime.Types.Extensions.Inter
     originalName: string | null
     mimeType: string | null
     fileSize: bigint | null
+    isPublished: boolean
     publishedAt: Date | null
+    order: number
+    accessStartTime: Date | null
+    accessEndTime: Date | null
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["classMaterial"]>
@@ -1648,6 +2145,7 @@ export interface Prisma__ClassMaterialClient<T, Null = never, ExtArgs extends ru
   class<T extends Prisma.ClassDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassDefaultArgs<ExtArgs>>): Prisma.Prisma__ClassClient<runtime.Types.Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   session<T extends Prisma.ClassMaterial$sessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassMaterial$sessionArgs<ExtArgs>>): Prisma.Prisma__ClassSessionClient<runtime.Types.Result.GetResult<Prisma.$ClassSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   uploadedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  document<T extends Prisma.ClassMaterial$documentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassMaterial$documentArgs<ExtArgs>>): Prisma.Prisma__DocumentClient<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1680,6 +2178,7 @@ export interface ClassMaterialFieldRefs {
   readonly id: Prisma.FieldRef<"ClassMaterial", 'String'>
   readonly classId: Prisma.FieldRef<"ClassMaterial", 'String'>
   readonly sessionId: Prisma.FieldRef<"ClassMaterial", 'String'>
+  readonly documentId: Prisma.FieldRef<"ClassMaterial", 'String'>
   readonly uploadedById: Prisma.FieldRef<"ClassMaterial", 'String'>
   readonly title: Prisma.FieldRef<"ClassMaterial", 'String'>
   readonly description: Prisma.FieldRef<"ClassMaterial", 'String'>
@@ -1689,7 +2188,12 @@ export interface ClassMaterialFieldRefs {
   readonly originalName: Prisma.FieldRef<"ClassMaterial", 'String'>
   readonly mimeType: Prisma.FieldRef<"ClassMaterial", 'String'>
   readonly fileSize: Prisma.FieldRef<"ClassMaterial", 'BigInt'>
+  readonly isPublished: Prisma.FieldRef<"ClassMaterial", 'Boolean'>
   readonly publishedAt: Prisma.FieldRef<"ClassMaterial", 'DateTime'>
+  readonly order: Prisma.FieldRef<"ClassMaterial", 'Int'>
+  readonly accessStartTime: Prisma.FieldRef<"ClassMaterial", 'DateTime'>
+  readonly accessEndTime: Prisma.FieldRef<"ClassMaterial", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"ClassMaterial", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ClassMaterial", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ClassMaterial", 'DateTime'>
 }
@@ -2109,6 +2613,25 @@ export type ClassMaterial$sessionArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.ClassSessionInclude<ExtArgs> | null
   where?: Prisma.ClassSessionWhereInput
+}
+
+/**
+ * ClassMaterial.document
+ */
+export type ClassMaterial$documentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Document
+   */
+  select?: Prisma.DocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Document
+   */
+  omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  where?: Prisma.DocumentWhereInput
 }
 
 /**

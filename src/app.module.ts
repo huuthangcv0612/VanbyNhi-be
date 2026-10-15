@@ -15,6 +15,8 @@ import { AssignmentsModule } from './assignments/assignments.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { CalendarModule } from './calendar/calendar.module.js';
 import { SchedulesModule } from './schedules/schedules.module.js';
+import { StorageModule } from './storage/storage.module.js';
+import { DocumentsModule } from './documents/documents.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -43,6 +45,8 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     NotificationsModule,
     CalendarModule,
     SchedulesModule,
+    StorageModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

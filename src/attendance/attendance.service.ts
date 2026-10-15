@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import {
@@ -16,6 +17,41 @@ import type { UpdateAttendanceDto } from './dto/update-attendance.dto.js';
 @Injectable()
 export class AttendanceService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Kiểm tra quyền quản lý điểm danh của TEACHER hoặc ADMIN
+   */
+  async validateTeacherOrAdminAccess(
+    sessionId: string,
+    userId: string,
+    userRole: UserRole,
+  ) {
+    const session = await this.prisma.classSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        class: { select: { id: true, teacherId: true } },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+    }
+
+    if (userRole === UserRole.ADMIN) {
+      return session;
+    }
+
+    if (userRole === UserRole.TEACHER) {
+      if (session.class.teacherId !== userId) {
+        throw new ForbiddenException(
+          'Bạn không phải là giáo viên phụ trách của lớp học này',
+        );
+      }
+      return session;
+    }
+
+    throw new ForbiddenException('Bạn không có quyền quản lý điểm danh');
+  }
 
   /**
    * Lấy danh sách điểm danh của một buổi học kèm danh sách học sinh của lớp
@@ -173,6 +209,25 @@ export class AttendanceService {
       );
     }
 
+    // Không đánh dấu vắng khi buổi học còn diễn ra
+    const now = new Date();
+    const isOngoing =
+      session.status === SessionStatus.IN_PROGRESS ||
+      (session.status === SessionStatus.SCHEDULED &&
+        session.endTime &&
+        now < new Date(session.endTime));
+
+    if (isOngoing) {
+      const hasAbsent = dto.records.some(
+        (r) => r.status === AttendanceStatus.ABSENT,
+      );
+      if (hasAbsent) {
+        throw new BadRequestException(
+          'Không thể đánh dấu vắng (ABSENT) khi buổi học đang diễn ra',
+        );
+      }
+    }
+
     // 1. Kiểm tra tính hợp lệ của tất cả học sinh trong danh sách: phải thuộc lớp của session
     const studentIds = [...new Set(dto.records.map((r) => r.studentId))];
 
@@ -283,17 +338,34 @@ export class AttendanceService {
     attendanceId: string,
     editorId: string,
     dto: UpdateAttendanceDto,
+    editorRole: UserRole = UserRole.ADMIN,
   ) {
     const attendance = await this.prisma.attendance.findUnique({
       where: { id: attendanceId },
       include: {
-        session: { select: { id: true, status: true } },
+        session: {
+          select: {
+            id: true,
+            status: true,
+            endTime: true,
+            class: { select: { teacherId: true } },
+          },
+        },
       },
     });
 
     if (!attendance) {
       throw new NotFoundException(
         `Không tìm thấy bản ghi điểm danh với ID ${attendanceId}`,
+      );
+    }
+
+    if (
+      editorRole === UserRole.TEACHER &&
+      attendance.session.class?.teacherId !== editorId
+    ) {
+      throw new ForbiddenException(
+        'Bạn không phải là giáo viên phụ trách của buổi học này',
       );
     }
 
@@ -306,6 +378,21 @@ export class AttendanceService {
     const oldStatus = attendance.status;
     const newStatus = dto.status;
     const isStatusChanged = oldStatus !== newStatus;
+
+    // Không đánh dấu vắng khi buổi học còn diễn ra
+    if (newStatus === AttendanceStatus.ABSENT) {
+      const now = new Date();
+      const isOngoing =
+        attendance.session.status === SessionStatus.IN_PROGRESS ||
+        (attendance.session.status === SessionStatus.SCHEDULED &&
+          attendance.session.endTime &&
+          now < new Date(attendance.session.endTime));
+      if (isOngoing) {
+        throw new BadRequestException(
+          'Không thể đánh dấu vắng (ABSENT) khi buổi học đang diễn ra',
+        );
+      }
+    }
 
     // Transaction cập nhật attendance và ghi change log
     const updated = await this.prisma.$transaction(async (tx) => {

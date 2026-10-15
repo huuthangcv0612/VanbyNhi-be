@@ -11,14 +11,24 @@ import {
   UserRole,
   ClassStatus,
   MemberStatus,
+  SessionStatus,
+  AttendanceStatus,
 } from '../../generated/prisma/client.js';
+import { MeetAccessService } from '../sessions/meet-access.service.js';
 import type { StudentJoinClassDto } from './dto/student-join-class.dto.js';
 import type { QueryStudentClassesDto } from './dto/query-student-classes.dto.js';
 import type { QueryStudentRequestsDto } from './dto/query-student-requests.dto.js';
 
 @Injectable()
 export class StudentClassesService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly meetAccessService: MeetAccessService;
+
+  constructor(
+    private readonly prisma: PrismaService,
+    meetAccessService?: MeetAccessService,
+  ) {
+    this.meetAccessService = meetAccessService ?? new MeetAccessService(prisma);
+  }
 
   /**
    * Học sinh gửi yêu cầu tham gia lớp học bằng joinCode
@@ -203,12 +213,65 @@ export class StudentClassesService {
       this.prisma.enrollment.count({ where }),
     ]);
 
-    const formattedItems = items.map((item) => ({
-      membershipId: item.id,
-      joinedAt: item.joinedAt,
-      effectiveTuition: item.tuitionOverride ?? item.class.monthlyTuition,
-      class: item.class,
-    }));
+    const classIds = items.map((item) => item.class.id);
+    const now = new Date();
+
+    let upcomingSessions: any[] = [];
+    if (this.prisma.classSession?.findMany && classIds.length > 0) {
+      upcomingSessions = await this.prisma.classSession.findMany({
+        where: {
+          classId: { in: classIds },
+          status: { in: [SessionStatus.SCHEDULED, SessionStatus.IN_PROGRESS] },
+          endTime: { gte: now },
+        },
+        orderBy: { startTime: 'asc' },
+      });
+    }
+
+    const nextSessionByClass = new Map<string, any>();
+    for (const sess of upcomingSessions) {
+      if (!nextSessionByClass.has(sess.classId)) {
+        nextSessionByClass.set(sess.classId, sess);
+      }
+    }
+
+    const formattedItems = items.map((item) => {
+      const nextSess = nextSessionByClass.get(item.class.id);
+      let nextSessionData: any = null;
+      if (nextSess) {
+        const meetAccess = this.meetAccessService.checkJoinWindow(
+          { ...nextSess, class: item.class },
+          now,
+        );
+        nextSessionData = {
+          id: nextSess.id,
+          title: nextSess.title,
+          startTime: nextSess.startTime,
+          endTime: nextSess.endTime,
+          status: nextSess.status,
+          canJoinMeet: meetAccess.canJoin,
+          meetUrl: meetAccess.canJoin ? meetAccess.meetUrl : null,
+          opensAt: meetAccess.opensAt,
+          closesAt: meetAccess.closesAt,
+          isLive: meetAccess.isLive,
+        };
+      }
+
+      return {
+        membershipId: item.id,
+        joinedAt: item.joinedAt,
+        effectiveTuition: item.tuitionOverride ?? item.class.monthlyTuition,
+        class: {
+          id: item.class.id,
+          name: item.class.name,
+          description: item.class.description,
+          status: item.class.status,
+          monthlyTuition: item.class.monthlyTuition,
+          teacher: item.class.teacher,
+          nextSession: nextSessionData,
+        },
+      };
+    });
 
     return {
       items: formattedItems,
@@ -258,15 +321,83 @@ export class StudentClassesService {
       );
     }
 
+    const now = new Date();
+    let nextSessionData: any = null;
+    if (this.prisma.classSession?.findFirst) {
+      const nextSession = await this.prisma.classSession.findFirst({
+        where: {
+          classId,
+          status: { in: [SessionStatus.SCHEDULED, SessionStatus.IN_PROGRESS] },
+          endTime: { gte: now },
+        },
+        orderBy: { startTime: 'asc' },
+      });
+
+      if (nextSession) {
+        const meetAccess = this.meetAccessService.checkJoinWindow(
+          { ...nextSession, class: classEntity },
+          now,
+        );
+        nextSessionData = {
+          id: nextSession.id,
+          title: nextSession.title,
+          startTime: nextSession.startTime,
+          endTime: nextSession.endTime,
+          status: nextSession.status,
+          canJoinMeet: meetAccess.canJoin,
+          meetUrl: meetAccess.canJoin ? meetAccess.meetUrl : null,
+          opensAt: meetAccess.opensAt,
+          closesAt: meetAccess.closesAt,
+          isLive: meetAccess.isLive,
+        };
+      }
+    }
+
+    let attendanceSummary = {
+      totalCompletedSessions: 0,
+      attendedCount: 0,
+      attendanceRate: 100,
+    };
+
+    if (this.prisma.classSession?.count && this.prisma.attendance?.findMany) {
+      const [totalCompleted, myAttendances] = await Promise.all([
+        this.prisma.classSession.count({
+          where: { classId, status: SessionStatus.COMPLETED },
+        }),
+        this.prisma.attendance.findMany({
+          where: {
+            studentId,
+            session: { classId },
+            status: { in: [AttendanceStatus.PRESENT, AttendanceStatus.LATE] },
+          },
+          select: { id: true },
+        }),
+      ]);
+
+      const attendedCount = myAttendances.length;
+      const rate =
+        totalCompleted > 0
+          ? Math.round((attendedCount / totalCompleted) * 100)
+          : 100;
+
+      attendanceSummary = {
+        totalCompletedSessions: totalCompleted,
+        attendedCount,
+        attendanceRate: rate,
+      };
+    }
+
     return {
       id: classEntity.id,
       name: classEntity.name,
       description: classEntity.description,
       status: classEntity.status,
-      defaultMeetUrl: classEntity.defaultMeetUrl,
+      defaultMeetUrl: nextSessionData?.canJoinMeet ? nextSessionData.meetUrl : null,
       teacher: classEntity.teacher,
       joinedAt: membership.joinedAt,
       membershipId: membership.id,
+      nextSession: nextSessionData,
+      attendanceSummary,
     };
   }
 

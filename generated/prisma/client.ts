@@ -107,6 +107,21 @@ export type AssignmentSubmission = Prisma.AssignmentSubmissionModel
  */
 export type ClassMaterial = Prisma.ClassMaterialModel
 /**
+ * Model DocumentCategory
+ * 
+ */
+export type DocumentCategory = Prisma.DocumentCategoryModel
+/**
+ * Model Document
+ * 
+ */
+export type Document = Prisma.DocumentModel
+/**
+ * Model UploadSession
+ * 
+ */
+export type UploadSession = Prisma.UploadSessionModel
+/**
  * Model Notification
  * 
  */

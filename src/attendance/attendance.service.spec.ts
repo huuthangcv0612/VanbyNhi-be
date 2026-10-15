@@ -1,10 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { AttendanceService } from './attendance.service.js';
 import {
   AttendanceStatus,
   SessionStatus,
   MemberStatus,
+  UserRole,
 } from '../../generated/prisma/client.js';
 
 describe('AttendanceService', () => {
@@ -280,6 +285,123 @@ describe('AttendanceService', () => {
           status: AttendanceStatus.PRESENT,
         }),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('chặn đánh dấu vắng (ABSENT) khi buổi học đang diễn ra (LIVE / IN_PROGRESS)', async () => {
+      prismaMock.attendance.findUnique.mockResolvedValue({
+        id: 'att1',
+        status: AttendanceStatus.PRESENT,
+        session: {
+          id: 's1',
+          status: SessionStatus.IN_PROGRESS,
+          endTime: new Date(Date.now() + 3600000),
+          class: { teacherId: 't1' },
+        },
+      });
+
+      await expect(
+        attendanceService.updateAttendance('att1', 't1', {
+          status: AttendanceStatus.ABSENT,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('từ chối giáo viên không phụ trách lớp sửa điểm danh (403)', async () => {
+      prismaMock.attendance.findUnique.mockResolvedValue({
+        id: 'att1',
+        status: AttendanceStatus.PRESENT,
+        session: {
+          id: 's1',
+          status: SessionStatus.COMPLETED,
+          endTime: new Date(Date.now() - 3600000),
+          class: { teacherId: 't_owner' },
+        },
+      });
+
+      await expect(
+        attendanceService.updateAttendance(
+          'att1',
+          't_intruder',
+          { status: AttendanceStatus.LATE },
+          UserRole.TEACHER,
+        ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('validateTeacherOrAdminAccess', () => {
+    it('cho phép ADMIN truy cập bất kỳ buổi học nào', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        class: { id: 'c1', teacherId: 't1' },
+      });
+
+      const res = await attendanceService.validateTeacherOrAdminAccess(
+        's1',
+        'admin1',
+        UserRole.ADMIN,
+      );
+      expect(res.id).toBe('s1');
+    });
+
+    it('cho phép TEACHER phụ trách lớp truy cập buổi học của mình', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        class: { id: 'c1', teacherId: 't1' },
+      });
+
+      const res = await attendanceService.validateTeacherOrAdminAccess(
+        's1',
+        't1',
+        UserRole.TEACHER,
+      );
+      expect(res.id).toBe('s1');
+    });
+
+    it('từ chối TEACHER không phụ trách lớp (403)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        class: { id: 'c1', teacherId: 't_owner' },
+      });
+
+      await expect(
+        attendanceService.validateTeacherOrAdminAccess(
+          's1',
+          't_other',
+          UserRole.TEACHER,
+        ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('ném NotFoundException nếu buổi học không tồn tại (404)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue(null);
+
+      await expect(
+        attendanceService.validateTeacherOrAdminAccess(
+          's999',
+          't1',
+          UserRole.TEACHER,
+        ),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('batchSaveAttendance - Quy tắc không đánh dấu vắng khi buổi học đang diễn ra', () => {
+    it('chặn ghi nhận ABSENT trong batch khi buổi học đang diễn ra', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        status: SessionStatus.IN_PROGRESS,
+        endTime: new Date(Date.now() + 3600000),
+      });
+
+      await expect(
+        attendanceService.batchSaveAttendance('s1', 't1', {
+          records: [
+            { studentId: 'stu1', status: AttendanceStatus.ABSENT },
+          ],
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 });

@@ -7,9 +7,10 @@ import { StudentClassesService } from './student-classes.service.js';
 import { StudentClassesController } from './student-classes.controller.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
 import { AuthModule } from '../auth/auth.module.js';
+import { SessionsModule } from '../sessions/sessions.module.js';
 
 @Module({
-  imports: [PrismaModule, AuthModule],
+  imports: [PrismaModule, AuthModule, SessionsModule],
   controllers: [
     ClassesController,
     TeacherClassesController,

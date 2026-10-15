@@ -12,6 +12,7 @@ import {
   UserRole,
   ClassStatus,
   MemberStatus,
+  SessionStatus,
 } from '../../generated/prisma/client.js';
 import type { TeacherCreateClassDto } from './dto/teacher-create-class.dto.js';
 import type { TeacherUpdateClassDto } from './dto/teacher-update-class.dto.js';
@@ -137,55 +138,167 @@ export class TeacherClassesService {
 
   /**
    * Giáo viên xem danh sách các lớp học của mình
+   * Ưu tiên sắp xếp:
+   * 1. Lớp có buổi học đang diễn ra (IN_PROGRESS)
+   * 2. Lớp có buổi học sắp tới gần nhất (SCHEDULED, endTime >= now), startTime ASC
+   * 3. Lớp không có buổi học sắp tới (ACTIVE trước, sau đó trạng thái khác), createdAt DESC
+   * Tie-breaker: startTime ASC, createdAt DESC, name ASC, id ASC
    */
   async getMyClasses(teacherId: string, query: QueryTeacherClassesDto) {
     const page = Math.max(1, query.page ?? 1);
     const limit = Math.min(100, Math.max(1, query.limit ?? 10));
     const skip = (page - 1) * limit;
+    const now = new Date();
 
-    const where: Prisma.ClassWhereInput = {
-      teacherId,
-    };
+    const statusClause = query.status
+      ? Prisma.sql`AND c.status = ${query.status}::"ClassStatus"`
+      : Prisma.empty;
 
-    if (query.status) {
-      where.status = query.status;
-    }
+    const searchClause = query.search
+      ? Prisma.sql`AND (c.name ILIKE ${`%${query.search}%`} OR c."joinCode" ILIKE ${`%${query.search}%`} OR c.description ILIKE ${`%${query.search}%`})`
+      : Prisma.empty;
 
-    if (query.search) {
-      where.OR = [
-        { name: { contains: query.search, mode: 'insensitive' } },
-        { joinCode: { contains: query.search, mode: 'insensitive' } },
-        { description: { contains: query.search, mode: 'insensitive' } },
-      ];
-    }
-
-    const [items, total] = await Promise.all([
-      this.prisma.class.findMany({
-        where,
-        include: {
-          _count: {
-            select: {
-              members: {
-                where: { status: MemberStatus.ACTIVE },
-              },
-              sessions: true,
-            },
-          },
-        },
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.class.count({ where }),
+    const [countResult, rows] = await Promise.all([
+      this.prisma.$queryRaw<Array<{ count: number }>>`
+        SELECT COUNT(*)::int AS count
+        FROM "Class" c
+        WHERE c."teacherId" = ${teacherId}
+          ${statusClause}
+          ${searchClause}
+      `,
+      this.prisma.$queryRaw<
+        Array<{
+          id: string;
+          name: string;
+          description: string | null;
+          classCode: string;
+          joinCode: string;
+          maxStudents: number | null;
+          defaultMeetUrl: string | null;
+          monthlyTuition: any;
+          status: ClassStatus;
+          createdById: string;
+          teacherId: string;
+          createdAt: Date;
+          updatedAt: Date;
+          activeStudentCount: number;
+          totalSessionsCount: number;
+          nextSession_id: string | null;
+          nextSession_title: string | null;
+          nextSession_description: string | null;
+          nextSession_startTime: Date | null;
+          nextSession_endTime: Date | null;
+          nextSession_status: SessionStatus | null;
+        }>
+      >`
+        WITH candidate_sessions AS (
+          SELECT 
+            cs.id,
+            cs."classId",
+            cs.title,
+            cs.description,
+            cs."startTime",
+            cs."endTime",
+            cs.status,
+            ROW_NUMBER() OVER (
+              PARTITION BY cs."classId" 
+              ORDER BY 
+                CASE WHEN cs.status = 'IN_PROGRESS' THEN 1 ELSE 2 END,
+                cs."startTime" ASC,
+                cs.id ASC
+            ) as rn
+          FROM "ClassSession" cs
+          JOIN "Class" c ON cs."classId" = c.id
+          WHERE c."teacherId" = ${teacherId}
+            AND (
+              cs.status = 'IN_PROGRESS'
+              OR (cs.status = 'SCHEDULED' AND cs."endTime" >= ${now})
+            )
+        ),
+        next_sessions AS (
+          SELECT * FROM candidate_sessions WHERE rn = 1
+        )
+        SELECT 
+          c.id,
+          c.name,
+          c.description,
+          c."classCode",
+          c."joinCode",
+          c."maxStudents",
+          c."defaultMeetUrl",
+          c."monthlyTuition",
+          c.status,
+          c."createdById",
+          c."teacherId",
+          c."createdAt",
+          c."updatedAt",
+          (SELECT COUNT(*)::int FROM "ClassMember" cm WHERE cm."classId" = c.id AND cm.status = 'ACTIVE') AS "activeStudentCount",
+          (SELECT COUNT(*)::int FROM "ClassSession" cs WHERE cs."classId" = c.id) AS "totalSessionsCount",
+          ns.id AS "nextSession_id",
+          ns.title AS "nextSession_title",
+          ns.description AS "nextSession_description",
+          ns."startTime" AS "nextSession_startTime",
+          ns."endTime" AS "nextSession_endTime",
+          ns.status AS "nextSession_status",
+          CASE 
+            WHEN ns.status = 'IN_PROGRESS' THEN 1
+            WHEN ns.id IS NOT NULL THEN 2
+            WHEN c.status = 'ACTIVE' THEN 3
+            ELSE 4
+          END AS priority_score
+        FROM "Class" c
+        LEFT JOIN next_sessions ns ON ns."classId" = c.id
+        WHERE c."teacherId" = ${teacherId}
+          ${statusClause}
+          ${searchClause}
+        ORDER BY 
+          priority_score ASC,
+          ns."startTime" ASC NULLS LAST,
+          c."createdAt" DESC,
+          c.name ASC,
+          c.id ASC
+        LIMIT ${limit} OFFSET ${skip}
+      `,
     ]);
 
-    const enrichedItems = items.map((cls) => ({
-      ...cls,
-      activeStudentCount: cls._count.members,
+    const total = countResult[0]?.count ?? 0;
+
+    const formattedItems = rows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      classCode: row.classCode,
+      joinCode: row.joinCode,
+      maxStudents: row.maxStudents,
+      defaultMeetUrl: row.defaultMeetUrl,
+      monthlyTuition:
+        row.monthlyTuition instanceof Prisma.Decimal
+          ? row.monthlyTuition
+          : new Prisma.Decimal(row.monthlyTuition ?? 0),
+      status: row.status,
+      createdById: row.createdById,
+      teacherId: row.teacherId,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      _count: {
+        members: Number(row.activeStudentCount),
+        sessions: Number(row.totalSessionsCount),
+      },
+      activeStudentCount: Number(row.activeStudentCount),
+      nextSession: row.nextSession_id
+        ? {
+            id: row.nextSession_id,
+            title: row.nextSession_title,
+            description: row.nextSession_description,
+            startTime: row.nextSession_startTime,
+            endTime: row.nextSession_endTime,
+            status: row.nextSession_status,
+          }
+        : null,
     }));
 
     return {
-      items: enrichedItems,
+      items: formattedItems,
       pagination: {
         total,
         page,
@@ -201,7 +314,14 @@ export class TeacherClassesService {
   async getClassDetail(teacherId: string, classId: string) {
     const classEntity = await this.verifyClassOwnership(teacherId, classId);
 
-    const [activeCount, pendingCount, sessionCount] = await Promise.all([
+    const now = new Date();
+    const [
+      activeCount,
+      pendingCount,
+      sessionCount,
+      liveSession,
+      nextScheduledSession,
+    ] = await Promise.all([
       this.prisma.enrollment.count({
         where: { classId, status: MemberStatus.ACTIVE },
       }),
@@ -211,13 +331,46 @@ export class TeacherClassesService {
       this.prisma.classSession.count({
         where: { classId },
       }),
+      this.prisma.classSession.findFirst({
+        where: {
+          classId,
+          status: SessionStatus.IN_PROGRESS,
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          startTime: true,
+          endTime: true,
+          status: true,
+        },
+      }),
+      this.prisma.classSession.findFirst({
+        where: {
+          classId,
+          status: SessionStatus.SCHEDULED,
+          endTime: { gte: now },
+        },
+        orderBy: { startTime: 'asc' },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          startTime: true,
+          endTime: true,
+          status: true,
+        },
+      }),
     ]);
+
+    const nextSession = liveSession ?? nextScheduledSession ?? null;
 
     return {
       ...classEntity,
       activeStudentCount: activeCount,
       pendingRequestsCount: pendingCount,
       totalSessionsCount: sessionCount,
+      nextSession,
     };
   }
 

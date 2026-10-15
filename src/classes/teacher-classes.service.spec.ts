@@ -10,6 +10,7 @@ import {
   UserRole,
   ClassStatus,
   MemberStatus,
+  SessionStatus,
 } from '../../generated/prisma/client.js';
 
 describe('TeacherClassesService', () => {
@@ -37,6 +38,8 @@ describe('TeacherClassesService', () => {
       },
       classSession: {
         count: vi.fn(),
+        findFirst: vi.fn(),
+        findMany: vi.fn(),
       },
       $transaction: vi.fn((callback) => callback(prismaMock)),
       $queryRaw: vi.fn(),
@@ -96,25 +99,117 @@ describe('TeacherClassesService', () => {
   });
 
   describe('getMyClasses & getClassDetail', () => {
-    it('lấy danh sách lớp của giáo viên', async () => {
-      prismaMock.class.findMany.mockResolvedValue([
-        {
-          id: 'c1',
-          name: 'Lớp 1',
-          _count: { members: 5, sessions: 2 },
-        },
-      ]);
-      prismaMock.class.count.mockResolvedValue(1);
+    it('lấy danh sách lớp của giáo viên với nextSession và số lượng học sinh', async () => {
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([{ count: 1 }]) // count query
+        .mockResolvedValueOnce([
+          {
+            id: 'c1',
+            name: 'Lớp 1',
+            description: 'Mô tả lớp 1',
+            classCode: 'CODE1',
+            joinCode: 'JOIN1',
+            maxStudents: 30,
+            defaultMeetUrl: 'https://meet.google.com/c1',
+            monthlyTuition: 1500000,
+            status: ClassStatus.ACTIVE,
+            createdById: 'teacher-1',
+            teacherId: 'teacher-1',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            activeStudentCount: 5,
+            totalSessionsCount: 2,
+            nextSession_id: 's1',
+            nextSession_title: 'Buổi 1',
+            nextSession_description: 'Mô tả buổi 1',
+            nextSession_startTime: new Date('2026-10-20T08:00:00Z'),
+            nextSession_endTime: new Date('2026-10-20T10:00:00Z'),
+            nextSession_status: SessionStatus.SCHEDULED,
+          },
+        ]); // data query
 
       const res = await service.getMyClasses('teacher-1', {
         page: 1,
         limit: 10,
       });
+
       expect(res.items).toHaveLength(1);
       expect(res.items[0].activeStudentCount).toBe(5);
+      expect(res.items[0].nextSession).toBeDefined();
+      expect(res.items[0].nextSession?.id).toBe('s1');
+      expect(res.items[0].nextSession?.status).toBe(SessionStatus.SCHEDULED);
+      expect(res.pagination.total).toBe(1);
     });
 
-    it('xem chi tiết lớp của mình thành công', async () => {
+    it('ưu tiên lớp có buổi LIVE (IN_PROGRESS) lên trước lớp có buổi SCHEDULED và lớp không có lịch', async () => {
+      // Mock rows trả về đúng thứ tự do database order by priority_score
+      const rows = [
+        {
+          id: 'c-live',
+          name: 'Lớp Đang Diễn Ra',
+          status: ClassStatus.ACTIVE,
+          activeStudentCount: 10,
+          totalSessionsCount: 5,
+          nextSession_id: 'sess-live',
+          nextSession_title: 'Buổi Đang Dạy',
+          nextSession_startTime: new Date('2026-10-15T09:00:00Z'),
+          nextSession_endTime: new Date('2026-10-15T11:00:00Z'),
+          nextSession_status: SessionStatus.IN_PROGRESS,
+          priority_score: 1,
+        },
+        {
+          id: 'c-upcoming-1',
+          name: 'Lớp Sắp Diễn Ra Sớm Nhất',
+          status: ClassStatus.ACTIVE,
+          activeStudentCount: 8,
+          totalSessionsCount: 3,
+          nextSession_id: 'sess-up-1',
+          nextSession_title: 'Buổi Ngày Mai Sáng',
+          nextSession_startTime: new Date('2026-10-16T08:00:00Z'),
+          nextSession_endTime: new Date('2026-10-16T10:00:00Z'),
+          nextSession_status: SessionStatus.SCHEDULED,
+          priority_score: 2,
+        },
+        {
+          id: 'c-upcoming-2',
+          name: 'Lớp Sắp Diễn Ra Chiều Mai',
+          status: ClassStatus.ACTIVE,
+          activeStudentCount: 12,
+          totalSessionsCount: 4,
+          nextSession_id: 'sess-up-2',
+          nextSession_title: 'Buổi Ngày Mai Chiều',
+          nextSession_startTime: new Date('2026-10-16T14:00:00Z'),
+          nextSession_endTime: new Date('2026-10-16T16:00:00Z'),
+          nextSession_status: SessionStatus.SCHEDULED,
+          priority_score: 2,
+        },
+        {
+          id: 'c-no-session',
+          name: 'Lớp Chưa Có Lịch',
+          status: ClassStatus.ACTIVE,
+          activeStudentCount: 0,
+          totalSessionsCount: 0,
+          nextSession_id: null,
+          nextSession_status: null,
+          priority_score: 3,
+        },
+      ];
+
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([{ count: 4 }])
+        .mockResolvedValueOnce(rows);
+
+      const res = await service.getMyClasses('teacher-1', {});
+      expect(res.items).toHaveLength(4);
+      expect(res.items[0].id).toBe('c-live');
+      expect(res.items[0].nextSession?.status).toBe(SessionStatus.IN_PROGRESS);
+      expect(res.items[1].id).toBe('c-upcoming-1');
+      expect(res.items[2].id).toBe('c-upcoming-2');
+      expect(res.items[3].id).toBe('c-no-session');
+      expect(res.items[3].nextSession).toBeNull();
+    });
+
+    it('xem chi tiết lớp của mình thành công và trả về nextSession', async () => {
       prismaMock.class.findUnique.mockResolvedValue({
         id: 'c1',
         name: 'Lớp 1',
@@ -124,11 +219,23 @@ describe('TeacherClassesService', () => {
         .mockResolvedValueOnce(10) // active
         .mockResolvedValueOnce(2); // pending
       prismaMock.classSession.count.mockResolvedValue(4);
+      prismaMock.classSession.findFirst
+        .mockResolvedValueOnce(null) // liveSession
+        .mockResolvedValueOnce({
+          id: 's-next',
+          title: 'Buổi Tiếp Theo',
+          startTime: new Date('2026-10-25T08:00:00Z'),
+          endTime: new Date('2026-10-25T10:00:00Z'),
+          status: SessionStatus.SCHEDULED,
+        });
 
       const res = await service.getClassDetail('teacher-1', 'c1');
       expect(res.id).toBe('c1');
       expect(res.activeStudentCount).toBe(10);
       expect(res.pendingRequestsCount).toBe(2);
+      expect(res.totalSessionsCount).toBe(4);
+      expect(res.nextSession).toBeDefined();
+      expect(res.nextSession?.id).toBe('s-next');
     });
 
     it('không cho giáo viên xem lớp của giáo viên khác (403)', async () => {

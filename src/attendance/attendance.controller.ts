@@ -18,35 +18,65 @@ import { UserRole } from '../../generated/prisma/client.js';
 
 @Controller()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.ADMIN)
+@Roles(UserRole.ADMIN, UserRole.TEACHER)
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
   @Get('sessions/:sessionId/attendance')
-  async getSessionAttendance(@Param('sessionId') sessionId: string) {
+  async getSessionAttendance(
+    @Param('sessionId') sessionId: string,
+    @CurrentUser() user: { sub: string; role: UserRole },
+  ) {
+    await this.attendanceService.validateTeacherOrAdminAccess(
+      sessionId,
+      user.sub,
+      user.role,
+    );
     return this.attendanceService.getSessionAttendance(sessionId);
   }
 
   @Get('sessions/:sessionId/attendance/summary')
-  async getSessionSummary(@Param('sessionId') sessionId: string) {
+  async getSessionSummary(
+    @Param('sessionId') sessionId: string,
+    @CurrentUser() user: { sub: string; role: UserRole },
+  ) {
+    await this.attendanceService.validateTeacherOrAdminAccess(
+      sessionId,
+      user.sub,
+      user.role,
+    );
     return this.attendanceService.getSessionSummary(sessionId);
   }
 
   @Put('sessions/:sessionId/attendance')
   async batchSaveAttendance(
     @Param('sessionId') sessionId: string,
-    @CurrentUser('sub') markerId: string,
+    @CurrentUser() user: { sub: string; role: UserRole },
     @Body() dto: BatchAttendanceDto,
   ) {
-    return this.attendanceService.batchSaveAttendance(sessionId, markerId, dto);
+    await this.attendanceService.validateTeacherOrAdminAccess(
+      sessionId,
+      user.sub,
+      user.role,
+    );
+    return this.attendanceService.batchSaveAttendance(
+      sessionId,
+      user.sub,
+      dto,
+    );
   }
 
   @Patch('attendance/:id')
   async updateAttendance(
     @Param('id') id: string,
-    @CurrentUser('sub') editorId: string,
+    @CurrentUser() user: { sub: string; role: UserRole },
     @Body() dto: UpdateAttendanceDto,
   ) {
-    return this.attendanceService.updateAttendance(id, editorId, dto);
+    return this.attendanceService.updateAttendance(
+      id,
+      user.sub,
+      dto,
+      user.role,
+    );
   }
 }

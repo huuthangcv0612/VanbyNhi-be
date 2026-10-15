@@ -410,6 +410,9 @@ export const ModelName = {
   Assignment: 'Assignment',
   AssignmentSubmission: 'AssignmentSubmission',
   ClassMaterial: 'ClassMaterial',
+  DocumentCategory: 'DocumentCategory',
+  Document: 'Document',
+  UploadSession: 'UploadSession',
   Notification: 'Notification',
   RefreshToken: 'RefreshToken',
   TeacherCalendarLabel: 'TeacherCalendarLabel',
@@ -431,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "classMaterial" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification"
+    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "classMaterial" | "documentCategory" | "document" | "uploadSession" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1397,6 +1400,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DocumentCategory: {
+      payload: Prisma.$DocumentCategoryPayload<ExtArgs>
+      fields: Prisma.DocumentCategoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DocumentCategoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DocumentCategoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>
+        }
+        findFirst: {
+          args: Prisma.DocumentCategoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DocumentCategoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>
+        }
+        findMany: {
+          args: Prisma.DocumentCategoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>[]
+        }
+        create: {
+          args: Prisma.DocumentCategoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>
+        }
+        createMany: {
+          args: Prisma.DocumentCategoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DocumentCategoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>[]
+        }
+        delete: {
+          args: Prisma.DocumentCategoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>
+        }
+        update: {
+          args: Prisma.DocumentCategoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.DocumentCategoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DocumentCategoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DocumentCategoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.DocumentCategoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentCategoryPayload>
+        }
+        aggregate: {
+          args: Prisma.DocumentCategoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDocumentCategory>
+        }
+        groupBy: {
+          args: Prisma.DocumentCategoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentCategoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DocumentCategoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentCategoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    Document: {
+      payload: Prisma.$DocumentPayload<ExtArgs>
+      fields: Prisma.DocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.DocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>
+        }
+        findMany: {
+          args: Prisma.DocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>[]
+        }
+        create: {
+          args: Prisma.DocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>
+        }
+        createMany: {
+          args: Prisma.DocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.DocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>
+        }
+        update: {
+          args: Prisma.DocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.DocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.DocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.DocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDocument>
+        }
+        groupBy: {
+          args: Prisma.DocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentCountAggregateOutputType> | number
+        }
+      }
+    }
+    UploadSession: {
+      payload: Prisma.$UploadSessionPayload<ExtArgs>
+      fields: Prisma.UploadSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UploadSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UploadSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.UploadSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UploadSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        findMany: {
+          args: Prisma.UploadSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        create: {
+          args: Prisma.UploadSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        createMany: {
+          args: Prisma.UploadSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UploadSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.UploadSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        update: {
+          args: Prisma.UploadSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.UploadSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UploadSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UploadSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.UploadSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UploadSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.UploadSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUploadSession>
+        }
+        groupBy: {
+          args: Prisma.UploadSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UploadSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UploadSessionCountAggregateOutputType> | number
+        }
+      }
+    }
     Notification: {
       payload: Prisma.$NotificationPayload<ExtArgs>
       fields: Prisma.NotificationFieldRefs
@@ -2081,6 +2306,7 @@ export const ClassMaterialScalarFieldEnum = {
   id: 'id',
   classId: 'classId',
   sessionId: 'sessionId',
+  documentId: 'documentId',
   uploadedById: 'uploadedById',
   title: 'title',
   description: 'description',
@@ -2090,12 +2316,71 @@ export const ClassMaterialScalarFieldEnum = {
   originalName: 'originalName',
   mimeType: 'mimeType',
   fileSize: 'fileSize',
+  isPublished: 'isPublished',
   publishedAt: 'publishedAt',
+  order: 'order',
+  accessStartTime: 'accessStartTime',
+  accessEndTime: 'accessEndTime',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ClassMaterialScalarFieldEnum = (typeof ClassMaterialScalarFieldEnum)[keyof typeof ClassMaterialScalarFieldEnum]
+
+
+export const DocumentCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  parentId: 'parentId',
+  teacherId: 'teacherId',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentCategoryScalarFieldEnum = (typeof DocumentCategoryScalarFieldEnum)[keyof typeof DocumentCategoryScalarFieldEnum]
+
+
+export const DocumentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  originalName: 'originalName',
+  storageKey: 'storageKey',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  checksum: 'checksum',
+  ownerId: 'ownerId',
+  categoryId: 'categoryId',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const UploadSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  categoryId: 'categoryId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UploadSessionScalarFieldEnum = (typeof UploadSessionScalarFieldEnum)[keyof typeof UploadSessionScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
@@ -2409,6 +2694,34 @@ export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'UploadTargetType'
+ */
+export type EnumUploadTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadTargetType'>
+    
+
+
+/**
+ * Reference to a field of type 'UploadTargetType[]'
+ */
+export type ListEnumUploadTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadTargetType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UploadSessionStatus'
+ */
+export type EnumUploadSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'UploadSessionStatus[]'
+ */
+export type ListEnumUploadSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadSessionStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'NotificationType'
  */
 export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
@@ -2641,6 +2954,9 @@ export type GlobalOmitConfig = {
   assignment?: Prisma.AssignmentOmit
   assignmentSubmission?: Prisma.AssignmentSubmissionOmit
   classMaterial?: Prisma.ClassMaterialOmit
+  documentCategory?: Prisma.DocumentCategoryOmit
+  document?: Prisma.DocumentOmit
+  uploadSession?: Prisma.UploadSessionOmit
   notification?: Prisma.NotificationOmit
   refreshToken?: Prisma.RefreshTokenOmit
   teacherCalendarLabel?: Prisma.TeacherCalendarLabelOmit

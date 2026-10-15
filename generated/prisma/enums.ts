@@ -128,3 +128,22 @@ export const ScheduleStatus = {
 } as const
 
 export type ScheduleStatus = (typeof ScheduleStatus)[keyof typeof ScheduleStatus]
+
+
+export const UploadTargetType = {
+  LIBRARY: 'LIBRARY',
+  CLASS: 'CLASS',
+  SESSION: 'SESSION'
+} as const
+
+export type UploadTargetType = (typeof UploadTargetType)[keyof typeof UploadTargetType]
+
+
+export const UploadSessionStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type UploadSessionStatus = (typeof UploadSessionStatus)[keyof typeof UploadSessionStatus]

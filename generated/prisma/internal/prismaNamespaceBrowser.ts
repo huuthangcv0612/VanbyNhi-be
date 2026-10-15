@@ -64,6 +64,9 @@ export const ModelName = {
   Assignment: 'Assignment',
   AssignmentSubmission: 'AssignmentSubmission',
   ClassMaterial: 'ClassMaterial',
+  DocumentCategory: 'DocumentCategory',
+  Document: 'Document',
+  UploadSession: 'UploadSession',
   Notification: 'Notification',
   RefreshToken: 'RefreshToken',
   TeacherCalendarLabel: 'TeacherCalendarLabel',
@@ -289,6 +292,7 @@ export const ClassMaterialScalarFieldEnum = {
   id: 'id',
   classId: 'classId',
   sessionId: 'sessionId',
+  documentId: 'documentId',
   uploadedById: 'uploadedById',
   title: 'title',
   description: 'description',
@@ -298,12 +302,71 @@ export const ClassMaterialScalarFieldEnum = {
   originalName: 'originalName',
   mimeType: 'mimeType',
   fileSize: 'fileSize',
+  isPublished: 'isPublished',
   publishedAt: 'publishedAt',
+  order: 'order',
+  accessStartTime: 'accessStartTime',
+  accessEndTime: 'accessEndTime',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ClassMaterialScalarFieldEnum = (typeof ClassMaterialScalarFieldEnum)[keyof typeof ClassMaterialScalarFieldEnum]
+
+
+export const DocumentCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  parentId: 'parentId',
+  teacherId: 'teacherId',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentCategoryScalarFieldEnum = (typeof DocumentCategoryScalarFieldEnum)[keyof typeof DocumentCategoryScalarFieldEnum]
+
+
+export const DocumentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  originalName: 'originalName',
+  storageKey: 'storageKey',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  checksum: 'checksum',
+  ownerId: 'ownerId',
+  categoryId: 'categoryId',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const UploadSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  categoryId: 'categoryId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UploadSessionScalarFieldEnum = (typeof UploadSessionScalarFieldEnum)[keyof typeof UploadSessionScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
