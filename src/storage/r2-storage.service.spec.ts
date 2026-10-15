@@ -59,6 +59,7 @@ describe('R2StorageService', () => {
       expect(res.storageKey).toBe('docs/test-key');
       expect(res.expiresInSeconds).toBe(300);
       expect(res.requiredHeaders['Content-Type']).toBe('application/pdf');
+      expect((res.requiredHeaders as any)['Content-Length']).toBeUndefined();
     });
 
     it('từ chối khi MIME type không được phép (tình huống 12)', async () => {

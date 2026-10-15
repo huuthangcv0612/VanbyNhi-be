@@ -150,7 +150,6 @@ export class R2StorageService {
         Bucket: this.bucketName,
         Key: storageKey,
         ContentType: mimeType,
-        ContentLength: sizeBytes,
       });
 
       const uploadUrl = await getSignedUrl(this.s3Client, command, {
@@ -163,7 +162,6 @@ export class R2StorageService {
         expiresInSeconds: expiresIn,
         requiredHeaders: {
           'Content-Type': mimeType,
-          'Content-Length': sizeBytes.toString(),
         },
       };
     } catch (error) {

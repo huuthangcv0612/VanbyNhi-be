@@ -55,8 +55,8 @@ describe('CalendarService', () => {
       title: 'Luyện thi THPT Quốc Gia - Nghị luận văn học',
       address: 'Phòng 204, Tòa A',
       meetUrl: 'https://meet.google.com/abc-defg-hij',
-      startAt: '2026-10-15T08:00:00.000Z',
-      endAt: '2026-10-15T10:00:00.000Z',
+      startAt: '2026-10-20T08:00:00.000Z',
+      endAt: '2026-10-20T10:00:00.000Z',
       labelId: 'label-1',
       reminderMinutes: 30,
       note: 'Học sinh mang theo tài liệu văn học 12',
@@ -349,8 +349,8 @@ describe('CalendarService', () => {
       prismaMock.teacherCalendarEvent.findUnique.mockResolvedValue({
         id: 'e1',
         teacherId: 'teacher-1',
-        startAt: new Date('2026-10-15T08:00:00Z'),
-        endAt: new Date('2026-10-15T10:00:00Z'),
+        startAt: new Date('2026-10-20T08:00:00Z'),
+        endAt: new Date('2026-10-20T10:00:00Z'),
         reminderMinutes: 15,
         participants: [{ studentId: 'stu-1' }],
       });
@@ -363,8 +363,8 @@ describe('CalendarService', () => {
 
       await calendarService.updateTeacherEvent('teacher-1', 'e1', {
         title: 'Tên mới',
-        startAt: '2026-10-15T09:00:00Z',
-        endAt: '2026-10-15T11:00:00Z',
+        startAt: '2026-10-20T09:00:00Z',
+        endAt: '2026-10-20T11:00:00Z',
       });
 
       expect(prismaMock.calendarNotification.updateMany).toHaveBeenCalledWith({
@@ -487,7 +487,7 @@ describe('CalendarService', () => {
       prismaMock.teacherCalendarEvent.findUnique.mockResolvedValue({
         id: 'e1',
         teacherId: 'teacher-1',
-        startAt: new Date('2026-10-15T08:00:00Z'),
+        startAt: new Date('2026-10-20T08:00:00Z'),
         reminderMinutes: 30,
       });
 

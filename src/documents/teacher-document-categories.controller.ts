@@ -6,11 +6,13 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service.js';
 import { CreateCategoryDto } from './dto/create-category.dto.js';
 import { UpdateCategoryDto } from './dto/update-category.dto.js';
+import { QueryCategoriesDto } from './dto/query-categories.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
@@ -24,11 +26,14 @@ export class TeacherDocumentCategoriesController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   /**
-   * GET /teacher/document-categories — Lấy danh sách danh mục tài liệu của giáo viên
+   * GET /teacher/document-categories — Lấy danh sách danh mục tài liệu của giáo viên (hỗ trợ asTree=true)
    */
   @Get()
-  async getCategories(@CurrentUser('sub') teacherId: string) {
-    return this.documentsService.getCategories(teacherId);
+  async getCategories(
+    @CurrentUser('sub') teacherId: string,
+    @Query() query: QueryCategoriesDto,
+  ) {
+    return this.documentsService.getCategories(teacherId, query);
   }
 
   /**

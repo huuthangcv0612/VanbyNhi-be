@@ -19,6 +19,7 @@ describe('ClassMaterialsService', () => {
     prismaMock = {
       class: {
         findUnique: vi.fn(),
+        findMany: vi.fn(),
       },
       classSession: {
         findUnique: vi.fn(),
@@ -36,6 +37,7 @@ describe('ClassMaterialsService', () => {
       },
       document: {
         findUnique: vi.fn(),
+        findMany: vi.fn(),
         create: vi.fn(),
       },
       uploadSession: {
@@ -64,6 +66,7 @@ describe('ClassMaterialsService', () => {
       }),
       validateFileSignature: vi.fn().mockResolvedValue(true),
       deleteObject: vi.fn().mockResolvedValue(true),
+      getMaxUploadSizeBytes: vi.fn().mockReturnValue(52428800),
     };
 
     service = new ClassMaterialsService(prismaMock, r2Mock);
@@ -268,7 +271,139 @@ describe('ClassMaterialsService', () => {
       expect(prismaMock.document.create).not.toHaveBeenCalled();
     });
 
-    it('gỡ tài liệu khỏi một lớp không xóa file đang được lớp khác sử dụng (tình huống 11)', async () => {
+    it('xử lý idempotent khi chia sẻ lại tài liệu đã hoạt động: cập nhật cài đặt, không tạo bản ghi trùng lặp', async () => {
+      prismaMock.class.findUnique.mockResolvedValue({
+        id: 'class-1',
+        teacherId: 'teacher-A',
+      });
+      prismaMock.document.findUnique.mockResolvedValue({
+        id: 'doc-reuse',
+        title: 'Giáo trình Ngữ Văn',
+        ownerId: 'teacher-A',
+        deletedAt: null,
+      });
+      prismaMock.classMaterial.findFirst.mockResolvedValue({
+        id: 'mat-existing',
+        classId: 'class-1',
+        documentId: 'doc-reuse',
+        deletedAt: null, // Đang hoạt động
+        title: 'Giáo trình Ngữ Văn',
+      });
+      prismaMock.classMaterial.update.mockResolvedValue({
+        id: 'mat-existing',
+        classId: 'class-1',
+        documentId: 'doc-reuse',
+        title: 'Giáo trình Ngữ Văn (Cập nhật)',
+        isPublished: true,
+      });
+
+      const res = await service.shareDocumentToClass('teacher-A', 'class-1', {
+        documentId: 'doc-reuse',
+        title: 'Giáo trình Ngữ Văn (Cập nhật)',
+      });
+
+      expect(res.material.id).toBe('mat-existing');
+      expect(prismaMock.classMaterial.create).not.toHaveBeenCalled();
+      expect(prismaMock.classMaterial.update).toHaveBeenCalled();
+    });
+
+    it('khôi phục liên kết khi chia sẻ lại tài liệu từng bị gỡ (soft-deleted)', async () => {
+      prismaMock.class.findUnique.mockResolvedValue({
+        id: 'class-1',
+        teacherId: 'teacher-A',
+      });
+      prismaMock.document.findUnique.mockResolvedValue({
+        id: 'doc-reuse',
+        title: 'Giáo trình Ngữ Văn',
+        ownerId: 'teacher-A',
+        deletedAt: null,
+      });
+      prismaMock.classMaterial.findFirst.mockResolvedValue({
+        id: 'mat-revoked',
+        classId: 'class-1',
+        documentId: 'doc-reuse',
+        deletedAt: new Date(), // Từng bị gỡ bỏ
+      });
+      prismaMock.classMaterial.update.mockResolvedValue({
+        id: 'mat-revoked',
+        classId: 'class-1',
+        documentId: 'doc-reuse',
+        deletedAt: null,
+        title: 'Giáo trình Ngữ Văn',
+      });
+
+      const res = await service.shareDocumentToClass('teacher-A', 'class-1', {
+        documentId: 'doc-reuse',
+      });
+
+      expect(res.material.id).toBe('mat-revoked');
+      expect(prismaMock.classMaterial.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ deletedAt: null }),
+        }),
+      );
+    });
+
+    it('giáo viên cấp quyền hàng loạt: 2 tài liệu cho 2 lớp thành công trong 1 thao tác', async () => {
+      prismaMock.class.findMany.mockResolvedValue([
+        { id: 'class-1', name: 'Lớp 10A1', teacherId: 'teacher-A' },
+        { id: 'class-2', name: 'Lớp 10A2', teacherId: 'teacher-A' },
+      ]);
+      prismaMock.document.findMany.mockResolvedValue([
+        { id: 'doc-1', title: 'Tài liệu 1', ownerId: 'teacher-A', sizeBytes: BigInt(1024) },
+        { id: 'doc-2', title: 'Tài liệu 2', ownerId: 'teacher-A', sizeBytes: BigInt(2048) },
+      ]);
+      prismaMock.classMaterial.findFirst.mockResolvedValue(null); // Chưa tồn tại
+      prismaMock.classMaterial.create
+        .mockResolvedValueOnce({ id: 'm1', classId: 'class-1', documentId: 'doc-1' })
+        .mockResolvedValueOnce({ id: 'm2', classId: 'class-1', documentId: 'doc-2' })
+        .mockResolvedValueOnce({ id: 'm3', classId: 'class-2', documentId: 'doc-1' })
+        .mockResolvedValueOnce({ id: 'm4', classId: 'class-2', documentId: 'doc-2' });
+
+      const res = await service.assignDocumentsToClasses('teacher-A', {
+        documentIds: ['doc-1', 'doc-2'],
+        classIds: ['class-1', 'class-2'],
+        isPublished: true,
+      });
+
+      expect(res.assignedCount).toBe(4);
+      expect(prismaMock.classMaterial.create).toHaveBeenCalledTimes(4);
+      // Không upload lại lên R2
+      expect(r2Mock.createPresignedPutUrl).not.toHaveBeenCalled();
+    });
+
+    it('từ chối cấp quyền hàng loạt nếu có lớp thuộc quyền giáo viên khác', async () => {
+      prismaMock.class.findMany.mockResolvedValue([
+        { id: 'class-1', name: 'Lớp của A', teacherId: 'teacher-A' },
+        { id: 'class-2', name: 'Lớp của B', teacherId: 'teacher-B' }, // Của giáo viên B!
+      ]);
+
+      await expect(
+        service.assignDocumentsToClasses('teacher-A', {
+          documentIds: ['doc-1'],
+          classIds: ['class-1', 'class-2'],
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('từ chối cấp quyền hàng loạt nếu có tài liệu của giáo viên khác', async () => {
+      prismaMock.class.findMany.mockResolvedValue([
+        { id: 'class-1', name: 'Lớp của A', teacherId: 'teacher-A' },
+      ]);
+      prismaMock.document.findMany.mockResolvedValue([
+        { id: 'doc-1', title: 'Tài liệu của A', ownerId: 'teacher-A' },
+        { id: 'doc-B', title: 'Tài liệu của B', ownerId: 'teacher-B' }, // Của giáo viên B!
+      ]);
+
+      await expect(
+        service.assignDocumentsToClasses('teacher-A', {
+          documentIds: ['doc-1', 'doc-B'],
+          classIds: ['class-1'],
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('gỡ tài liệu khỏi một lớp không xóa file đang được lớp khác sử dụng (tình huống 11 & 12)', async () => {
       prismaMock.classMaterial.findUnique.mockResolvedValue({
         id: 'mat-1',
         classId: 'class-1',
@@ -279,7 +414,7 @@ describe('ClassMaterialsService', () => {
 
       const res = await service.removeMaterial('teacher-A', 'mat-1');
 
-      // Chỉ đánh dấu deletedAt trên ClassMaterial
+      // Chỉ đánh dấu deletedAt trên ClassMaterial của lớp 1
       expect(prismaMock.classMaterial.update).toHaveBeenCalledWith({
         where: { id: 'mat-1' },
         data: { deletedAt: expect.any(Date) },
@@ -407,6 +542,60 @@ describe('ClassMaterialsService', () => {
         'classes/class-1/thuyen.pdf',
         'thuyen.pdf',
       );
+    });
+
+    it('học sinh ACTIVE xem được danh sách tài liệu đầy đủ thông tin (classId, documentId, sizeBytes)', async () => {
+      prismaMock.enrollment.findFirst.mockResolvedValue({
+        id: 'enr-1',
+        status: MemberStatus.ACTIVE,
+      });
+
+      const mockMaterials = [
+        {
+          id: 'mat-1',
+          classId: 'class-1',
+          sessionId: null,
+          documentId: 'doc-1',
+          title: 'Tài liệu học tập 1',
+          description: 'Mô tả',
+          type: 'DOCUMENT',
+          originalName: 'tailieu1.pdf',
+          mimeType: 'application/pdf',
+          fileSize: BigInt(1048576),
+          isPublished: true,
+          publishedAt: new Date(),
+          order: 0,
+          accessStartTime: null,
+          accessEndTime: null,
+          createdAt: new Date(),
+        },
+      ];
+
+      prismaMock.classMaterial.findMany.mockResolvedValue(mockMaterials);
+      prismaMock.classMaterial.count.mockResolvedValue(1);
+
+      const res = await service.getStudentClassMaterials('student-active', 'class-1', {});
+
+      expect(res.items).toHaveLength(1);
+      expect(res.items[0].id).toBe('mat-1');
+      expect(res.items[0].classId).toBe('class-1');
+      expect(res.items[0].documentId).toBe('doc-1');
+      expect(res.items[0].fileSize).toBe(1048576);
+      expect(res.items[0].sizeBytes).toBe(1048576);
+      expect(res.pagination.total).toBe(1);
+    });
+
+    it('từ chối tải tài liệu khi liên kết đã bị giáo viên thu hồi (deletedAt !== null)', async () => {
+      prismaMock.classMaterial.findUnique.mockResolvedValue({
+        id: 'mat-revoked',
+        classId: 'class-1',
+        isPublished: true,
+        deletedAt: new Date(), // Đã bị thu hồi
+      });
+
+      await expect(
+        service.getStudentMaterialDownloadUrl('student-active', 'mat-revoked'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

@@ -60,6 +60,7 @@ describe('DocumentsService', () => {
       }),
       validateFileSignature: vi.fn().mockResolvedValue(true),
       deleteObject: vi.fn().mockResolvedValue(true),
+      getMaxUploadSizeBytes: vi.fn().mockReturnValue(52428800),
     };
 
     service = new DocumentsService(prismaMock, r2Mock);
@@ -151,6 +152,39 @@ describe('DocumentsService', () => {
       });
       expect(res.message).toBeDefined();
     });
+
+    it('lấy danh mục phẳng mặc định hoặc dạng cây lồng nhau khi asTree=true', async () => {
+      const mockFlatList = [
+        {
+          id: 'cat-root',
+          name: 'Giáo án',
+          parentId: null,
+          sortOrder: 0,
+          _count: { documents: 3, children: 1 },
+        },
+        {
+          id: 'cat-child',
+          name: 'THCS',
+          parentId: 'cat-root',
+          sortOrder: 0,
+          _count: { documents: 5, children: 0 },
+        },
+      ];
+      prismaMock.documentCategory.findMany.mockResolvedValue(mockFlatList);
+
+      // 1. Flat query
+      const flat = await service.getCategories('teacher-A');
+      expect(flat).toHaveLength(2);
+
+      // 2. Tree query
+      const tree = await service.getCategories('teacher-A', { asTree: true });
+      expect(tree).toHaveLength(1);
+      expect(tree[0].id).toBe('cat-root');
+      expect(tree[0].children).toHaveLength(1);
+      expect(tree[0].children[0].id).toBe('cat-child');
+      expect(tree[0].documentCount).toBe(3);
+      expect(tree[0].children[0].documentCount).toBe(5);
+    });
   });
 
   // ==================== 2. THƯ VIỆN GIÁO VIÊN & UPLOAD ====================
@@ -236,6 +270,76 @@ describe('DocumentsService', () => {
         where: { id: 'session-1' },
         data: { status: UploadSessionStatus.COMPLETED },
       });
+    });
+
+    it('xóa object R2 và từ chối nếu dung lượng thực tế vượt quá giới hạn tối đa', async () => {
+      prismaMock.uploadSession.findUnique.mockResolvedValue({
+        id: 'session-1',
+        userId: 'teacher-A',
+        targetType: UploadTargetType.LIBRARY,
+        status: UploadSessionStatus.PENDING,
+        storageKey: 'teachers/oversized-key',
+        title: 'Tài liệu quá lớn',
+        mimeType: 'application/pdf',
+      });
+      r2Mock.getObjectMetadata.mockResolvedValue({
+        sizeBytes: 100 * 1024 * 1024, // 100MB > 50MB
+      });
+
+      await expect(
+        service.completeLibraryUpload('teacher-A', {
+          storageKey: 'teachers/oversized-key',
+        }),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(r2Mock.deleteObject).toHaveBeenCalledWith('teachers/oversized-key');
+    });
+
+    it('xóa object R2 nếu chữ ký file (magic bytes) không hợp lệ', async () => {
+      prismaMock.uploadSession.findUnique.mockResolvedValue({
+        id: 'session-1',
+        userId: 'teacher-A',
+        targetType: UploadTargetType.LIBRARY,
+        status: UploadSessionStatus.PENDING,
+        storageKey: 'teachers/fake-signature-key',
+        title: 'File giả mạo',
+        mimeType: 'application/pdf',
+      });
+      r2Mock.getObjectMetadata.mockResolvedValue({ sizeBytes: 1024 });
+      r2Mock.validateFileSignature.mockRejectedValueOnce(
+        new BadRequestException('Nội dung file không khớp với định dạng PDF'),
+      );
+
+      await expect(
+        service.completeLibraryUpload('teacher-A', {
+          storageKey: 'teachers/fake-signature-key',
+        }),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(r2Mock.deleteObject).toHaveBeenCalledWith('teachers/fake-signature-key');
+    });
+
+    it('xóa object R2 khi cơ sở dữ liệu gặp lỗi giao dịch', async () => {
+      prismaMock.uploadSession.findUnique.mockResolvedValue({
+        id: 'session-1',
+        userId: 'teacher-A',
+        targetType: UploadTargetType.LIBRARY,
+        status: UploadSessionStatus.PENDING,
+        storageKey: 'teachers/db-fail-key',
+        title: 'Tài liệu lỗi DB',
+        mimeType: 'application/pdf',
+        sizeBytes: BigInt(1024),
+      });
+      r2Mock.getObjectMetadata.mockResolvedValue({ sizeBytes: 1024 });
+      prismaMock.$transaction.mockRejectedValueOnce(new Error('DB Connection Timeout'));
+
+      await expect(
+        service.completeLibraryUpload('teacher-A', {
+          storageKey: 'teachers/db-fail-key',
+        }),
+      ).rejects.toThrow('DB Connection Timeout');
+
+      expect(r2Mock.deleteObject).toHaveBeenCalledWith('teachers/db-fail-key');
     });
 
     it('xử lý idempotency: request complete upload lặp lại không tạo duplicate (tình huống 14)', async () => {

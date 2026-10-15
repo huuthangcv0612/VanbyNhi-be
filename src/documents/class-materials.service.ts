@@ -18,6 +18,7 @@ import {
 import type { InitUploadDto } from './dto/init-upload.dto.js';
 import type { CompleteUploadDto } from './dto/complete-upload.dto.js';
 import type { ShareMaterialDto } from './dto/share-material.dto.js';
+import type { AssignDocumentsToClassesDto } from './dto/assign-documents.dto.js';
 import type { UpdateMaterialDto } from './dto/update-material.dto.js';
 import type { QueryMaterialsDto } from './dto/query-materials.dto.js';
 
@@ -35,9 +36,11 @@ export class ClassMaterialsService {
    */
   private formatMaterial(material: any) {
     if (!material) return null;
+    const size = material.fileSize ? Number(material.fileSize) : null;
     return {
       ...material,
-      fileSize: material.fileSize ? Number(material.fileSize) : null,
+      fileSize: size,
+      sizeBytes: size,
       document: material.document
         ? {
             ...material.document,
@@ -229,56 +232,77 @@ export class ClassMaterialsService {
       );
     }
 
-    await this.r2StorageService.validateFileSignature(
-      session.storageKey,
-      session.mimeType,
-    );
-
     const actualSizeBytes = metadata.sizeBytes || Number(session.sizeBytes);
 
+    if (actualSizeBytes > this.r2StorageService.getMaxUploadSizeBytes()) {
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw new BadRequestException(
+        `Dung lượng file thực tế (${Math.round(actualSizeBytes / (1024 * 1024))}MB) vượt quá giới hạn tối đa cho phép`,
+      );
+    }
+
+    try {
+      await this.r2StorageService.validateFileSignature(
+        session.storageKey,
+        session.mimeType,
+      );
+    } catch (err) {
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw err;
+    }
+
     // Transaction DB: Tạo Document và liên kết ClassMaterial (sessionId = null)
-    const material = await this.prisma.$transaction(async (tx) => {
-      await tx.uploadSession.update({
-        where: { id: session.id },
-        data: { status: UploadSessionStatus.COMPLETED },
-      });
+    let material: any;
+    try {
+      material = await this.prisma.$transaction(async (tx) => {
+        await tx.uploadSession.update({
+          where: { id: session.id },
+          data: { status: UploadSessionStatus.COMPLETED },
+        });
 
-      const newDoc = await tx.document.create({
-        data: {
-          title: session.title,
-          description: session.description,
-          originalName: session.originalName,
-          storageKey: session.storageKey,
-          mimeType: session.mimeType,
-          sizeBytes: BigInt(actualSizeBytes),
-          ownerId: teacherId,
-          categoryId: null, // Upload trực tiếp vào lớp không tự đưa vào thư viện
-        },
-      });
-
-      return tx.classMaterial.create({
-        data: {
-          classId,
-          sessionId: null,
-          documentId: newDoc.id,
-          uploadedById: teacherId,
-          title: session.title,
-          description: session.description,
-          type: MaterialType.DOCUMENT,
-          originalName: session.originalName,
-          mimeType: session.mimeType,
-          fileSize: BigInt(actualSizeBytes),
-          isPublished: true,
-          publishedAt: new Date(),
-          order: 0,
-        },
-        include: {
-          document: {
-            select: { id: true, title: true, storageKey: true, sizeBytes: true },
+        const newDoc = await tx.document.create({
+          data: {
+            title: session.title,
+            description: session.description,
+            originalName: session.originalName,
+            storageKey: session.storageKey,
+            mimeType: session.mimeType,
+            sizeBytes: BigInt(actualSizeBytes),
+            ownerId: teacherId,
+            categoryId: null, // Upload trực tiếp vào lớp không tự đưa vào thư viện
           },
-        },
+        });
+
+        return tx.classMaterial.create({
+          data: {
+            classId,
+            sessionId: null,
+            documentId: newDoc.id,
+            uploadedById: teacherId,
+            title: session.title,
+            description: session.description,
+            type: MaterialType.DOCUMENT,
+            originalName: session.originalName,
+            mimeType: session.mimeType,
+            fileSize: BigInt(actualSizeBytes),
+            isPublished: true,
+            publishedAt: new Date(),
+            order: 0,
+          },
+          include: {
+            document: {
+              select: { id: true, title: true, storageKey: true, sizeBytes: true },
+            },
+          },
+        });
       });
-    });
+    } catch (dbErr) {
+      this.logger.error(
+        `Lỗi cơ sở dữ liệu khi hoàn tất upload vào lớp ${classId}: ${(dbErr as Error).message}. Bắt đầu dọn dẹp object R2.`,
+      );
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw dbErr;
+    }
 
     return {
       message: 'Tải tài liệu lên lớp học thành công',
@@ -311,20 +335,90 @@ export class ClassMaterialsService {
       );
     }
 
-    // Kiểm tra xem đã chia sẻ vào lớp chưa
+    // Kiểm tra xem đã chia sẻ vào lớp chưa (bao gồm cả trạng thái soft-deleted)
     const existing = await this.prisma.classMaterial.findFirst({
       where: {
         classId,
         sessionId: null,
         documentId: dto.documentId,
-        deletedAt: null,
+      },
+      include: {
+        document: {
+          select: { id: true, title: true, storageKey: true, sizeBytes: true },
+        },
       },
     });
 
     if (existing) {
-      throw new ConflictException(
-        'Tài liệu này đã được chia sẻ cho lớp học trước đó',
-      );
+      if (existing.deletedAt === null) {
+        // Đã tồn tại liên kết đang hoạt động: cập nhật cài đặt nếu có (idempotent)
+        const updated = await this.prisma.classMaterial.update({
+          where: { id: existing.id },
+          data: {
+            title: dto.title?.trim() || existing.title,
+            description:
+              dto.description !== undefined
+                ? dto.description
+                : existing.description,
+            isPublished:
+              dto.isPublished !== undefined
+                ? dto.isPublished
+                : existing.isPublished,
+            order: dto.order !== undefined ? dto.order : existing.order,
+            accessStartTime:
+              dto.accessStartTime !== undefined
+                ? dto.accessStartTime
+                  ? new Date(dto.accessStartTime)
+                  : null
+                : existing.accessStartTime,
+            accessEndTime:
+              dto.accessEndTime !== undefined
+                ? dto.accessEndTime
+                  ? new Date(dto.accessEndTime)
+                  : null
+                : existing.accessEndTime,
+          },
+          include: {
+            document: {
+              select: { id: true, title: true, storageKey: true, sizeBytes: true },
+            },
+          },
+        });
+
+        return {
+          message: 'Tài liệu đã được chia sẻ cho lớp học này',
+          material: this.formatMaterial(updated),
+        };
+      } else {
+        // Từng bị gỡ bỏ trước đó: khôi phục liên kết
+        const restored = await this.prisma.classMaterial.update({
+          where: { id: existing.id },
+          data: {
+            deletedAt: null,
+            title: dto.title?.trim() || doc.title,
+            description: dto.description ?? doc.description,
+            isPublished: dto.isPublished ?? true,
+            publishedAt: dto.isPublished ? new Date() : null,
+            order: dto.order ?? 0,
+            accessStartTime: dto.accessStartTime
+              ? new Date(dto.accessStartTime)
+              : null,
+            accessEndTime: dto.accessEndTime
+              ? new Date(dto.accessEndTime)
+              : null,
+          },
+          include: {
+            document: {
+              select: { id: true, title: true, storageKey: true, sizeBytes: true },
+            },
+          },
+        });
+
+        return {
+          message: 'Khôi phục và chia sẻ tài liệu vào lớp học thành công',
+          material: this.formatMaterial(restored),
+        };
+      }
     }
 
     const title = dto.title?.trim() || doc.title;
@@ -359,6 +453,143 @@ export class ClassMaterialsService {
     return {
       message: 'Chia sẻ tài liệu vào lớp học thành công',
       material: this.formatMaterial(material),
+    };
+  }
+
+  /**
+   * Cấp quyền tài liệu theo lớp hàng loạt (1 hoặc nhiều tài liệu vào 1 hoặc nhiều lớp)
+   * Không upload lại file lên R2, không nhân bản Document.
+   * Xử lý idempotent: Nếu đã liên kết thì cập nhật, nếu bị gỡ trước đó thì khôi phục.
+   */
+  async assignDocumentsToClasses(
+    teacherId: string,
+    dto: AssignDocumentsToClassesDto,
+  ) {
+    const uniqueClassIds = [...new Set(dto.classIds)];
+    const uniqueDocIds = [...new Set(dto.documentIds)];
+
+    // 1. Xác thực tất cả các lớp học thuộc quyền quản lý của giáo viên
+    const classes = await this.prisma.class.findMany({
+      where: {
+        id: { in: uniqueClassIds },
+      },
+      select: { id: true, name: true, teacherId: true },
+    });
+
+    if (classes.length !== uniqueClassIds.length) {
+      const foundIds = new Set(classes.map((c) => c.id));
+      const missing = uniqueClassIds.filter((id) => !foundIds.has(id));
+      throw new NotFoundException(
+        `Không tìm thấy một số lớp học: ${missing.join(', ')}`,
+      );
+    }
+
+    const unauthorizedClasses = classes.filter((c) => c.teacherId !== teacherId);
+    if (unauthorizedClasses.length > 0) {
+      throw new ForbiddenException(
+        `Bạn không có quyền quản lý các lớp học: ${unauthorizedClasses.map((c) => c.name).join(', ')}`,
+      );
+    }
+
+    // 2. Xác thực tất cả các tài liệu thuộc quyền sở hữu của giáo viên và chưa bị xóa
+    const docs = await this.prisma.document.findMany({
+      where: {
+        id: { in: uniqueDocIds },
+        deletedAt: null,
+      },
+    });
+
+    if (docs.length !== uniqueDocIds.length) {
+      const foundDocIds = new Set(docs.map((d) => d.id));
+      const missingDocIds = uniqueDocIds.filter((id) => !foundDocIds.has(id));
+      throw new NotFoundException(
+        `Không tìm thấy hoặc tài liệu đã bị xóa: ${missingDocIds.join(', ')}`,
+      );
+    }
+
+    const unauthorizedDocs = docs.filter((d) => d.ownerId !== teacherId);
+    if (unauthorizedDocs.length > 0) {
+      throw new ForbiddenException(
+        `Bạn không có quyền sở hữu tài liệu: ${unauthorizedDocs.map((d) => d.title).join(', ')}`,
+      );
+    }
+
+    // 3. Thực hiện tạo hoặc cập nhật liên kết trong transaction
+    const results = await this.prisma.$transaction(async (tx) => {
+      const materials = [];
+
+      for (const classEntity of classes) {
+        for (const doc of docs) {
+          const existing = await tx.classMaterial.findFirst({
+            where: {
+              classId: classEntity.id,
+              sessionId: null,
+              documentId: doc.id,
+            },
+          });
+
+          if (existing) {
+            const updated = await tx.classMaterial.update({
+              where: { id: existing.id },
+              data: {
+                deletedAt: null,
+                isPublished: dto.isPublished ?? true,
+                publishedAt: (dto.isPublished ?? true) ? new Date() : null,
+                accessStartTime: dto.accessStartTime
+                  ? new Date(dto.accessStartTime)
+                  : null,
+                accessEndTime: dto.accessEndTime
+                  ? new Date(dto.accessEndTime)
+                  : null,
+              },
+              include: {
+                document: {
+                  select: { id: true, title: true, storageKey: true, sizeBytes: true },
+                },
+              },
+            });
+            materials.push(updated);
+          } else {
+            const created = await tx.classMaterial.create({
+              data: {
+                classId: classEntity.id,
+                sessionId: null,
+                documentId: doc.id,
+                uploadedById: teacherId,
+                title: doc.title,
+                description: doc.description,
+                type: MaterialType.DOCUMENT,
+                originalName: doc.originalName,
+                mimeType: doc.mimeType,
+                fileSize: doc.sizeBytes,
+                isPublished: dto.isPublished ?? true,
+                publishedAt: (dto.isPublished ?? true) ? new Date() : null,
+                order: 0,
+                accessStartTime: dto.accessStartTime
+                  ? new Date(dto.accessStartTime)
+                  : null,
+                accessEndTime: dto.accessEndTime
+                  ? new Date(dto.accessEndTime)
+                  : null,
+              },
+              include: {
+                document: {
+                  select: { id: true, title: true, storageKey: true, sizeBytes: true },
+                },
+              },
+            });
+            materials.push(created);
+          }
+        }
+      }
+
+      return materials;
+    });
+
+    return {
+      message: `Cấp quyền thành công cho ${docs.length} tài liệu vào ${classes.length} lớp học`,
+      assignedCount: results.length,
+      materials: results.map((m) => this.formatMaterial(m)),
     };
   }
 
@@ -542,56 +773,77 @@ export class ClassMaterialsService {
       );
     }
 
-    await this.r2StorageService.validateFileSignature(
-      session.storageKey,
-      session.mimeType,
-    );
-
     const actualSizeBytes = metadata.sizeBytes || Number(session.sizeBytes);
 
+    if (actualSizeBytes > this.r2StorageService.getMaxUploadSizeBytes()) {
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw new BadRequestException(
+        `Dung lượng file thực tế (${Math.round(actualSizeBytes / (1024 * 1024))}MB) vượt quá giới hạn tối đa cho phép`,
+      );
+    }
+
+    try {
+      await this.r2StorageService.validateFileSignature(
+        session.storageKey,
+        session.mimeType,
+      );
+    } catch (err) {
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw err;
+    }
+
     // Transaction DB: tạo Document và liên kết ClassMaterial với sessionId
-    const material = await this.prisma.$transaction(async (tx) => {
-      await tx.uploadSession.update({
-        where: { id: session.id },
-        data: { status: UploadSessionStatus.COMPLETED },
-      });
+    let material: any;
+    try {
+      material = await this.prisma.$transaction(async (tx) => {
+        await tx.uploadSession.update({
+          where: { id: session.id },
+          data: { status: UploadSessionStatus.COMPLETED },
+        });
 
-      const newDoc = await tx.document.create({
-        data: {
-          title: session.title,
-          description: session.description,
-          originalName: session.originalName,
-          storageKey: session.storageKey,
-          mimeType: session.mimeType,
-          sizeBytes: BigInt(actualSizeBytes),
-          ownerId: teacherId,
-          categoryId: null, // Upload trực tiếp buổi học không tự đưa vào thư viện
-        },
-      });
-
-      return tx.classMaterial.create({
-        data: {
-          classId: classSession.classId,
-          sessionId: sessionId,
-          documentId: newDoc.id,
-          uploadedById: teacherId,
-          title: session.title,
-          description: session.description,
-          type: MaterialType.DOCUMENT,
-          originalName: session.originalName,
-          mimeType: session.mimeType,
-          fileSize: BigInt(actualSizeBytes),
-          isPublished: true,
-          publishedAt: new Date(),
-          order: 0,
-        },
-        include: {
-          document: {
-            select: { id: true, title: true, storageKey: true, sizeBytes: true },
+        const newDoc = await tx.document.create({
+          data: {
+            title: session.title,
+            description: session.description,
+            originalName: session.originalName,
+            storageKey: session.storageKey,
+            mimeType: session.mimeType,
+            sizeBytes: BigInt(actualSizeBytes),
+            ownerId: teacherId,
+            categoryId: null, // Upload trực tiếp buổi học không tự đưa vào thư viện
           },
-        },
+        });
+
+        return tx.classMaterial.create({
+          data: {
+            classId: classSession.classId,
+            sessionId: sessionId,
+            documentId: newDoc.id,
+            uploadedById: teacherId,
+            title: session.title,
+            description: session.description,
+            type: MaterialType.DOCUMENT,
+            originalName: session.originalName,
+            mimeType: session.mimeType,
+            fileSize: BigInt(actualSizeBytes),
+            isPublished: true,
+            publishedAt: new Date(),
+            order: 0,
+          },
+          include: {
+            document: {
+              select: { id: true, title: true, storageKey: true, sizeBytes: true },
+            },
+          },
+        });
       });
-    });
+    } catch (dbErr) {
+      this.logger.error(
+        `Lỗi cơ sở dữ liệu khi hoàn tất upload vào buổi học ${sessionId}: ${(dbErr as Error).message}. Bắt đầu dọn dẹp object R2.`,
+      );
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw dbErr;
+    }
 
     return {
       message: 'Tải tài liệu lên buổi học thành công',
@@ -935,12 +1187,16 @@ export class ClassMaterialsService {
         where,
         select: {
           id: true,
+          classId: true,
+          sessionId: true,
+          documentId: true,
           title: true,
           description: true,
           type: true,
           originalName: true,
           mimeType: true,
           fileSize: true,
+          isPublished: true,
           publishedAt: true,
           order: true,
           accessStartTime: true,
@@ -1017,12 +1273,16 @@ export class ClassMaterialsService {
         where,
         select: {
           id: true,
+          classId: true,
+          sessionId: true,
+          documentId: true,
           title: true,
           description: true,
           type: true,
           originalName: true,
           mimeType: true,
           fileSize: true,
+          isPublished: true,
           publishedAt: true,
           order: true,
           accessStartTime: true,

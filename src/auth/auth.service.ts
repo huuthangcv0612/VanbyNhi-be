@@ -46,6 +46,37 @@ export class AuthService {
   }
 
   /**
+   * Sinh các biến thể số điện thoại phổ biến tại Việt Nam (+84, 0..., khoảng trắng, dấu gạch, chấm)
+   */
+  getPhoneVariants(phone: string): string[] {
+    const cleaned = phone.replace(/[\s.\-()]/g, '');
+    const variants = new Set<string>();
+
+    if (cleaned !== phone) {
+      variants.add(cleaned);
+    }
+
+    if (cleaned.startsWith('+84')) {
+      const rest = cleaned.slice(3);
+      variants.add(`0${rest}`);
+      variants.add(`84${rest}`);
+      variants.add(rest);
+    } else if (cleaned.startsWith('84') && cleaned.length >= 11) {
+      const rest = cleaned.slice(2);
+      variants.add(`0${rest}`);
+      variants.add(`+84${rest}`);
+      variants.add(rest);
+    } else if (cleaned.startsWith('0') && cleaned.length >= 10) {
+      const rest = cleaned.slice(1);
+      variants.add(`+84${rest}`);
+      variants.add(`84${rest}`);
+      variants.add(rest);
+    }
+
+    return [...variants];
+  }
+
+  /**
    * Băm refresh token bằng SHA-256 trước khi lưu vào DB
    */
   hashToken(token: string): string {
@@ -121,11 +152,44 @@ export class AuthService {
    * Đăng nhập với Email hoặc Số điện thoại + Mật khẩu
    */
   async login(loginDto: LoginDto) {
-    const { email, phone } = this.normalizeIdentifier(loginDto.identifier);
+    const rawIdentifier =
+      loginDto.identifier?.trim() ||
+      loginDto.email?.trim() ||
+      loginDto.phone?.trim() ||
+      loginDto.username?.trim();
 
-    const user = await this.prisma.user.findFirst({
+    if (!rawIdentifier) {
+      throw new BadRequestException(
+        'Tài khoản (email hoặc số điện thoại) không được để trống',
+      );
+    }
+
+    const { email, phone } = this.normalizeIdentifier(rawIdentifier);
+
+    let user = await this.prisma.user.findFirst({
       where: email ? { email } : { phone },
     });
+
+    // Nếu chưa tìm thấy và là số điện thoại, thử tìm theo các biến thể số điện thoại (+84, 0...)
+    if (!user && phone) {
+      const phoneVariants = this.getPhoneVariants(phone);
+      if (phoneVariants.length > 0) {
+        user = await this.prisma.user.findFirst({
+          where: {
+            phone: { in: phoneVariants },
+          },
+        });
+      }
+    }
+
+    // Nếu chưa tìm thấy và là email, thử tìm không phân biệt chữ hoa/thường
+    if (!user && email) {
+      user = await this.prisma.user.findFirst({
+        where: {
+          email: { equals: email, mode: 'insensitive' },
+        },
+      });
+    }
 
     // Thông báo lỗi chung, không tiết lộ tài khoản có tồn tại hay không
     if (!user) {
@@ -550,9 +614,28 @@ export class AuthService {
     }
 
     const { email, phone } = this.normalizeIdentifier(dto.identifier);
-    const user = await this.prisma.user.findFirst({
+    let user = await this.prisma.user.findFirst({
       where: email ? { email } : { phone },
     });
+
+    if (!user && phone) {
+      const phoneVariants = this.getPhoneVariants(phone);
+      if (phoneVariants.length > 0) {
+        user = await this.prisma.user.findFirst({
+          where: {
+            phone: { in: phoneVariants },
+          },
+        });
+      }
+    }
+
+    if (!user && email) {
+      user = await this.prisma.user.findFirst({
+        where: {
+          email: { equals: email, mode: 'insensitive' },
+        },
+      });
+    }
 
     if (!user) {
       throw new UnauthorizedException(

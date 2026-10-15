@@ -13,6 +13,7 @@ import { ClassMaterialsService } from './class-materials.service.js';
 import { InitUploadDto } from './dto/init-upload.dto.js';
 import { CompleteUploadDto } from './dto/complete-upload.dto.js';
 import { ShareMaterialDto } from './dto/share-material.dto.js';
+import { AssignDocumentsToClassesDto } from './dto/assign-documents.dto.js';
 import { UpdateMaterialDto } from './dto/update-material.dto.js';
 import { QueryMaterialsDto } from './dto/query-materials.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
@@ -62,9 +63,9 @@ export class TeacherClassMaterialsController {
   }
 
   /**
-   * POST /teacher/classes/:classId/materials — Chia sẻ tài liệu từ thư viện vào lớp học
+   * POST /teacher/classes/:classId/materials (hoặc /share-document) — Chia sẻ tài liệu từ thư viện vào lớp học
    */
-  @Post('classes/:classId/materials')
+  @Post(['classes/:classId/materials', 'classes/:classId/materials/share-document'])
   async shareDocumentToClass(
     @CurrentUser('sub') teacherId: string,
     @Param('classId') classId: string,
@@ -75,6 +76,18 @@ export class TeacherClassMaterialsController {
       classId,
       dto,
     );
+  }
+
+  /**
+   * POST /teacher/materials/assign-classes (hoặc /documents/assign-classes)
+   * Cấp quyền 1 hoặc nhiều tài liệu cho 1 hoặc nhiều lớp học trong một thao tác
+   */
+  @Post(['materials/assign-classes', 'documents/assign-classes'])
+  async assignDocumentsToClasses(
+    @CurrentUser('sub') teacherId: string,
+    @Body() dto: AssignDocumentsToClassesDto,
+  ) {
+    return this.classMaterialsService.assignDocumentsToClasses(teacherId, dto);
   }
 
   /**
@@ -128,9 +141,9 @@ export class TeacherClassMaterialsController {
   }
 
   /**
-   * POST /teacher/sessions/:sessionId/materials — Chia sẻ tài liệu từ thư viện vào buổi học
+   * POST /teacher/sessions/:sessionId/materials (hoặc /share-document) — Chia sẻ tài liệu từ thư viện vào buổi học
    */
-  @Post('sessions/:sessionId/materials')
+  @Post(['sessions/:sessionId/materials', 'sessions/:sessionId/materials/share-document'])
   async shareDocumentToSession(
     @CurrentUser('sub') teacherId: string,
     @Param('sessionId') sessionId: string,

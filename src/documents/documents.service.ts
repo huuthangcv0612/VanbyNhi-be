@@ -19,6 +19,7 @@ import type { QueryDocumentsDto } from './dto/query-documents.dto.js';
 import type { UpdateDocumentDto } from './dto/update-document.dto.js';
 import type { CreateCategoryDto } from './dto/create-category.dto.js';
 import type { UpdateCategoryDto } from './dto/update-category.dto.js';
+import type { QueryCategoriesDto } from './dto/query-categories.dto.js';
 
 @Injectable()
 export class DocumentsService {
@@ -44,9 +45,9 @@ export class DocumentsService {
   // ==================== QUẢN LÝ DANH MỤC (CATEGORIES) ====================
 
   /**
-   * Lấy danh sách danh mục của giáo viên kèm số lượng tài liệu
+   * Lấy danh sách danh mục của giáo viên kèm số lượng tài liệu (hỗ trợ dạng cây hoặc mảng phẳng)
    */
-  async getCategories(teacherId: string) {
+  async getCategories(teacherId: string, query?: QueryCategoriesDto) {
     const categories = await this.prisma.documentCategory.findMany({
       where: { teacherId },
       include: {
@@ -62,7 +63,39 @@ export class DocumentsService {
       orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
     });
 
+    if (query?.asTree) {
+      return this.buildCategoryTree(categories);
+    }
+
     return categories;
+  }
+
+  /**
+   * Xây dựng cấu trúc cây đệ quy từ danh sách phẳng
+   */
+  private buildCategoryTree(categories: any[]) {
+    const categoryMap = new Map<string, any>();
+    const roots: any[] = [];
+
+    for (const cat of categories) {
+      categoryMap.set(cat.id, {
+        ...cat,
+        documentCount: cat._count?.documents ?? 0,
+        subCategoryCount: cat._count?.children ?? 0,
+        children: [],
+      });
+    }
+
+    for (const cat of categories) {
+      const node = categoryMap.get(cat.id);
+      if (cat.parentId && categoryMap.has(cat.parentId)) {
+        categoryMap.get(cat.parentId).children.push(node);
+      } else {
+        roots.push(node);
+      }
+    }
+
+    return roots;
   }
 
   /**
@@ -394,39 +427,61 @@ export class DocumentsService {
       );
     }
 
-    // Kiểm tra tính hợp lệ qua magic bytes
-    await this.r2StorageService.validateFileSignature(
-      session.storageKey,
-      session.mimeType,
-    );
-
     const actualSizeBytes = metadata.sizeBytes || Number(session.sizeBytes);
 
-    // Lưu vào database trong transaction
-    const newDocument = await this.prisma.$transaction(async (tx) => {
-      await tx.uploadSession.update({
-        where: { id: session.id },
-        data: { status: UploadSessionStatus.COMPLETED },
-      });
+    // Kiểm tra dung lượng thực tế không vượt quá giới hạn
+    if (actualSizeBytes > this.r2StorageService.getMaxUploadSizeBytes()) {
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw new BadRequestException(
+        `Dung lượng file thực tế (${Math.round(actualSizeBytes / (1024 * 1024))}MB) vượt quá giới hạn tối đa cho phép`,
+      );
+    }
 
-      return tx.document.create({
-        data: {
-          title: session.title,
-          description: session.description,
-          originalName: session.originalName,
-          storageKey: session.storageKey,
-          mimeType: session.mimeType,
-          sizeBytes: BigInt(actualSizeBytes),
-          ownerId: teacherId,
-          categoryId: session.categoryId,
-        },
-        include: {
-          category: {
-            select: { id: true, name: true },
+    // Kiểm tra tính hợp lệ qua magic bytes (dọn dẹp file nếu sai định dạng)
+    try {
+      await this.r2StorageService.validateFileSignature(
+        session.storageKey,
+        session.mimeType,
+      );
+    } catch (err) {
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw err;
+    }
+
+    // Lưu vào database trong transaction, dọn dẹp object mồ côi nếu database thất bại
+    let newDocument: any;
+    try {
+      newDocument = await this.prisma.$transaction(async (tx) => {
+        await tx.uploadSession.update({
+          where: { id: session.id },
+          data: { status: UploadSessionStatus.COMPLETED },
+        });
+
+        return tx.document.create({
+          data: {
+            title: session.title,
+            description: session.description,
+            originalName: session.originalName,
+            storageKey: session.storageKey,
+            mimeType: session.mimeType,
+            sizeBytes: BigInt(actualSizeBytes),
+            ownerId: teacherId,
+            categoryId: session.categoryId,
           },
-        },
+          include: {
+            category: {
+              select: { id: true, name: true },
+            },
+          },
+        });
       });
-    });
+    } catch (dbErr) {
+      this.logger.error(
+        `Lỗi cơ sở dữ liệu khi hoàn tất upload cho session ${session.id}: ${(dbErr as Error).message}. Bắt đầu dọn dẹp object R2.`,
+      );
+      await this.r2StorageService.deleteObject(session.storageKey);
+      throw dbErr;
+    }
 
     return {
       message: 'Tải tài liệu lên thư viện thành công',
