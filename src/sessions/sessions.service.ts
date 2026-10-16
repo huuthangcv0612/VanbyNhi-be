@@ -492,19 +492,22 @@ export class SessionsService {
       );
     }
 
+    const recordData = {
+      content: dto.content,
+      homeworkSummary: dto.homeworkSummary,
+      teacherNotes: dto.teacherNotes,
+      coreKnowledge: dto.coreKnowledge,
+      incompleteContent: dto.incompleteContent,
+      generalRemarks: dto.generalRemarks,
+    };
+
     const lessonRecord = await this.prisma.lessonRecord.upsert({
       where: { sessionId },
       create: {
         sessionId,
-        content: dto.content,
-        homeworkSummary: dto.homeworkSummary,
-        teacherNotes: dto.teacherNotes,
+        ...recordData,
       },
-      update: {
-        content: dto.content,
-        homeworkSummary: dto.homeworkSummary,
-        teacherNotes: dto.teacherNotes,
-      },
+      update: recordData,
     });
 
     return {
@@ -631,6 +634,12 @@ export class SessionsService {
     if (session.status === SessionStatus.CANCELLED) {
       throw new BadRequestException(
         'Không thể kết thúc buổi học đã bị hủy (CANCELLED)',
+      );
+    }
+
+    if (session.status === SessionStatus.SCHEDULED) {
+      throw new BadRequestException(
+        'Không thể kết thúc buổi học chưa được bắt đầu (SCHEDULED)',
       );
     }
 
@@ -898,7 +907,19 @@ export class SessionsService {
         isLive: meetAccess.isLive,
       },
       myAttendance: session.attendances[0] ?? null,
-      lessonRecord: session.lessonRecord,
+      lessonRecord: session.lessonRecord
+        ? {
+            id: session.lessonRecord.id,
+            sessionId: session.lessonRecord.sessionId,
+            content: session.lessonRecord.content,
+            homeworkSummary: session.lessonRecord.homeworkSummary,
+            coreKnowledge: session.lessonRecord.coreKnowledge,
+            incompleteContent: session.lessonRecord.incompleteContent,
+            generalRemarks: session.lessonRecord.generalRemarks,
+            createdAt: session.lessonRecord.createdAt,
+            updatedAt: session.lessonRecord.updatedAt,
+          }
+        : null,
       materials: session.materials,
       assignments: session.assignments,
     };
@@ -1070,6 +1091,197 @@ export class SessionsService {
         attendance: savedAttendance,
       };
     });
+  }
+
+  /**
+   * GIÁO VIÊN cập nhật liên kết Google Meet cho buổi học của lớp mình dạy
+   */
+  async updateTeacherSessionMeetUrl(
+    teacherId: string,
+    sessionId: string,
+    meetUrl: string,
+  ) {
+    const session = await this.prisma.classSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        class: { select: { id: true, teacherId: true, defaultMeetUrl: true } },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+    }
+
+    if (session.class.teacherId !== teacherId) {
+      throw new ForbiddenException(
+        'Bạn không phải là giáo viên phụ trách của lớp học này',
+      );
+    }
+
+    if (session.status === SessionStatus.CANCELLED) {
+      throw new BadRequestException(
+        'Không thể cập nhật liên kết Meet cho buổi học đã bị hủy (CANCELLED)',
+      );
+    }
+
+    if (!this.meetAccessService.isValidMeetUrl(meetUrl)) {
+      throw new BadRequestException(
+        'Đường dẫn Google Meet không hợp lệ (yêu cầu https://meet.google.com/...)',
+      );
+    }
+
+    const updated = await this.prisma.classSession.update({
+      where: { id: sessionId },
+      data: { meetUrl: meetUrl.trim() },
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+            defaultMeetUrl: true,
+          },
+        },
+      },
+    });
+
+    return {
+      message: 'Cập nhật liên kết Google Meet thành công',
+      session: {
+        ...updated,
+        effectiveMeetUrl: updated.meetUrl ?? updated.class.defaultMeetUrl,
+      },
+    };
+  }
+
+  /**
+   * GIÁO VIÊN lấy liên kết Google Meet để mở trong tab mới
+   */
+  async getTeacherMeetAccess(teacherId: string, sessionId: string) {
+    const session = await this.prisma.classSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+            teacherId: true,
+            defaultMeetUrl: true,
+          },
+        },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+    }
+
+    if (session.class.teacherId !== teacherId) {
+      throw new ForbiddenException(
+        'Bạn không phải là giáo viên phụ trách của lớp học này',
+      );
+    }
+
+    const effectiveMeetUrl =
+      session.meetUrl?.trim() || session.class.defaultMeetUrl?.trim() || null;
+    const isValid = this.meetAccessService.isValidMeetUrl(effectiveMeetUrl);
+
+    return {
+      sessionId: session.id,
+      title: session.title,
+      classId: session.classId,
+      className: session.class.name,
+      status: session.status,
+      startTime: session.startTime,
+      endTime: session.endTime,
+      isLive: session.status === SessionStatus.IN_PROGRESS,
+      canJoin: isValid && session.status !== SessionStatus.CANCELLED,
+      meetUrl: isValid ? effectiveMeetUrl : null,
+      effectiveMeetUrl: isValid ? effectiveMeetUrl : null,
+      hasValidMeetUrl: isValid,
+    };
+  }
+
+  /**
+   * GIÁO VIÊN xem nhật ký bài học (LessonRecord) của buổi học
+   */
+  async getTeacherLessonRecord(teacherId: string, sessionId: string) {
+    const session = await this.prisma.classSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        class: { select: { teacherId: true } },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+    }
+
+    if (session.class.teacherId !== teacherId) {
+      throw new ForbiddenException(
+        'Bạn không phải là giáo viên phụ trách của buổi học này',
+      );
+    }
+
+    const lessonRecord = await this.prisma.lessonRecord.findUnique({
+      where: { sessionId },
+    });
+
+    if (!lessonRecord) {
+      throw new NotFoundException(
+        `Chưa có nhật ký bài học cho buổi học ID ${sessionId}`,
+      );
+    }
+
+    return lessonRecord;
+  }
+
+  /**
+   * GIÁO VIÊN tạo hoặc cập nhật nhật ký bài học (LessonRecord)
+   */
+  async upsertTeacherLessonRecord(
+    teacherId: string,
+    sessionId: string,
+    dto: UpsertLessonRecordDto,
+  ) {
+    const session = await this.prisma.classSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        class: { select: { teacherId: true } },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException(`Không tìm thấy buổi học với ID ${sessionId}`);
+    }
+
+    if (session.class.teacherId !== teacherId) {
+      throw new ForbiddenException(
+        'Bạn không phải là giáo viên phụ trách của buổi học này',
+      );
+    }
+
+    const recordData = {
+      content: dto.content,
+      homeworkSummary: dto.homeworkSummary,
+      teacherNotes: dto.teacherNotes,
+      coreKnowledge: dto.coreKnowledge,
+      incompleteContent: dto.incompleteContent,
+      generalRemarks: dto.generalRemarks,
+    };
+
+    const lessonRecord = await this.prisma.lessonRecord.upsert({
+      where: { sessionId },
+      create: {
+        sessionId,
+        ...recordData,
+      },
+      update: recordData,
+    });
+
+    return {
+      message: 'Cập nhật nhật ký bài dạy thành công',
+      lessonRecord,
+    };
   }
 }
 

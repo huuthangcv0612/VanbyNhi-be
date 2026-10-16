@@ -250,6 +250,9 @@ export const LessonRecordScalarFieldEnum = {
   content: 'content',
   homeworkSummary: 'homeworkSummary',
   teacherNotes: 'teacherNotes',
+  coreKnowledge: 'coreKnowledge',
+  incompleteContent: 'incompleteContent',
+  generalRemarks: 'generalRemarks',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

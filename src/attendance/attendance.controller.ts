@@ -15,6 +15,7 @@ import { AttendanceService } from './attendance.service.js';
 import { AttendanceExportService } from './attendance-export.service.js';
 import { AttendanceCleanupService } from './attendance-cleanup.service.js';
 import { BatchAttendanceDto } from './dto/batch-attendance.dto.js';
+import { AttendanceRecordDto } from './dto/attendance-record.dto.js';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto.js';
 import { MarkAllPresentDto } from './dto/mark-all-present.dto.js';
 import { CloseAttendanceSessionDto } from './dto/close-session.dto.js';
@@ -149,6 +150,42 @@ export class AttendanceController {
       sessionId,
       user.sub,
       dto,
+    );
+  }
+
+  @Post('sessions/:sessionId/attendance/record')
+  async saveSingleAttendance(
+    @Param('sessionId') sessionId: string,
+    @CurrentUser() user: { sub: string; role: UserRole },
+    @Body() dto: AttendanceRecordDto,
+  ) {
+    await this.attendanceService.validateTeacherOrAdminAccess(
+      sessionId,
+      user.sub,
+      user.role,
+    );
+    return this.attendanceService.saveSingleAttendance(
+      sessionId,
+      user.sub,
+      dto,
+      user.role,
+    );
+  }
+
+  @Get('sessions/:sessionId/attendance/export')
+  async exportSessionAttendanceExcel(
+    @Param('sessionId') sessionId: string,
+    @CurrentUser() user: { sub: string; role: UserRole },
+    @Res() res: Response,
+  ) {
+    await this.attendanceService.validateTeacherOrAdminAccess(
+      sessionId,
+      user.sub,
+      user.role,
+    );
+    return this.attendanceExportService.exportSessionAttendanceExcel(
+      sessionId,
+      res,
     );
   }
 

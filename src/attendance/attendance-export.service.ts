@@ -532,4 +532,267 @@ export class AttendanceExportService {
     await workbook.xlsx.write(res);
     res.end();
   }
+
+  /**
+   * Xuất danh sách học sinh và trạng thái điểm danh của MỘT BUỔI HỌC cụ thể
+   */
+  async exportSessionAttendanceExcel(sessionId: string, res: Response) {
+    const session = await this.prisma.classSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+            classCode: true,
+            teacher: { select: { fullName: true } },
+          },
+        },
+        attendances: {
+          include: {
+            student: {
+              select: { id: true, fullName: true, phone: true },
+            },
+            markedBy: {
+              select: { fullName: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException(
+        `Không tìm thấy buổi học với ID ${sessionId}`,
+      );
+    }
+
+    // Lấy tất cả học sinh ghi danh trong lớp đến thời điểm kết thúc buổi học
+    const enrollments = await this.prisma.enrollment.findMany({
+      where: {
+        classId: session.classId,
+        joinedAt: { lte: session.endTime },
+      },
+      include: {
+        student: {
+          select: { id: true, fullName: true, phone: true },
+        },
+      },
+      orderBy: { student: { fullName: 'asc' } },
+    });
+
+    const attendanceMap = new Map<string, (typeof session.attendances)[0]>();
+    for (const att of session.attendances) {
+      attendanceMap.set(att.studentId, att);
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'VanbyNhi Education';
+    workbook.created = new Date();
+
+    const worksheet = workbook.addWorksheet('DiemDanh_BuoiHoc');
+
+    // Tiêu đề
+    worksheet.mergeCells('A1:J1');
+    const titleCell = worksheet.getCell('A1');
+    titleCell.value = `BẢNG ĐIỂM DANH BUỔI HỌC - ${session.class.name.toUpperCase()}`;
+    titleCell.font = {
+      name: 'Arial',
+      size: 14,
+      bold: true,
+      color: { argb: 'FF1F4E79' },
+    };
+    titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.getRow(1).height = 30;
+
+    worksheet.mergeCells('A2:J2');
+    const subTitleCell = worksheet.getCell('A2');
+    subTitleCell.value = `Buổi học: ${session.title} | Mã lớp: ${session.class.classCode} | Thời gian: ${this.formatDateTimeVN(session.startTime)} - ${this.formatDateTimeVN(session.endTime)} | GV: ${session.class.teacher.fullName}`;
+    subTitleCell.font = { name: 'Arial', size: 10, italic: true };
+    subTitleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.getRow(2).height = 20;
+
+    // Header table
+    const headerRow = worksheet.getRow(4);
+    headerRow.values = [
+      'STT',
+      'Mã học sinh',
+      'Họ và tên',
+      'Số điện thoại',
+      'Trạng thái điểm danh',
+      'Giờ check-in',
+      'Học bù',
+      'Ghi chú',
+      'Người xác nhận',
+      'Thời gian cập nhật',
+    ];
+    headerRow.font = {
+      name: 'Arial',
+      size: 10,
+      bold: true,
+      color: { argb: 'FFFFFFFF' },
+    };
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+    headerRow.height = 25;
+
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1F4E79' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
+
+    let rowIndex = 5;
+    let stt = 1;
+    let presentCount = 0;
+    let lateCount = 0;
+    let excusedCount = 0;
+    let unexcusedCount = 0;
+    let notMarkedCount = 0;
+
+    for (const enr of enrollments) {
+      const att = attendanceMap.get(enr.studentId);
+      const row = worksheet.getRow(rowIndex);
+
+      const status = att ? att.status : AttendanceStatus.NOT_MARKED;
+      if (status === AttendanceStatus.PRESENT) presentCount++;
+      else if (status === AttendanceStatus.LATE) lateCount++;
+      else if (status === AttendanceStatus.EXCUSED_ABSENT) excusedCount++;
+      else if (
+        status === AttendanceStatus.UNEXCUSED_ABSENT ||
+        status === AttendanceStatus.ABSENT
+      )
+        unexcusedCount++;
+      else notMarkedCount++;
+
+      row.values = [
+        stt++,
+        enr.student.id,
+        enr.student.fullName,
+        enr.student.phone,
+        STATUS_VN[status] || status,
+        att?.checkedInAt ? this.formatDateTimeVN(att.checkedInAt) : '',
+        att?.isMakeUp ? 'Có' : 'Không',
+        att?.note || '',
+        att?.markedBy?.fullName || '',
+        att?.updatedAt ? this.formatDateTimeVN(att.updatedAt) : '',
+      ];
+
+      row.font = { name: 'Arial', size: 10 };
+      row.alignment = { vertical: 'middle' };
+      row.getCell(1).alignment = { horizontal: 'center' };
+      row.getCell(2).alignment = { horizontal: 'center' };
+      row.getCell(4).alignment = { horizontal: 'center' };
+      row.getCell(5).alignment = { horizontal: 'center' };
+      row.getCell(6).alignment = { horizontal: 'center' };
+      row.getCell(7).alignment = { horizontal: 'center' };
+      row.getCell(10).alignment = { horizontal: 'center' };
+
+      // Highlight status
+      if (status === AttendanceStatus.PRESENT) {
+        row
+          .getCell(5)
+          .font = { name: 'Arial', color: { argb: 'FF2E7D32' }, bold: true };
+      } else if (status === AttendanceStatus.LATE) {
+        row
+          .getCell(5)
+          .font = { name: 'Arial', color: { argb: 'FFE65100' }, bold: true };
+      } else if (
+        status === AttendanceStatus.EXCUSED_ABSENT ||
+        status === AttendanceStatus.UNEXCUSED_ABSENT ||
+        status === AttendanceStatus.ABSENT
+      ) {
+        row
+          .getCell(5)
+          .font = { name: 'Arial', color: { argb: 'FFC62828' }, bold: true };
+      }
+
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+          left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+          bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+          right: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+        };
+      });
+
+      rowIndex++;
+    }
+
+    // Summary block below the table
+    rowIndex += 1;
+    worksheet.mergeCells(`A${rowIndex}:D${rowIndex}`);
+    const summaryHeaderCell = worksheet.getCell(`A${rowIndex}`);
+    summaryHeaderCell.value = 'THỐNG KÊ TỔNG QUÁT BUỔI HỌC';
+    summaryHeaderCell.font = {
+      name: 'Arial',
+      size: 11,
+      bold: true,
+      color: { argb: 'FF1F4E79' },
+    };
+
+    const summaryStats: [string, number][] = [
+      ['Tổng số học sinh:', enrollments.length],
+      ['Có mặt:', presentCount],
+      ['Đi muộn:', lateCount],
+      ['Vắng có phép:', excusedCount],
+      ['Vắng không phép:', unexcusedCount],
+      ['Chưa điểm danh:', notMarkedCount],
+    ];
+
+    for (const [label, val] of summaryStats) {
+      rowIndex++;
+      worksheet.getCell(`B${rowIndex}`).value = label;
+      worksheet.getCell(`B${rowIndex}`).font = {
+        name: 'Arial',
+        size: 10,
+        bold: true,
+      };
+      worksheet.getCell(`C${rowIndex}`).value = val;
+      worksheet.getCell(`C${rowIndex}`).font = {
+        name: 'Arial',
+        size: 10,
+        bold: true,
+      };
+      worksheet.getCell(`C${rowIndex}`).alignment = { horizontal: 'right' };
+    }
+
+    worksheet.columns = [
+      { width: 6 }, // STT
+      { width: 18 }, // Mã HS
+      { width: 24 }, // Họ tên
+      { width: 15 }, // SĐT
+      { width: 20 }, // Trạng thái
+      { width: 20 }, // Giờ check-in
+      { width: 10 }, // Học bù
+      { width: 25 }, // Ghi chú
+      { width: 20 }, // Người xác nhận
+      { width: 20 }, // Thời gian cập nhật
+    ];
+
+    const safeClassName = session.class.classCode.replace(/[^a-zA-Z0-9]/g, '_');
+    const safeTitle = session.title.replace(/[^a-zA-Z0-9]/g, '_');
+    const safeDate = this.formatDateVN(session.startTime).replace(/\//g, '-');
+    const fileName = `DiemDanh_${safeClassName}_${safeTitle}_${safeDate}.xlsx`;
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${fileName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  }
 }
+

@@ -16,6 +16,7 @@ import {
   Prisma,
 } from '../../generated/prisma/client.js';
 import type { BatchAttendanceDto } from './dto/batch-attendance.dto.js';
+import type { AttendanceRecordDto } from './dto/attendance-record.dto.js';
 import type { UpdateAttendanceDto } from './dto/update-attendance.dto.js';
 import type { MarkAllPresentDto } from './dto/mark-all-present.dto.js';
 import type { CloseAttendanceSessionDto } from './dto/close-session.dto.js';
@@ -238,11 +239,26 @@ export class AttendanceService {
       }
     }
 
+    const presentCount = summary[AttendanceStatus.PRESENT];
+    const lateCount = summary[AttendanceStatus.LATE];
+    const excusedAbsentCount = summary[AttendanceStatus.EXCUSED_ABSENT];
+    const unexcusedAbsentCount = summary[AttendanceStatus.UNEXCUSED_ABSENT];
+    const absentCount = summary[AttendanceStatus.ABSENT] + unexcusedAbsentCount;
+    const notMarkedCount = summary[AttendanceStatus.NOT_MARKED];
+    const unmarkedCount = Math.max(0, totalActiveStudents - totalMarked);
+
     return {
       sessionId,
       totalActiveStudents,
+      totalStudents: totalActiveStudents,
       totalMarked,
-      unmarkedCount: Math.max(0, totalActiveStudents - totalMarked),
+      presentCount,
+      lateCount,
+      absentCount,
+      excusedAbsentCount,
+      unexcusedAbsentCount,
+      notMarkedCount,
+      unmarkedCount,
       summary,
     };
   }
@@ -632,6 +648,167 @@ export class AttendanceService {
       message: `Đã lưu thành công ${results.length} bản ghi điểm danh`,
       count: results.length,
     };
+  }
+
+  /**
+   * Lưu hoặc cập nhật điểm danh cho một học sinh trong buổi học
+   */
+  async saveSingleAttendance(
+    sessionId: string,
+    markerId: string,
+    record: AttendanceRecordDto,
+    role: UserRole = UserRole.TEACHER,
+  ) {
+    const session = await this.prisma.classSession.findUnique({
+      where: { id: sessionId },
+      include: {
+        attendanceSession: true,
+        class: { select: { id: true, teacherId: true } },
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException(
+        `Không tìm thấy buổi học với ID ${sessionId}`,
+      );
+    }
+
+    if (role === UserRole.TEACHER && session.class.teacherId !== markerId) {
+      throw new ForbiddenException(
+        'Bạn không phải là giáo viên phụ trách của buổi học này',
+      );
+    }
+
+    if (session.status === SessionStatus.CANCELLED) {
+      throw new BadRequestException(
+        'Không thể điểm danh cho buổi học đã bị hủy (CANCELLED)',
+      );
+    }
+
+    if (session.attendanceSession?.status === AttendanceSessionStatus.CLOSED) {
+      throw new BadRequestException(
+        'Phiên điểm danh này đã được chốt (CLOSED). Không thể chỉnh sửa trực tiếp',
+      );
+    }
+
+    // Không đánh dấu vắng khi buổi học còn diễn ra
+    const now = new Date();
+    const isOngoing =
+      session.status === SessionStatus.IN_PROGRESS ||
+      (session.status === SessionStatus.SCHEDULED &&
+        session.endTime &&
+        now < new Date(session.endTime));
+
+    if (
+      isOngoing &&
+      (record.status === AttendanceStatus.ABSENT ||
+        record.status === AttendanceStatus.UNEXCUSED_ABSENT)
+    ) {
+      throw new BadRequestException(
+        'Không thể đánh dấu vắng (ABSENT) khi buổi học đang diễn ra',
+      );
+    }
+
+    // Kiểm tra học sinh có ghi danh trong lớp
+    const enrollment = await this.prisma.enrollment.findFirst({
+      where: {
+        classId: session.classId,
+        studentId: record.studentId,
+      },
+      select: { studentId: true, status: true },
+    });
+
+    if (!enrollment) {
+      throw new BadRequestException(
+        `Học sinh với ID ${record.studentId} không có hồ sơ ghi danh trong lớp học này`,
+      );
+    }
+
+    return await this.prisma.$transaction(async (tx) => {
+      const existing = await tx.attendance.findUnique({
+        where: {
+          sessionId_studentId: {
+            sessionId,
+            studentId: record.studentId,
+          },
+        },
+      });
+
+      if (!existing) {
+        const created = await tx.attendance.create({
+          data: {
+            sessionId,
+            studentId: record.studentId,
+            status: record.status,
+            checkedInAt:
+              record.checkedInAt ??
+              (record.status === AttendanceStatus.PRESENT ? new Date() : null),
+            markedById: markerId,
+            note: record.note,
+            isMakeUp: record.isMakeUp ?? false,
+            originalSessionId: record.originalSessionId,
+          },
+          include: {
+            student: { select: { id: true, fullName: true, phone: true } },
+            markedBy: { select: { id: true, fullName: true } },
+          },
+        });
+
+        return {
+          message: 'Lưu điểm danh học sinh thành công',
+          attendance: created,
+          created: true,
+        };
+      } else {
+        const oldStatus = existing.status;
+        const updated = await tx.attendance.update({
+          where: { id: existing.id },
+          data: {
+            status: record.status,
+            checkedInAt:
+              record.checkedInAt !== undefined
+                ? record.checkedInAt
+                : record.status === AttendanceStatus.PRESENT &&
+                    !existing.checkedInAt
+                  ? new Date()
+                  : existing.checkedInAt,
+            markedById: markerId,
+            note: record.note !== undefined ? record.note : existing.note,
+            isMakeUp:
+              record.isMakeUp !== undefined
+                ? record.isMakeUp
+                : existing.isMakeUp,
+            originalSessionId:
+              record.originalSessionId !== undefined
+                ? record.originalSessionId
+                : existing.originalSessionId,
+          },
+          include: {
+            student: { select: { id: true, fullName: true, phone: true } },
+            markedBy: { select: { id: true, fullName: true } },
+          },
+        });
+
+        if (oldStatus !== record.status) {
+          await tx.attendanceChangeLog.create({
+            data: {
+              attendanceId: existing.id,
+              oldStatus,
+              newStatus: record.status,
+              changedById: markerId,
+              reason: 'Cập nhật điểm danh học sinh',
+            },
+          });
+        }
+
+        return {
+          message: 'Cập nhật điểm danh học sinh thành công',
+          attendance: updated,
+          created: false,
+          statusChanged: oldStatus !== record.status,
+        };
+      }
+    });
   }
 
   /**

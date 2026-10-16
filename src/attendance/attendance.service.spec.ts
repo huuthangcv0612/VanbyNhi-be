@@ -795,5 +795,172 @@ describe('AttendanceService', () => {
       ).rejects.toThrow('Database lock deadlock');
     });
   });
+
+  describe('saveSingleAttendance (Lưu điểm danh đơn lẻ)', () => {
+    it('lưu thành công điểm danh cho học sinh mới', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        status: SessionStatus.COMPLETED,
+        class: { id: 'c1', teacherId: 't1' },
+        attendanceSession: { status: AttendanceSessionStatus.OPEN },
+      });
+
+      prismaMock.enrollment.findFirst.mockResolvedValue({
+        studentId: 'stu1',
+        status: MemberStatus.ACTIVE,
+      });
+
+      prismaMock.attendance.findUnique.mockResolvedValue(null);
+      prismaMock.attendance.create.mockResolvedValue({
+        id: 'att1',
+        sessionId: 's1',
+        studentId: 'stu1',
+        status: AttendanceStatus.PRESENT,
+      });
+
+      const res = await attendanceService.saveSingleAttendance(
+        's1',
+        't1',
+        {
+          studentId: 'stu1',
+          status: AttendanceStatus.PRESENT,
+        },
+        UserRole.TEACHER,
+      );
+
+      expect(res.created).toBe(true);
+      expect(res.attendance.id).toBe('att1');
+    });
+
+    it('cập nhật thành công điểm danh học sinh đã có và ghi changelog', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        status: SessionStatus.COMPLETED,
+        class: { id: 'c1', teacherId: 't1' },
+        attendanceSession: { status: AttendanceSessionStatus.OPEN },
+      });
+
+      prismaMock.enrollment.findFirst.mockResolvedValue({
+        studentId: 'stu1',
+        status: MemberStatus.ACTIVE,
+      });
+
+      prismaMock.attendance.findUnique.mockResolvedValue({
+        id: 'att1',
+        sessionId: 's1',
+        studentId: 'stu1',
+        status: AttendanceStatus.PRESENT,
+      });
+
+      prismaMock.attendance.update.mockResolvedValue({
+        id: 'att1',
+        sessionId: 's1',
+        studentId: 'stu1',
+        status: AttendanceStatus.LATE,
+      });
+
+      const res = await attendanceService.saveSingleAttendance(
+        's1',
+        't1',
+        {
+          studentId: 'stu1',
+          status: AttendanceStatus.LATE,
+        },
+        UserRole.TEACHER,
+      );
+
+      expect(res.created).toBe(false);
+      expect(res.statusChanged).toBe(true);
+      expect(prismaMock.attendanceChangeLog.create).toHaveBeenCalled();
+    });
+
+    it('từ chối giáo viên không phụ trách lớp (403)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        status: SessionStatus.COMPLETED,
+        class: { id: 'c1', teacherId: 't_owner' },
+      });
+
+      await expect(
+        attendanceService.saveSingleAttendance(
+          's1',
+          't_other',
+          { studentId: 'stu1', status: AttendanceStatus.PRESENT },
+          UserRole.TEACHER,
+        ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('từ chối điểm danh học sinh không có trong lớp (400)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        status: SessionStatus.COMPLETED,
+        class: { id: 'c1', teacherId: 't1' },
+        attendanceSession: { status: AttendanceSessionStatus.OPEN },
+      });
+
+      prismaMock.enrollment.findFirst.mockResolvedValue(null);
+
+      await expect(
+        attendanceService.saveSingleAttendance(
+          's1',
+          't1',
+          { studentId: 'stu_unknown', status: AttendanceStatus.PRESENT },
+          UserRole.TEACHER,
+        ),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('từ chối đánh dấu ABSENT khi buổi học đang diễn ra (400)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        status: SessionStatus.IN_PROGRESS,
+        class: { id: 'c1', teacherId: 't1' },
+        attendanceSession: { status: AttendanceSessionStatus.OPEN },
+      });
+
+      await expect(
+        attendanceService.saveSingleAttendance(
+          's1',
+          't1',
+          { studentId: 'stu1', status: AttendanceStatus.ABSENT },
+          UserRole.TEACHER,
+        ),
+      ).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('getSessionSummary', () => {
+    it('trả về đúng cấu trúc thống kê tóm tắt buổi học', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+      });
+
+      prismaMock.enrollment.count.mockResolvedValue(20);
+      prismaMock.attendance.groupBy.mockResolvedValue([
+        { status: AttendanceStatus.PRESENT, _count: { _all: 12 } },
+        { status: AttendanceStatus.LATE, _count: { _all: 3 } },
+        { status: AttendanceStatus.EXCUSED_ABSENT, _count: { _all: 2 } },
+        { status: AttendanceStatus.UNEXCUSED_ABSENT, _count: { _all: 1 } },
+      ]);
+
+      const res = await attendanceService.getSessionSummary('s1');
+
+      expect(res.totalStudents).toBe(20);
+      expect(res.totalMarked).toBe(18);
+      expect(res.presentCount).toBe(12);
+      expect(res.lateCount).toBe(3);
+      expect(res.excusedAbsentCount).toBe(2);
+      expect(res.unexcusedAbsentCount).toBe(1);
+      expect(res.absentCount).toBe(1);
+      expect(res.unmarkedCount).toBe(2);
+    });
+  });
 });
 

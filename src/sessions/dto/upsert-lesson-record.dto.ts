@@ -12,4 +12,17 @@ export class UpsertLessonRecordDto {
   @IsOptional()
   @IsString({ message: 'Ghi chú của giáo viên phải là chuỗi' })
   teacherNotes?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Kiến thức trọng tâm phải là chuỗi' })
+  coreKnowledge?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Nội dung chưa hoàn thành phải là chuỗi' })
+  incompleteContent?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Nhận xét chung về buổi học phải là chuỗi' })
+  generalRemarks?: string;
 }
+

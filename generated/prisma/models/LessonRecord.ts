@@ -30,6 +30,9 @@ export type LessonRecordMinAggregateOutputType = {
   content: string | null
   homeworkSummary: string | null
   teacherNotes: string | null
+  coreKnowledge: string | null
+  incompleteContent: string | null
+  generalRemarks: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +43,9 @@ export type LessonRecordMaxAggregateOutputType = {
   content: string | null
   homeworkSummary: string | null
   teacherNotes: string | null
+  coreKnowledge: string | null
+  incompleteContent: string | null
+  generalRemarks: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +56,9 @@ export type LessonRecordCountAggregateOutputType = {
   content: number
   homeworkSummary: number
   teacherNotes: number
+  coreKnowledge: number
+  incompleteContent: number
+  generalRemarks: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -62,6 +71,9 @@ export type LessonRecordMinAggregateInputType = {
   content?: true
   homeworkSummary?: true
   teacherNotes?: true
+  coreKnowledge?: true
+  incompleteContent?: true
+  generalRemarks?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +84,9 @@ export type LessonRecordMaxAggregateInputType = {
   content?: true
   homeworkSummary?: true
   teacherNotes?: true
+  coreKnowledge?: true
+  incompleteContent?: true
+  generalRemarks?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +97,9 @@ export type LessonRecordCountAggregateInputType = {
   content?: true
   homeworkSummary?: true
   teacherNotes?: true
+  coreKnowledge?: true
+  incompleteContent?: true
+  generalRemarks?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -165,6 +183,9 @@ export type LessonRecordGroupByOutputType = {
   content: string
   homeworkSummary: string | null
   teacherNotes: string | null
+  coreKnowledge: string | null
+  incompleteContent: string | null
+  generalRemarks: string | null
   createdAt: Date
   updatedAt: Date
   _count: LessonRecordCountAggregateOutputType | null
@@ -196,6 +217,9 @@ export type LessonRecordWhereInput = {
   content?: Prisma.StringFilter<"LessonRecord"> | string
   homeworkSummary?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
   teacherNotes?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
+  coreKnowledge?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
+  incompleteContent?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
+  generalRemarks?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LessonRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LessonRecord"> | Date | string
   session?: Prisma.XOR<Prisma.ClassSessionScalarRelationFilter, Prisma.ClassSessionWhereInput>
@@ -207,6 +231,9 @@ export type LessonRecordOrderByWithRelationInput = {
   content?: Prisma.SortOrder
   homeworkSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   teacherNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  coreKnowledge?: Prisma.SortOrderInput | Prisma.SortOrder
+  incompleteContent?: Prisma.SortOrderInput | Prisma.SortOrder
+  generalRemarks?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   session?: Prisma.ClassSessionOrderByWithRelationInput
@@ -221,6 +248,9 @@ export type LessonRecordWhereUniqueInput = Prisma.AtLeast<{
   content?: Prisma.StringFilter<"LessonRecord"> | string
   homeworkSummary?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
   teacherNotes?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
+  coreKnowledge?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
+  incompleteContent?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
+  generalRemarks?: Prisma.StringNullableFilter<"LessonRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LessonRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LessonRecord"> | Date | string
   session?: Prisma.XOR<Prisma.ClassSessionScalarRelationFilter, Prisma.ClassSessionWhereInput>
@@ -232,6 +262,9 @@ export type LessonRecordOrderByWithAggregationInput = {
   content?: Prisma.SortOrder
   homeworkSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   teacherNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  coreKnowledge?: Prisma.SortOrderInput | Prisma.SortOrder
+  incompleteContent?: Prisma.SortOrderInput | Prisma.SortOrder
+  generalRemarks?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.LessonRecordCountOrderByAggregateInput
@@ -248,6 +281,9 @@ export type LessonRecordScalarWhereWithAggregatesInput = {
   content?: Prisma.StringWithAggregatesFilter<"LessonRecord"> | string
   homeworkSummary?: Prisma.StringNullableWithAggregatesFilter<"LessonRecord"> | string | null
   teacherNotes?: Prisma.StringNullableWithAggregatesFilter<"LessonRecord"> | string | null
+  coreKnowledge?: Prisma.StringNullableWithAggregatesFilter<"LessonRecord"> | string | null
+  incompleteContent?: Prisma.StringNullableWithAggregatesFilter<"LessonRecord"> | string | null
+  generalRemarks?: Prisma.StringNullableWithAggregatesFilter<"LessonRecord"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LessonRecord"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LessonRecord"> | Date | string
 }
@@ -257,6 +293,9 @@ export type LessonRecordCreateInput = {
   content: string
   homeworkSummary?: string | null
   teacherNotes?: string | null
+  coreKnowledge?: string | null
+  incompleteContent?: string | null
+  generalRemarks?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   session: Prisma.ClassSessionCreateNestedOneWithoutLessonRecordInput
@@ -268,6 +307,9 @@ export type LessonRecordUncheckedCreateInput = {
   content: string
   homeworkSummary?: string | null
   teacherNotes?: string | null
+  coreKnowledge?: string | null
+  incompleteContent?: string | null
+  generalRemarks?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -277,6 +319,9 @@ export type LessonRecordUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   homeworkSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacherNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coreKnowledge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  incompleteContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generalRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   session?: Prisma.ClassSessionUpdateOneRequiredWithoutLessonRecordNestedInput
@@ -288,6 +333,9 @@ export type LessonRecordUncheckedUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   homeworkSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacherNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coreKnowledge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  incompleteContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generalRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -298,6 +346,9 @@ export type LessonRecordCreateManyInput = {
   content: string
   homeworkSummary?: string | null
   teacherNotes?: string | null
+  coreKnowledge?: string | null
+  incompleteContent?: string | null
+  generalRemarks?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -307,6 +358,9 @@ export type LessonRecordUpdateManyMutationInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   homeworkSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacherNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coreKnowledge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  incompleteContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generalRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +371,9 @@ export type LessonRecordUncheckedUpdateManyInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   homeworkSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacherNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coreKnowledge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  incompleteContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generalRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -332,6 +389,9 @@ export type LessonRecordCountOrderByAggregateInput = {
   content?: Prisma.SortOrder
   homeworkSummary?: Prisma.SortOrder
   teacherNotes?: Prisma.SortOrder
+  coreKnowledge?: Prisma.SortOrder
+  incompleteContent?: Prisma.SortOrder
+  generalRemarks?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -342,6 +402,9 @@ export type LessonRecordMaxOrderByAggregateInput = {
   content?: Prisma.SortOrder
   homeworkSummary?: Prisma.SortOrder
   teacherNotes?: Prisma.SortOrder
+  coreKnowledge?: Prisma.SortOrder
+  incompleteContent?: Prisma.SortOrder
+  generalRemarks?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -352,6 +415,9 @@ export type LessonRecordMinOrderByAggregateInput = {
   content?: Prisma.SortOrder
   homeworkSummary?: Prisma.SortOrder
   teacherNotes?: Prisma.SortOrder
+  coreKnowledge?: Prisma.SortOrder
+  incompleteContent?: Prisma.SortOrder
+  generalRemarks?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -393,6 +459,9 @@ export type LessonRecordCreateWithoutSessionInput = {
   content: string
   homeworkSummary?: string | null
   teacherNotes?: string | null
+  coreKnowledge?: string | null
+  incompleteContent?: string | null
+  generalRemarks?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -402,6 +471,9 @@ export type LessonRecordUncheckedCreateWithoutSessionInput = {
   content: string
   homeworkSummary?: string | null
   teacherNotes?: string | null
+  coreKnowledge?: string | null
+  incompleteContent?: string | null
+  generalRemarks?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -427,6 +499,9 @@ export type LessonRecordUpdateWithoutSessionInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   homeworkSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacherNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coreKnowledge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  incompleteContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generalRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -436,6 +511,9 @@ export type LessonRecordUncheckedUpdateWithoutSessionInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   homeworkSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacherNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coreKnowledge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  incompleteContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generalRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -448,6 +526,9 @@ export type LessonRecordSelect<ExtArgs extends runtime.Types.Extensions.Internal
   content?: boolean
   homeworkSummary?: boolean
   teacherNotes?: boolean
+  coreKnowledge?: boolean
+  incompleteContent?: boolean
+  generalRemarks?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   session?: boolean | Prisma.ClassSessionDefaultArgs<ExtArgs>
@@ -459,6 +540,9 @@ export type LessonRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   content?: boolean
   homeworkSummary?: boolean
   teacherNotes?: boolean
+  coreKnowledge?: boolean
+  incompleteContent?: boolean
+  generalRemarks?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   session?: boolean | Prisma.ClassSessionDefaultArgs<ExtArgs>
@@ -470,6 +554,9 @@ export type LessonRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   content?: boolean
   homeworkSummary?: boolean
   teacherNotes?: boolean
+  coreKnowledge?: boolean
+  incompleteContent?: boolean
+  generalRemarks?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   session?: boolean | Prisma.ClassSessionDefaultArgs<ExtArgs>
@@ -481,11 +568,14 @@ export type LessonRecordSelectScalar = {
   content?: boolean
   homeworkSummary?: boolean
   teacherNotes?: boolean
+  coreKnowledge?: boolean
+  incompleteContent?: boolean
+  generalRemarks?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LessonRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "content" | "homeworkSummary" | "teacherNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["lessonRecord"]>
+export type LessonRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "content" | "homeworkSummary" | "teacherNotes" | "coreKnowledge" | "incompleteContent" | "generalRemarks" | "createdAt" | "updatedAt", ExtArgs["result"]["lessonRecord"]>
 export type LessonRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   session?: boolean | Prisma.ClassSessionDefaultArgs<ExtArgs>
 }
@@ -507,6 +597,9 @@ export type $LessonRecordPayload<ExtArgs extends runtime.Types.Extensions.Intern
     content: string
     homeworkSummary: string | null
     teacherNotes: string | null
+    coreKnowledge: string | null
+    incompleteContent: string | null
+    generalRemarks: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["lessonRecord"]>
@@ -938,6 +1031,9 @@ export interface LessonRecordFieldRefs {
   readonly content: Prisma.FieldRef<"LessonRecord", 'String'>
   readonly homeworkSummary: Prisma.FieldRef<"LessonRecord", 'String'>
   readonly teacherNotes: Prisma.FieldRef<"LessonRecord", 'String'>
+  readonly coreKnowledge: Prisma.FieldRef<"LessonRecord", 'String'>
+  readonly incompleteContent: Prisma.FieldRef<"LessonRecord", 'String'>
+  readonly generalRemarks: Prisma.FieldRef<"LessonRecord", 'String'>
   readonly createdAt: Prisma.FieldRef<"LessonRecord", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LessonRecord", 'DateTime'>
 }

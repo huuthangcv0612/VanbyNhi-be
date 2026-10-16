@@ -15,6 +15,7 @@ describe('AttendanceExportService (Xuất báo cáo Excel & Tiếng Việt Unico
       },
       classSession: {
         findMany: vi.fn(),
+        findUnique: vi.fn(),
       },
       enrollment: {
         findMany: vi.fn(),
@@ -154,4 +155,67 @@ describe('AttendanceExportService (Xuất báo cáo Excel & Tiếng Việt Unico
     );
     expect(resMock.end).toHaveBeenCalled();
   });
+
+  describe('exportSessionAttendanceExcel (Xuất Excel một buổi học cụ thể)', () => {
+    it('ném NotFoundException nếu buổi học không tồn tại', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.exportSessionAttendanceExcel('s999', resMock),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('xuất Excel thành công cho buổi học với danh sách học sinh và thống kê', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        title: 'Buổi 1: Ôn tập Văn học hiện thực',
+        startTime: new Date('2026-10-15T08:00:00Z'),
+        endTime: new Date('2026-10-15T10:00:00Z'),
+        classId: 'c1',
+        class: {
+          id: 'c1',
+          name: 'Lớp Chuyên Văn 12',
+          classCode: 'VAN12',
+          teacher: { fullName: 'Cô Vân' },
+        },
+        attendances: [
+          {
+            id: 'att1',
+            studentId: 'stu1',
+            status: AttendanceStatus.PRESENT,
+            checkedInAt: new Date('2026-10-15T08:05:00Z'),
+            isMakeUp: false,
+            note: 'Phát biểu sôi nổi',
+            student: { id: 'stu1', fullName: 'Lê Văn An', phone: '0901234567' },
+            markedBy: { fullName: 'Cô Vân' },
+            updatedAt: new Date('2026-10-15T08:10:00Z'),
+          },
+        ],
+      });
+
+      prismaMock.enrollment.findMany.mockResolvedValue([
+        {
+          studentId: 'stu1',
+          student: { id: 'stu1', fullName: 'Lê Văn An', phone: '0901234567' },
+        },
+        {
+          studentId: 'stu2',
+          student: { id: 'stu2', fullName: 'Trần Thị Bình', phone: '0909876543' },
+        },
+      ]);
+
+      await service.exportSessionAttendanceExcel('s1', resMock);
+
+      expect(resMock.setHeader).toHaveBeenCalledWith(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      expect(resMock.setHeader).toHaveBeenCalledWith(
+        'Content-Disposition',
+        expect.stringContaining('DiemDanh_VAN12_'),
+      );
+      expect(resMock.end).toHaveBeenCalled();
+    });
+  });
 });
+

@@ -33,7 +33,11 @@ export class MeetAccessService {
     const trimmed = url.trim();
     try {
       const parsed = new URL(trimmed);
-      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+      const isHttpOrHttps =
+        parsed.protocol === 'https:' || parsed.protocol === 'http:';
+      const isGoogleMeetHost =
+        parsed.hostname.toLowerCase() === 'meet.google.com';
+      return isHttpOrHttps && isGoogleMeetHost;
     } catch {
       return false;
     }

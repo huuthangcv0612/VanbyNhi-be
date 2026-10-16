@@ -2,12 +2,17 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Put,
+  Body,
   Param,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { SessionsService } from './sessions.service.js';
 import { QuerySessionsDto } from './dto/query-sessions.dto.js';
+import { UpsertLessonRecordDto } from './dto/upsert-lesson-record.dto.js';
+import { UpdateSessionMeetUrlDto } from './dto/update-session-meet-url.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
@@ -76,4 +81,59 @@ export class TeacherSessionsController {
   ) {
     return this.sessionsService.findTeacherSessionDetail(teacherId, sessionId);
   }
+
+  /**
+   * GET /teacher/sessions/:sessionId/meet-url — Giáo viên lấy liên kết Google Meet để mở trong tab mới
+   */
+  @Get('sessions/:sessionId/meet-url')
+  async getTeacherMeetUrl(
+    @CurrentUser('sub') teacherId: string,
+    @Param('sessionId') sessionId: string,
+  ) {
+    return this.sessionsService.getTeacherMeetAccess(teacherId, sessionId);
+  }
+
+  /**
+   * PATCH /teacher/sessions/:sessionId/meet-url — Giáo viên cập nhật liên kết Google Meet cho buổi học
+   */
+  @Patch('sessions/:sessionId/meet-url')
+  async updateTeacherMeetUrl(
+    @CurrentUser('sub') teacherId: string,
+    @Param('sessionId') sessionId: string,
+    @Body() dto: UpdateSessionMeetUrlDto,
+  ) {
+    return this.sessionsService.updateTeacherSessionMeetUrl(
+      teacherId,
+      sessionId,
+      dto.meetUrl,
+    );
+  }
+
+  /**
+   * GET /teacher/sessions/:sessionId/lesson-record — Giáo viên xem nhật ký buổi học
+   */
+  @Get('sessions/:sessionId/lesson-record')
+  async getTeacherLessonRecord(
+    @CurrentUser('sub') teacherId: string,
+    @Param('sessionId') sessionId: string,
+  ) {
+    return this.sessionsService.getTeacherLessonRecord(teacherId, sessionId);
+  }
+
+  /**
+   * PUT /teacher/sessions/:sessionId/lesson-record — Giáo viên tạo hoặc cập nhật nhật ký buổi học
+   */
+  @Put('sessions/:sessionId/lesson-record')
+  async upsertTeacherLessonRecord(
+    @CurrentUser('sub') teacherId: string,
+    @Param('sessionId') sessionId: string,
+    @Body() dto: UpsertLessonRecordDto,
+  ) {
+    return this.sessionsService.upsertTeacherLessonRecord(
+      teacherId,
+      sessionId,
+      dto,
+    );
+  }
 }
+

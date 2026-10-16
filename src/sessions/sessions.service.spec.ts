@@ -408,6 +408,18 @@ describe('SessionsService', () => {
       expect(res.session.status).toBe(SessionStatus.COMPLETED);
     });
 
+    it('từ chối kết thúc buổi học chưa được bắt đầu (SCHEDULED)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        status: SessionStatus.SCHEDULED,
+        class: { id: 'c1', teacherId: 't1', defaultMeetUrl: null },
+      });
+
+      await expect(
+        sessionsService.endSession('s1', 't1', UserRole.TEACHER),
+      ).rejects.toThrow(BadRequestException);
+    });
+
     it('từ chối giáo viên không phụ trách kết thúc buổi học (403)', async () => {
       prismaMock.classSession.findUnique.mockResolvedValue({
         id: 's1',
@@ -418,6 +430,148 @@ describe('SessionsService', () => {
       await expect(
         sessionsService.endSession('s1', 't_other', UserRole.TEACHER),
       ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('updateTeacherSessionMeetUrl & getTeacherMeetAccess', () => {
+    it('giáo viên cập nhật thành công liên kết Google Meet hợp lệ', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        status: SessionStatus.SCHEDULED,
+        class: { id: 'c1', teacherId: 't1', defaultMeetUrl: null },
+      });
+
+      prismaMock.classSession.update.mockResolvedValue({
+        id: 's1',
+        meetUrl: 'https://meet.google.com/abc-defg-hij',
+        class: { id: 'c1', name: 'Lớp 12A', defaultMeetUrl: null },
+      });
+
+      const res = await sessionsService.updateTeacherSessionMeetUrl(
+        't1',
+        's1',
+        'https://meet.google.com/abc-defg-hij',
+      );
+
+      expect(res.session.meetUrl).toBe('https://meet.google.com/abc-defg-hij');
+      expect(res.session.effectiveMeetUrl).toBe('https://meet.google.com/abc-defg-hij');
+    });
+
+    it('từ chối giáo viên khác lớp cập nhật link Meet (403)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        status: SessionStatus.SCHEDULED,
+        class: { id: 'c1', teacherId: 't_owner' },
+      });
+
+      await expect(
+        sessionsService.updateTeacherSessionMeetUrl(
+          't_stranger',
+          's1',
+          'https://meet.google.com/abc-defg-hij',
+        ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('từ chối cập nhật URL không phải domain Google Meet (400)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        status: SessionStatus.SCHEDULED,
+        class: { id: 'c1', teacherId: 't1' },
+      });
+
+      await expect(
+        sessionsService.updateTeacherSessionMeetUrl(
+          't1',
+          's1',
+          'https://evil-site.com/phishing',
+        ),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('giáo viên lấy thông tin Meet access thành công', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        title: 'Buổi học 1',
+        classId: 'c1',
+        status: SessionStatus.IN_PROGRESS,
+        startTime: new Date(),
+        endTime: new Date(),
+        meetUrl: 'https://meet.google.com/abc-defg-hij',
+        class: {
+          id: 'c1',
+          name: 'Lớp 12A',
+          teacherId: 't1',
+          defaultMeetUrl: null,
+        },
+      });
+
+      const res = await sessionsService.getTeacherMeetAccess('t1', 's1');
+      expect(res.canJoin).toBe(true);
+      expect(res.hasValidMeetUrl).toBe(true);
+      expect(res.meetUrl).toBe('https://meet.google.com/abc-defg-hij');
+    });
+  });
+
+  describe('getTeacherLessonRecord & upsertTeacherLessonRecord', () => {
+    it('giáo viên xem nhật ký buổi học thành công kèm teacherNotes', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        class: { teacherId: 't1' },
+      });
+
+      prismaMock.lessonRecord.findUnique.mockResolvedValue({
+        id: 'lr1',
+        sessionId: 's1',
+        content: 'Nội dung bài học',
+        teacherNotes: 'Ghi chú mật của giáo viên',
+        coreKnowledge: 'Kiến thức trọng tâm',
+      });
+
+      const res = await sessionsService.getTeacherLessonRecord('t1', 's1');
+      expect(res.id).toBe('lr1');
+      expect(res.teacherNotes).toBe('Ghi chú mật của giáo viên');
+    });
+
+    it('từ chối giáo viên khác lớp xem nhật ký (403)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        class: { teacherId: 't_owner' },
+      });
+
+      await expect(
+        sessionsService.getTeacherLessonRecord('t_other', 's1'),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('giáo viên upsert nhật ký với các trường mở rộng thành công', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        class: { teacherId: 't1' },
+      });
+
+      const mockSaved = {
+        id: 'lr1',
+        sessionId: 's1',
+        content: 'Nội dung mới',
+        homeworkSummary: 'Bài tập 1',
+        teacherNotes: 'Ghi chú giáo viên',
+        coreKnowledge: 'Kiến thức trọng tâm',
+        incompleteContent: 'Nội dung chưa xong',
+        generalRemarks: 'Lớp học sôi nổi',
+      };
+      prismaMock.lessonRecord.upsert.mockResolvedValue(mockSaved);
+
+      const res = await sessionsService.upsertTeacherLessonRecord('t1', 's1', {
+        content: 'Nội dung mới',
+        homeworkSummary: 'Bài tập 1',
+        teacherNotes: 'Ghi chú giáo viên',
+        coreKnowledge: 'Kiến thức trọng tâm',
+        incompleteContent: 'Nội dung chưa xong',
+        generalRemarks: 'Lớp học sôi nổi',
+      });
+
+      expect(res.lessonRecord).toEqual(mockSaved);
     });
   });
 
@@ -482,7 +636,12 @@ describe('SessionsService', () => {
           name: 'Lớp 12A',
           teacher: { id: 't1', fullName: 'Thầy Giáo' },
         },
-        lessonRecord: { content: 'Nội dung bài học' },
+        lessonRecord: {
+          id: 'lr1',
+          sessionId: 's1',
+          content: 'Nội dung bài học',
+          teacherNotes: 'Ghi chú tuyệt mật của giáo viên',
+        },
         materials: [{ id: 'm1', title: 'Đề cương' }],
         assignments: [],
         attendances: [{ id: 'att1', status: AttendanceStatus.PRESENT }],
@@ -499,6 +658,8 @@ describe('SessionsService', () => {
       expect(res.meetAccess.meetUrl).toBe('https://meet.google.com/live-url');
       expect(res.myAttendance?.status).toBe(AttendanceStatus.PRESENT);
       expect(res.materials).toHaveLength(1);
+      expect(res.lessonRecord?.content).toBe('Nội dung bài học');
+      expect((res.lessonRecord as any)?.teacherNotes).toBeUndefined();
     });
   });
 
