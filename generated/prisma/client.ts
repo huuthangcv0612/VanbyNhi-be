@@ -151,3 +151,23 @@ export type CalendarEventParticipant = Prisma.CalendarEventParticipantModel
  * 
  */
 export type CalendarNotification = Prisma.CalendarNotificationModel
+/**
+ * Model AttendanceSession
+ * 
+ */
+export type AttendanceSession = Prisma.AttendanceSessionModel
+/**
+ * Model AttendanceCorrectionRequest
+ * 
+ */
+export type AttendanceCorrectionRequest = Prisma.AttendanceCorrectionRequestModel
+/**
+ * Model MonthlyAttendanceSummary
+ * 
+ */
+export type MonthlyAttendanceSummary = Prisma.MonthlyAttendanceSummaryModel
+/**
+ * Model ClassAttendanceConfig
+ * 
+ */
+export type ClassAttendanceConfig = Prisma.ClassAttendanceConfigModel

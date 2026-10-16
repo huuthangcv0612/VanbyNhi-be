@@ -72,7 +72,11 @@ export const ModelName = {
   TeacherCalendarLabel: 'TeacherCalendarLabel',
   TeacherCalendarEvent: 'TeacherCalendarEvent',
   CalendarEventParticipant: 'CalendarEventParticipant',
-  CalendarNotification: 'CalendarNotification'
+  CalendarNotification: 'CalendarNotification',
+  AttendanceSession: 'AttendanceSession',
+  AttendanceCorrectionRequest: 'AttendanceCorrectionRequest',
+  MonthlyAttendanceSummary: 'MonthlyAttendanceSummary',
+  ClassAttendanceConfig: 'ClassAttendanceConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -183,6 +187,8 @@ export const AttendanceScalarFieldEnum = {
   checkedInAt: 'checkedInAt',
   markedById: 'markedById',
   note: 'note',
+  isMakeUp: 'isMakeUp',
+  originalSessionId: 'originalSessionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -458,6 +464,82 @@ export const CalendarNotificationScalarFieldEnum = {
 } as const
 
 export type CalendarNotificationScalarFieldEnum = (typeof CalendarNotificationScalarFieldEnum)[keyof typeof CalendarNotificationScalarFieldEnum]
+
+
+export const AttendanceSessionScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  classId: 'classId',
+  status: 'status',
+  notes: 'notes',
+  closedAt: 'closedAt',
+  closedById: 'closedById',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceSessionScalarFieldEnum = (typeof AttendanceSessionScalarFieldEnum)[keyof typeof AttendanceSessionScalarFieldEnum]
+
+
+export const AttendanceCorrectionRequestScalarFieldEnum = {
+  id: 'id',
+  attendanceId: 'attendanceId',
+  studentId: 'studentId',
+  requestedStatus: 'requestedStatus',
+  reason: 'reason',
+  evidenceUrl: 'evidenceUrl',
+  status: 'status',
+  reviewNote: 'reviewNote',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceCorrectionRequestScalarFieldEnum = (typeof AttendanceCorrectionRequestScalarFieldEnum)[keyof typeof AttendanceCorrectionRequestScalarFieldEnum]
+
+
+export const MonthlyAttendanceSummaryScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  studentId: 'studentId',
+  enrollmentId: 'enrollmentId',
+  billingYear: 'billingYear',
+  billingMonth: 'billingMonth',
+  totalSessions: 'totalSessions',
+  presentCount: 'presentCount',
+  lateCount: 'lateCount',
+  excusedAbsentCount: 'excusedAbsentCount',
+  unexcusedAbsentCount: 'unexcusedAbsentCount',
+  notMarkedCount: 'notMarkedCount',
+  chargeableSessions: 'chargeableSessions',
+  tuitionAmount: 'tuitionAmount',
+  isClosed: 'isClosed',
+  closedAt: 'closedAt',
+  closedById: 'closedById',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MonthlyAttendanceSummaryScalarFieldEnum = (typeof MonthlyAttendanceSummaryScalarFieldEnum)[keyof typeof MonthlyAttendanceSummaryScalarFieldEnum]
+
+
+export const ClassAttendanceConfigScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  chargePresent: 'chargePresent',
+  chargeLate: 'chargeLate',
+  chargeExcusedAbsent: 'chargeExcusedAbsent',
+  chargeUnexcusedAbsent: 'chargeUnexcusedAbsent',
+  allowMakeUpSession: 'allowMakeUpSession',
+  retentionDays: 'retentionDays',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClassAttendanceConfigScalarFieldEnum = (typeof ClassAttendanceConfigScalarFieldEnum)[keyof typeof ClassAttendanceConfigScalarFieldEnum]
 
 
 export const SortOrder = {

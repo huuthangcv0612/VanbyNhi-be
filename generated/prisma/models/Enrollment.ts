@@ -275,6 +275,7 @@ export type EnrollmentWhereInput = {
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   student?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   tuitionFees?: Prisma.TuitionFeeListRelationFilter
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
 }
 
 export type EnrollmentOrderByWithRelationInput = {
@@ -293,6 +294,7 @@ export type EnrollmentOrderByWithRelationInput = {
   class?: Prisma.ClassOrderByWithRelationInput
   student?: Prisma.UserOrderByWithRelationInput
   tuitionFees?: Prisma.TuitionFeeOrderByRelationAggregateInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryOrderByRelationAggregateInput
 }
 
 export type EnrollmentWhereUniqueInput = Prisma.AtLeast<{
@@ -314,6 +316,7 @@ export type EnrollmentWhereUniqueInput = Prisma.AtLeast<{
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   student?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   tuitionFees?: Prisma.TuitionFeeListRelationFilter
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
 }, "id">
 
 export type EnrollmentOrderByWithAggregationInput = {
@@ -368,6 +371,7 @@ export type EnrollmentCreateInput = {
   class: Prisma.ClassCreateNestedOneWithoutMembersInput
   student: Prisma.UserCreateNestedOneWithoutEnrollmentsInput
   tuitionFees?: Prisma.TuitionFeeCreateNestedManyWithoutEnrollmentInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentUncheckedCreateInput = {
@@ -384,6 +388,7 @@ export type EnrollmentUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tuitionFees?: Prisma.TuitionFeeUncheckedCreateNestedManyWithoutEnrollmentInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentUpdateInput = {
@@ -400,6 +405,7 @@ export type EnrollmentUpdateInput = {
   class?: Prisma.ClassUpdateOneRequiredWithoutMembersNestedInput
   student?: Prisma.UserUpdateOneRequiredWithoutEnrollmentsNestedInput
   tuitionFees?: Prisma.TuitionFeeUpdateManyWithoutEnrollmentNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentUncheckedUpdateInput = {
@@ -416,6 +422,7 @@ export type EnrollmentUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tuitionFees?: Prisma.TuitionFeeUncheckedUpdateManyWithoutEnrollmentNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentCreateManyInput = {
@@ -529,6 +536,11 @@ export type EnrollmentScalarRelationFilter = {
   isNot?: Prisma.EnrollmentWhereInput
 }
 
+export type EnrollmentNullableScalarRelationFilter = {
+  is?: Prisma.EnrollmentWhereInput | null
+  isNot?: Prisma.EnrollmentWhereInput | null
+}
+
 export type EnrollmentCreateNestedManyWithoutStudentInput = {
   create?: Prisma.XOR<Prisma.EnrollmentCreateWithoutStudentInput, Prisma.EnrollmentUncheckedCreateWithoutStudentInput> | Prisma.EnrollmentCreateWithoutStudentInput[] | Prisma.EnrollmentUncheckedCreateWithoutStudentInput[]
   connectOrCreate?: Prisma.EnrollmentCreateOrConnectWithoutStudentInput | Prisma.EnrollmentCreateOrConnectWithoutStudentInput[]
@@ -639,6 +651,22 @@ export type EnrollmentUpdateOneRequiredWithoutTuitionFeesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EnrollmentUpdateToOneWithWhereWithoutTuitionFeesInput, Prisma.EnrollmentUpdateWithoutTuitionFeesInput>, Prisma.EnrollmentUncheckedUpdateWithoutTuitionFeesInput>
 }
 
+export type EnrollmentCreateNestedOneWithoutMonthlyAttendanceSummariesInput = {
+  create?: Prisma.XOR<Prisma.EnrollmentCreateWithoutMonthlyAttendanceSummariesInput, Prisma.EnrollmentUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+  connectOrCreate?: Prisma.EnrollmentCreateOrConnectWithoutMonthlyAttendanceSummariesInput
+  connect?: Prisma.EnrollmentWhereUniqueInput
+}
+
+export type EnrollmentUpdateOneWithoutMonthlyAttendanceSummariesNestedInput = {
+  create?: Prisma.XOR<Prisma.EnrollmentCreateWithoutMonthlyAttendanceSummariesInput, Prisma.EnrollmentUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+  connectOrCreate?: Prisma.EnrollmentCreateOrConnectWithoutMonthlyAttendanceSummariesInput
+  upsert?: Prisma.EnrollmentUpsertWithoutMonthlyAttendanceSummariesInput
+  disconnect?: Prisma.EnrollmentWhereInput | boolean
+  delete?: Prisma.EnrollmentWhereInput | boolean
+  connect?: Prisma.EnrollmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EnrollmentUpdateToOneWithWhereWithoutMonthlyAttendanceSummariesInput, Prisma.EnrollmentUpdateWithoutMonthlyAttendanceSummariesInput>, Prisma.EnrollmentUncheckedUpdateWithoutMonthlyAttendanceSummariesInput>
+}
+
 export type EnrollmentCreateWithoutStudentInput = {
   id?: string
   tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -652,6 +680,7 @@ export type EnrollmentCreateWithoutStudentInput = {
   updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutMembersInput
   tuitionFees?: Prisma.TuitionFeeCreateNestedManyWithoutEnrollmentInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentUncheckedCreateWithoutStudentInput = {
@@ -667,6 +696,7 @@ export type EnrollmentUncheckedCreateWithoutStudentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tuitionFees?: Prisma.TuitionFeeUncheckedCreateNestedManyWithoutEnrollmentInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentCreateOrConnectWithoutStudentInput = {
@@ -726,6 +756,7 @@ export type EnrollmentCreateWithoutClassInput = {
   updatedAt?: Date | string
   student: Prisma.UserCreateNestedOneWithoutEnrollmentsInput
   tuitionFees?: Prisma.TuitionFeeCreateNestedManyWithoutEnrollmentInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentUncheckedCreateWithoutClassInput = {
@@ -741,6 +772,7 @@ export type EnrollmentUncheckedCreateWithoutClassInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tuitionFees?: Prisma.TuitionFeeUncheckedCreateNestedManyWithoutEnrollmentInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentCreateOrConnectWithoutClassInput = {
@@ -782,6 +814,7 @@ export type EnrollmentCreateWithoutTuitionFeesInput = {
   updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutMembersInput
   student: Prisma.UserCreateNestedOneWithoutEnrollmentsInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentUncheckedCreateWithoutTuitionFeesInput = {
@@ -797,6 +830,7 @@ export type EnrollmentUncheckedCreateWithoutTuitionFeesInput = {
   leftAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutEnrollmentInput
 }
 
 export type EnrollmentCreateOrConnectWithoutTuitionFeesInput = {
@@ -828,6 +862,7 @@ export type EnrollmentUpdateWithoutTuitionFeesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutMembersNestedInput
   student?: Prisma.UserUpdateOneRequiredWithoutEnrollmentsNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentUncheckedUpdateWithoutTuitionFeesInput = {
@@ -843,6 +878,87 @@ export type EnrollmentUncheckedUpdateWithoutTuitionFeesInput = {
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutEnrollmentNestedInput
+}
+
+export type EnrollmentCreateWithoutMonthlyAttendanceSummariesInput = {
+  id?: string
+  tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: $Enums.MemberStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
+  leftAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  class: Prisma.ClassCreateNestedOneWithoutMembersInput
+  student: Prisma.UserCreateNestedOneWithoutEnrollmentsInput
+  tuitionFees?: Prisma.TuitionFeeCreateNestedManyWithoutEnrollmentInput
+}
+
+export type EnrollmentUncheckedCreateWithoutMonthlyAttendanceSummariesInput = {
+  id?: string
+  classId: string
+  studentId: string
+  tuitionOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: $Enums.MemberStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  joinedAt?: Date | string | null
+  leftAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tuitionFees?: Prisma.TuitionFeeUncheckedCreateNestedManyWithoutEnrollmentInput
+}
+
+export type EnrollmentCreateOrConnectWithoutMonthlyAttendanceSummariesInput = {
+  where: Prisma.EnrollmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EnrollmentCreateWithoutMonthlyAttendanceSummariesInput, Prisma.EnrollmentUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+}
+
+export type EnrollmentUpsertWithoutMonthlyAttendanceSummariesInput = {
+  update: Prisma.XOR<Prisma.EnrollmentUpdateWithoutMonthlyAttendanceSummariesInput, Prisma.EnrollmentUncheckedUpdateWithoutMonthlyAttendanceSummariesInput>
+  create: Prisma.XOR<Prisma.EnrollmentCreateWithoutMonthlyAttendanceSummariesInput, Prisma.EnrollmentUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+  where?: Prisma.EnrollmentWhereInput
+}
+
+export type EnrollmentUpdateToOneWithWhereWithoutMonthlyAttendanceSummariesInput = {
+  where?: Prisma.EnrollmentWhereInput
+  data: Prisma.XOR<Prisma.EnrollmentUpdateWithoutMonthlyAttendanceSummariesInput, Prisma.EnrollmentUncheckedUpdateWithoutMonthlyAttendanceSummariesInput>
+}
+
+export type EnrollmentUpdateWithoutMonthlyAttendanceSummariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneRequiredWithoutMembersNestedInput
+  student?: Prisma.UserUpdateOneRequiredWithoutEnrollmentsNestedInput
+  tuitionFees?: Prisma.TuitionFeeUpdateManyWithoutEnrollmentNestedInput
+}
+
+export type EnrollmentUncheckedUpdateWithoutMonthlyAttendanceSummariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  tuitionOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.EnumMemberStatusFieldUpdateOperationsInput | $Enums.MemberStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tuitionFees?: Prisma.TuitionFeeUncheckedUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentCreateManyStudentInput = {
@@ -872,6 +988,7 @@ export type EnrollmentUpdateWithoutStudentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutMembersNestedInput
   tuitionFees?: Prisma.TuitionFeeUpdateManyWithoutEnrollmentNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentUncheckedUpdateWithoutStudentInput = {
@@ -887,6 +1004,7 @@ export type EnrollmentUncheckedUpdateWithoutStudentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tuitionFees?: Prisma.TuitionFeeUncheckedUpdateManyWithoutEnrollmentNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentUncheckedUpdateManyWithoutStudentInput = {
@@ -930,6 +1048,7 @@ export type EnrollmentUpdateWithoutClassInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   student?: Prisma.UserUpdateOneRequiredWithoutEnrollmentsNestedInput
   tuitionFees?: Prisma.TuitionFeeUpdateManyWithoutEnrollmentNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentUncheckedUpdateWithoutClassInput = {
@@ -945,6 +1064,7 @@ export type EnrollmentUncheckedUpdateWithoutClassInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tuitionFees?: Prisma.TuitionFeeUncheckedUpdateManyWithoutEnrollmentNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutEnrollmentNestedInput
 }
 
 export type EnrollmentUncheckedUpdateManyWithoutClassInput = {
@@ -968,10 +1088,12 @@ export type EnrollmentUncheckedUpdateManyWithoutClassInput = {
 
 export type EnrollmentCountOutputType = {
   tuitionFees: number
+  monthlyAttendanceSummaries: number
 }
 
 export type EnrollmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tuitionFees?: boolean | EnrollmentCountOutputTypeCountTuitionFeesArgs
+  monthlyAttendanceSummaries?: boolean | EnrollmentCountOutputTypeCountMonthlyAttendanceSummariesArgs
 }
 
 /**
@@ -991,6 +1113,13 @@ export type EnrollmentCountOutputTypeCountTuitionFeesArgs<ExtArgs extends runtim
   where?: Prisma.TuitionFeeWhereInput
 }
 
+/**
+ * EnrollmentCountOutputType without action
+ */
+export type EnrollmentCountOutputTypeCountMonthlyAttendanceSummariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MonthlyAttendanceSummaryWhereInput
+}
+
 
 export type EnrollmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1008,6 +1137,7 @@ export type EnrollmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tuitionFees?: boolean | Prisma.Enrollment$tuitionFeesArgs<ExtArgs>
+  monthlyAttendanceSummaries?: boolean | Prisma.Enrollment$monthlyAttendanceSummariesArgs<ExtArgs>
   _count?: boolean | Prisma.EnrollmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["enrollment"]>
 
@@ -1065,6 +1195,7 @@ export type EnrollmentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tuitionFees?: boolean | Prisma.Enrollment$tuitionFeesArgs<ExtArgs>
+  monthlyAttendanceSummaries?: boolean | Prisma.Enrollment$monthlyAttendanceSummariesArgs<ExtArgs>
   _count?: boolean | Prisma.EnrollmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EnrollmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1082,6 +1213,7 @@ export type $EnrollmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     class: Prisma.$ClassPayload<ExtArgs>
     student: Prisma.$UserPayload<ExtArgs>
     tuitionFees: Prisma.$TuitionFeePayload<ExtArgs>[]
+    monthlyAttendanceSummaries: Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1493,6 +1625,7 @@ export interface Prisma__EnrollmentClient<T, Null = never, ExtArgs extends runti
   class<T extends Prisma.ClassDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassDefaultArgs<ExtArgs>>): Prisma.Prisma__ClassClient<runtime.Types.Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   student<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tuitionFees<T extends Prisma.Enrollment$tuitionFeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enrollment$tuitionFeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TuitionFeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  monthlyAttendanceSummaries<T extends Prisma.Enrollment$monthlyAttendanceSummariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enrollment$monthlyAttendanceSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1956,6 +2089,30 @@ export type Enrollment$tuitionFeesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.TuitionFeeScalarFieldEnum | Prisma.TuitionFeeScalarFieldEnum[]
+}
+
+/**
+ * Enrollment.monthlyAttendanceSummaries
+ */
+export type Enrollment$monthlyAttendanceSummariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MonthlyAttendanceSummary
+   */
+  select?: Prisma.MonthlyAttendanceSummarySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MonthlyAttendanceSummary
+   */
+  omit?: Prisma.MonthlyAttendanceSummaryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MonthlyAttendanceSummaryInclude<ExtArgs> | null
+  where?: Prisma.MonthlyAttendanceSummaryWhereInput
+  orderBy?: Prisma.MonthlyAttendanceSummaryOrderByWithRelationInput | Prisma.MonthlyAttendanceSummaryOrderByWithRelationInput[]
+  cursor?: Prisma.MonthlyAttendanceSummaryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MonthlyAttendanceSummaryScalarFieldEnum | Prisma.MonthlyAttendanceSummaryScalarFieldEnum[]
 }
 
 /**

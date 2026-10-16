@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsOptional,
   IsDate,
+  IsBoolean,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { AttendanceStatus } from '../../../generated/prisma/client.js';
@@ -14,7 +15,8 @@ export class AttendanceRecordDto {
   studentId!: string;
 
   @IsEnum(AttendanceStatus, {
-    message: 'Trạng thái điểm danh phải là PRESENT, ABSENT hoặc LATE',
+    message:
+      'Trạng thái điểm danh phải là PRESENT, LATE, EXCUSED_ABSENT, UNEXCUSED_ABSENT, NOT_MARKED hoặc ABSENT',
   })
   status!: AttendanceStatus;
 
@@ -26,4 +28,12 @@ export class AttendanceRecordDto {
   @IsOptional()
   @IsString({ message: 'Ghi chú điểm danh phải là chuỗi' })
   note?: string;
+
+  @IsOptional()
+  @IsBoolean({ message: 'isMakeUp phải là boolean' })
+  isMakeUp?: boolean;
+
+  @IsOptional()
+  @IsString({ message: 'originalSessionId phải là chuỗi' })
+  originalSessionId?: string;
 }

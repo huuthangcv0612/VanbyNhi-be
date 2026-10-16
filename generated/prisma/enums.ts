@@ -52,11 +52,32 @@ export type SessionStatus = (typeof SessionStatus)[keyof typeof SessionStatus]
 
 export const AttendanceStatus = {
   PRESENT: 'PRESENT',
-  ABSENT: 'ABSENT',
-  LATE: 'LATE'
+  LATE: 'LATE',
+  EXCUSED_ABSENT: 'EXCUSED_ABSENT',
+  UNEXCUSED_ABSENT: 'UNEXCUSED_ABSENT',
+  NOT_MARKED: 'NOT_MARKED',
+  ABSENT: 'ABSENT'
 } as const
 
 export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const AttendanceSessionStatus = {
+  OPEN: 'OPEN',
+  DRAFT: 'DRAFT',
+  CLOSED: 'CLOSED'
+} as const
+
+export type AttendanceSessionStatus = (typeof AttendanceSessionStatus)[keyof typeof AttendanceSessionStatus]
+
+
+export const CorrectionRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type CorrectionRequestStatus = (typeof CorrectionRequestStatus)[keyof typeof CorrectionRequestStatus]
 
 
 export const MaterialType = {

@@ -236,6 +236,7 @@ export type ClassSessionWhereInput = {
   materials?: Prisma.ClassMaterialListRelationFilter
   assignments?: Prisma.AssignmentListRelationFilter
   lessonRecord?: Prisma.XOR<Prisma.LessonRecordNullableScalarRelationFilter, Prisma.LessonRecordWhereInput> | null
+  attendanceSession?: Prisma.XOR<Prisma.AttendanceSessionNullableScalarRelationFilter, Prisma.AttendanceSessionWhereInput> | null
 }
 
 export type ClassSessionOrderByWithRelationInput = {
@@ -256,6 +257,7 @@ export type ClassSessionOrderByWithRelationInput = {
   materials?: Prisma.ClassMaterialOrderByRelationAggregateInput
   assignments?: Prisma.AssignmentOrderByRelationAggregateInput
   lessonRecord?: Prisma.LessonRecordOrderByWithRelationInput
+  attendanceSession?: Prisma.AttendanceSessionOrderByWithRelationInput
 }
 
 export type ClassSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -279,6 +281,7 @@ export type ClassSessionWhereUniqueInput = Prisma.AtLeast<{
   materials?: Prisma.ClassMaterialListRelationFilter
   assignments?: Prisma.AssignmentListRelationFilter
   lessonRecord?: Prisma.XOR<Prisma.LessonRecordNullableScalarRelationFilter, Prisma.LessonRecordWhereInput> | null
+  attendanceSession?: Prisma.XOR<Prisma.AttendanceSessionNullableScalarRelationFilter, Prisma.AttendanceSessionWhereInput> | null
 }, "id">
 
 export type ClassSessionOrderByWithAggregationInput = {
@@ -331,6 +334,7 @@ export type ClassSessionCreateInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUncheckedCreateInput = {
@@ -349,6 +353,7 @@ export type ClassSessionUncheckedCreateInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordUncheckedCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUpdateInput = {
@@ -367,6 +372,7 @@ export type ClassSessionUpdateInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateInput = {
@@ -385,6 +391,7 @@ export type ClassSessionUncheckedUpdateInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUncheckedUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionCreateManyInput = {
@@ -637,6 +644,20 @@ export type ClassSessionUpdateOneWithoutMaterialsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClassSessionUpdateToOneWithWhereWithoutMaterialsInput, Prisma.ClassSessionUpdateWithoutMaterialsInput>, Prisma.ClassSessionUncheckedUpdateWithoutMaterialsInput>
 }
 
+export type ClassSessionCreateNestedOneWithoutAttendanceSessionInput = {
+  create?: Prisma.XOR<Prisma.ClassSessionCreateWithoutAttendanceSessionInput, Prisma.ClassSessionUncheckedCreateWithoutAttendanceSessionInput>
+  connectOrCreate?: Prisma.ClassSessionCreateOrConnectWithoutAttendanceSessionInput
+  connect?: Prisma.ClassSessionWhereUniqueInput
+}
+
+export type ClassSessionUpdateOneRequiredWithoutAttendanceSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassSessionCreateWithoutAttendanceSessionInput, Prisma.ClassSessionUncheckedCreateWithoutAttendanceSessionInput>
+  connectOrCreate?: Prisma.ClassSessionCreateOrConnectWithoutAttendanceSessionInput
+  upsert?: Prisma.ClassSessionUpsertWithoutAttendanceSessionInput
+  connect?: Prisma.ClassSessionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassSessionUpdateToOneWithWhereWithoutAttendanceSessionInput, Prisma.ClassSessionUpdateWithoutAttendanceSessionInput>, Prisma.ClassSessionUncheckedUpdateWithoutAttendanceSessionInput>
+}
+
 export type ClassSessionCreateWithoutCreatedByInput = {
   id?: string
   title: string
@@ -652,6 +673,7 @@ export type ClassSessionCreateWithoutCreatedByInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUncheckedCreateWithoutCreatedByInput = {
@@ -669,6 +691,7 @@ export type ClassSessionUncheckedCreateWithoutCreatedByInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordUncheckedCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionCreateOrConnectWithoutCreatedByInput = {
@@ -729,6 +752,7 @@ export type ClassSessionCreateWithoutClassInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUncheckedCreateWithoutClassInput = {
@@ -746,6 +770,7 @@ export type ClassSessionUncheckedCreateWithoutClassInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordUncheckedCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionCreateOrConnectWithoutClassInput = {
@@ -789,6 +814,7 @@ export type ClassSessionCreateWithoutAttendancesInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUncheckedCreateWithoutAttendancesInput = {
@@ -806,6 +832,7 @@ export type ClassSessionUncheckedCreateWithoutAttendancesInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordUncheckedCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionCreateOrConnectWithoutAttendancesInput = {
@@ -839,6 +866,7 @@ export type ClassSessionUpdateWithoutAttendancesInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateWithoutAttendancesInput = {
@@ -856,6 +884,7 @@ export type ClassSessionUncheckedUpdateWithoutAttendancesInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUncheckedUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionCreateWithoutLessonRecordInput = {
@@ -873,6 +902,7 @@ export type ClassSessionCreateWithoutLessonRecordInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutSessionInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUncheckedCreateWithoutLessonRecordInput = {
@@ -890,6 +920,7 @@ export type ClassSessionUncheckedCreateWithoutLessonRecordInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutSessionInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionCreateOrConnectWithoutLessonRecordInput = {
@@ -923,6 +954,7 @@ export type ClassSessionUpdateWithoutLessonRecordInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutSessionNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateWithoutLessonRecordInput = {
@@ -940,6 +972,7 @@ export type ClassSessionUncheckedUpdateWithoutLessonRecordInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutSessionNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionCreateWithoutAssignmentsInput = {
@@ -957,6 +990,7 @@ export type ClassSessionCreateWithoutAssignmentsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutSessionInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUncheckedCreateWithoutAssignmentsInput = {
@@ -974,6 +1008,7 @@ export type ClassSessionUncheckedCreateWithoutAssignmentsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutSessionInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordUncheckedCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionCreateOrConnectWithoutAssignmentsInput = {
@@ -1007,6 +1042,7 @@ export type ClassSessionUpdateWithoutAssignmentsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutSessionNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateWithoutAssignmentsInput = {
@@ -1024,6 +1060,7 @@ export type ClassSessionUncheckedUpdateWithoutAssignmentsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutSessionNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUncheckedUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionCreateWithoutMaterialsInput = {
@@ -1041,6 +1078,7 @@ export type ClassSessionCreateWithoutMaterialsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionUncheckedCreateWithoutMaterialsInput = {
@@ -1058,6 +1096,7 @@ export type ClassSessionUncheckedCreateWithoutMaterialsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutSessionInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutSessionInput
   lessonRecord?: Prisma.LessonRecordUncheckedCreateNestedOneWithoutSessionInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedCreateNestedOneWithoutSessionInput
 }
 
 export type ClassSessionCreateOrConnectWithoutMaterialsInput = {
@@ -1091,6 +1130,7 @@ export type ClassSessionUpdateWithoutMaterialsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateWithoutMaterialsInput = {
@@ -1106,6 +1146,95 @@ export type ClassSessionUncheckedUpdateWithoutMaterialsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutSessionNestedInput
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutSessionNestedInput
+  lessonRecord?: Prisma.LessonRecordUncheckedUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedUpdateOneWithoutSessionNestedInput
+}
+
+export type ClassSessionCreateWithoutAttendanceSessionInput = {
+  id?: string
+  title: string
+  description?: string | null
+  startTime: Date | string
+  endTime: Date | string
+  meetUrl?: string | null
+  status?: $Enums.SessionStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  class: Prisma.ClassCreateNestedOneWithoutSessionsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedSessionsInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutSessionInput
+  materials?: Prisma.ClassMaterialCreateNestedManyWithoutSessionInput
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutSessionInput
+  lessonRecord?: Prisma.LessonRecordCreateNestedOneWithoutSessionInput
+}
+
+export type ClassSessionUncheckedCreateWithoutAttendanceSessionInput = {
+  id?: string
+  classId: string
+  title: string
+  description?: string | null
+  startTime: Date | string
+  endTime: Date | string
+  meetUrl?: string | null
+  status?: $Enums.SessionStatus
+  createdById: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutSessionInput
+  materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutSessionInput
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutSessionInput
+  lessonRecord?: Prisma.LessonRecordUncheckedCreateNestedOneWithoutSessionInput
+}
+
+export type ClassSessionCreateOrConnectWithoutAttendanceSessionInput = {
+  where: Prisma.ClassSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassSessionCreateWithoutAttendanceSessionInput, Prisma.ClassSessionUncheckedCreateWithoutAttendanceSessionInput>
+}
+
+export type ClassSessionUpsertWithoutAttendanceSessionInput = {
+  update: Prisma.XOR<Prisma.ClassSessionUpdateWithoutAttendanceSessionInput, Prisma.ClassSessionUncheckedUpdateWithoutAttendanceSessionInput>
+  create: Prisma.XOR<Prisma.ClassSessionCreateWithoutAttendanceSessionInput, Prisma.ClassSessionUncheckedCreateWithoutAttendanceSessionInput>
+  where?: Prisma.ClassSessionWhereInput
+}
+
+export type ClassSessionUpdateToOneWithWhereWithoutAttendanceSessionInput = {
+  where?: Prisma.ClassSessionWhereInput
+  data: Prisma.XOR<Prisma.ClassSessionUpdateWithoutAttendanceSessionInput, Prisma.ClassSessionUncheckedUpdateWithoutAttendanceSessionInput>
+}
+
+export type ClassSessionUpdateWithoutAttendanceSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumSessionStatusFieldUpdateOperationsInput | $Enums.SessionStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneRequiredWithoutSessionsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSessionsNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutSessionNestedInput
+  materials?: Prisma.ClassMaterialUpdateManyWithoutSessionNestedInput
+  assignments?: Prisma.AssignmentUpdateManyWithoutSessionNestedInput
+  lessonRecord?: Prisma.LessonRecordUpdateOneWithoutSessionNestedInput
+}
+
+export type ClassSessionUncheckedUpdateWithoutAttendanceSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  meetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumSessionStatusFieldUpdateOperationsInput | $Enums.SessionStatus
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutSessionNestedInput
+  materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUncheckedUpdateOneWithoutSessionNestedInput
 }
@@ -1138,6 +1267,7 @@ export type ClassSessionUpdateWithoutCreatedByInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateWithoutCreatedByInput = {
@@ -1155,6 +1285,7 @@ export type ClassSessionUncheckedUpdateWithoutCreatedByInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUncheckedUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1198,6 +1329,7 @@ export type ClassSessionUpdateWithoutClassInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateWithoutClassInput = {
@@ -1215,6 +1347,7 @@ export type ClassSessionUncheckedUpdateWithoutClassInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutSessionNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutSessionNestedInput
   lessonRecord?: Prisma.LessonRecordUncheckedUpdateOneWithoutSessionNestedInput
+  attendanceSession?: Prisma.AttendanceSessionUncheckedUpdateOneWithoutSessionNestedInput
 }
 
 export type ClassSessionUncheckedUpdateManyWithoutClassInput = {
@@ -1297,6 +1430,7 @@ export type ClassSessionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   materials?: boolean | Prisma.ClassSession$materialsArgs<ExtArgs>
   assignments?: boolean | Prisma.ClassSession$assignmentsArgs<ExtArgs>
   lessonRecord?: boolean | Prisma.ClassSession$lessonRecordArgs<ExtArgs>
+  attendanceSession?: boolean | Prisma.ClassSession$attendanceSessionArgs<ExtArgs>
   _count?: boolean | Prisma.ClassSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classSession"]>
 
@@ -1354,6 +1488,7 @@ export type ClassSessionInclude<ExtArgs extends runtime.Types.Extensions.Interna
   materials?: boolean | Prisma.ClassSession$materialsArgs<ExtArgs>
   assignments?: boolean | Prisma.ClassSession$assignmentsArgs<ExtArgs>
   lessonRecord?: boolean | Prisma.ClassSession$lessonRecordArgs<ExtArgs>
+  attendanceSession?: boolean | Prisma.ClassSession$attendanceSessionArgs<ExtArgs>
   _count?: boolean | Prisma.ClassSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClassSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1374,6 +1509,7 @@ export type $ClassSessionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     materials: Prisma.$ClassMaterialPayload<ExtArgs>[]
     assignments: Prisma.$AssignmentPayload<ExtArgs>[]
     lessonRecord: Prisma.$LessonRecordPayload<ExtArgs> | null
+    attendanceSession: Prisma.$AttendanceSessionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1787,6 +1923,7 @@ export interface Prisma__ClassSessionClient<T, Null = never, ExtArgs extends run
   materials<T extends Prisma.ClassSession$materialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassSession$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignments<T extends Prisma.ClassSession$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassSession$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   lessonRecord<T extends Prisma.ClassSession$lessonRecordArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassSession$lessonRecordArgs<ExtArgs>>): Prisma.Prisma__LessonRecordClient<runtime.Types.Result.GetResult<Prisma.$LessonRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  attendanceSession<T extends Prisma.ClassSession$attendanceSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassSession$attendanceSessionArgs<ExtArgs>>): Prisma.Prisma__AttendanceSessionClient<runtime.Types.Result.GetResult<Prisma.$AttendanceSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2316,6 +2453,25 @@ export type ClassSession$lessonRecordArgs<ExtArgs extends runtime.Types.Extensio
    */
   include?: Prisma.LessonRecordInclude<ExtArgs> | null
   where?: Prisma.LessonRecordWhereInput
+}
+
+/**
+ * ClassSession.attendanceSession
+ */
+export type ClassSession$attendanceSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceSession
+   */
+  select?: Prisma.AttendanceSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceSession
+   */
+  omit?: Prisma.AttendanceSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceSessionInclude<ExtArgs> | null
+  where?: Prisma.AttendanceSessionWhereInput
 }
 
 /**

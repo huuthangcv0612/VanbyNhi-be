@@ -291,6 +291,9 @@ export type ClassWhereInput = {
   materials?: Prisma.ClassMaterialListRelationFilter
   assignments?: Prisma.AssignmentListRelationFilter
   calendarEvents?: Prisma.TeacherCalendarEventListRelationFilter
+  attendanceConfig?: Prisma.XOR<Prisma.ClassAttendanceConfigNullableScalarRelationFilter, Prisma.ClassAttendanceConfigWhereInput> | null
+  attendanceSessions?: Prisma.AttendanceSessionListRelationFilter
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
 }
 
 export type ClassOrderByWithRelationInput = {
@@ -314,6 +317,9 @@ export type ClassOrderByWithRelationInput = {
   materials?: Prisma.ClassMaterialOrderByRelationAggregateInput
   assignments?: Prisma.AssignmentOrderByRelationAggregateInput
   calendarEvents?: Prisma.TeacherCalendarEventOrderByRelationAggregateInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigOrderByWithRelationInput
+  attendanceSessions?: Prisma.AttendanceSessionOrderByRelationAggregateInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryOrderByRelationAggregateInput
 }
 
 export type ClassWhereUniqueInput = Prisma.AtLeast<{
@@ -340,6 +346,9 @@ export type ClassWhereUniqueInput = Prisma.AtLeast<{
   materials?: Prisma.ClassMaterialListRelationFilter
   assignments?: Prisma.AssignmentListRelationFilter
   calendarEvents?: Prisma.TeacherCalendarEventListRelationFilter
+  attendanceConfig?: Prisma.XOR<Prisma.ClassAttendanceConfigNullableScalarRelationFilter, Prisma.ClassAttendanceConfigWhereInput> | null
+  attendanceSessions?: Prisma.AttendanceSessionListRelationFilter
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
 }, "id" | "classCode" | "joinCode">
 
 export type ClassOrderByWithAggregationInput = {
@@ -401,6 +410,9 @@ export type ClassCreateInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateInput = {
@@ -422,6 +434,9 @@ export type ClassUncheckedCreateInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassUpdateInput = {
@@ -443,6 +458,9 @@ export type ClassUpdateInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateInput = {
@@ -464,6 +482,9 @@ export type ClassUncheckedUpdateInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateManyInput = {
@@ -766,6 +787,48 @@ export type ClassUpdateOneWithoutCalendarEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClassUpdateToOneWithWhereWithoutCalendarEventsInput, Prisma.ClassUpdateWithoutCalendarEventsInput>, Prisma.ClassUncheckedUpdateWithoutCalendarEventsInput>
 }
 
+export type ClassCreateNestedOneWithoutAttendanceSessionsInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceSessionsInput, Prisma.ClassUncheckedCreateWithoutAttendanceSessionsInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutAttendanceSessionsInput
+  connect?: Prisma.ClassWhereUniqueInput
+}
+
+export type ClassUpdateOneRequiredWithoutAttendanceSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceSessionsInput, Prisma.ClassUncheckedCreateWithoutAttendanceSessionsInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutAttendanceSessionsInput
+  upsert?: Prisma.ClassUpsertWithoutAttendanceSessionsInput
+  connect?: Prisma.ClassWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassUpdateToOneWithWhereWithoutAttendanceSessionsInput, Prisma.ClassUpdateWithoutAttendanceSessionsInput>, Prisma.ClassUncheckedUpdateWithoutAttendanceSessionsInput>
+}
+
+export type ClassCreateNestedOneWithoutMonthlyAttendanceSummariesInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutMonthlyAttendanceSummariesInput, Prisma.ClassUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutMonthlyAttendanceSummariesInput
+  connect?: Prisma.ClassWhereUniqueInput
+}
+
+export type ClassUpdateOneRequiredWithoutMonthlyAttendanceSummariesNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutMonthlyAttendanceSummariesInput, Prisma.ClassUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutMonthlyAttendanceSummariesInput
+  upsert?: Prisma.ClassUpsertWithoutMonthlyAttendanceSummariesInput
+  connect?: Prisma.ClassWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassUpdateToOneWithWhereWithoutMonthlyAttendanceSummariesInput, Prisma.ClassUpdateWithoutMonthlyAttendanceSummariesInput>, Prisma.ClassUncheckedUpdateWithoutMonthlyAttendanceSummariesInput>
+}
+
+export type ClassCreateNestedOneWithoutAttendanceConfigInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceConfigInput, Prisma.ClassUncheckedCreateWithoutAttendanceConfigInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutAttendanceConfigInput
+  connect?: Prisma.ClassWhereUniqueInput
+}
+
+export type ClassUpdateOneRequiredWithoutAttendanceConfigNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceConfigInput, Prisma.ClassUncheckedCreateWithoutAttendanceConfigInput>
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutAttendanceConfigInput
+  upsert?: Prisma.ClassUpsertWithoutAttendanceConfigInput
+  connect?: Prisma.ClassWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassUpdateToOneWithWhereWithoutAttendanceConfigInput, Prisma.ClassUpdateWithoutAttendanceConfigInput>, Prisma.ClassUncheckedUpdateWithoutAttendanceConfigInput>
+}
+
 export type ClassCreateWithoutCreatorInput = {
   id?: string
   name: string
@@ -784,6 +847,9 @@ export type ClassCreateWithoutCreatorInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutCreatorInput = {
@@ -804,6 +870,9 @@ export type ClassUncheckedCreateWithoutCreatorInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutCreatorInput = {
@@ -834,6 +903,9 @@ export type ClassCreateWithoutTeacherInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutTeacherInput = {
@@ -854,6 +926,9 @@ export type ClassUncheckedCreateWithoutTeacherInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutTeacherInput = {
@@ -935,6 +1010,9 @@ export type ClassCreateWithoutMembersInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutMembersInput = {
@@ -955,6 +1033,9 @@ export type ClassUncheckedCreateWithoutMembersInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutMembersInput = {
@@ -991,6 +1072,9 @@ export type ClassUpdateWithoutMembersInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutMembersInput = {
@@ -1011,6 +1095,9 @@ export type ClassUncheckedUpdateWithoutMembersInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateWithoutSessionsInput = {
@@ -1031,6 +1118,9 @@ export type ClassCreateWithoutSessionsInput = {
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutSessionsInput = {
@@ -1051,6 +1141,9 @@ export type ClassUncheckedCreateWithoutSessionsInput = {
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutSessionsInput = {
@@ -1087,6 +1180,9 @@ export type ClassUpdateWithoutSessionsInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutSessionsInput = {
@@ -1107,6 +1203,9 @@ export type ClassUncheckedUpdateWithoutSessionsInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateWithoutAssignmentsInput = {
@@ -1127,6 +1226,9 @@ export type ClassCreateWithoutAssignmentsInput = {
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutAssignmentsInput = {
@@ -1147,6 +1249,9 @@ export type ClassUncheckedCreateWithoutAssignmentsInput = {
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutAssignmentsInput = {
@@ -1183,6 +1288,9 @@ export type ClassUpdateWithoutAssignmentsInput = {
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutAssignmentsInput = {
@@ -1203,6 +1311,9 @@ export type ClassUncheckedUpdateWithoutAssignmentsInput = {
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateWithoutMaterialsInput = {
@@ -1223,6 +1334,9 @@ export type ClassCreateWithoutMaterialsInput = {
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutMaterialsInput = {
@@ -1243,6 +1357,9 @@ export type ClassUncheckedCreateWithoutMaterialsInput = {
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutMaterialsInput = {
@@ -1279,6 +1396,9 @@ export type ClassUpdateWithoutMaterialsInput = {
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutMaterialsInput = {
@@ -1299,6 +1419,9 @@ export type ClassUncheckedUpdateWithoutMaterialsInput = {
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateWithoutCalendarEventsInput = {
@@ -1319,6 +1442,9 @@ export type ClassCreateWithoutCalendarEventsInput = {
   sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
 }
 
 export type ClassUncheckedCreateWithoutCalendarEventsInput = {
@@ -1339,6 +1465,9 @@ export type ClassUncheckedCreateWithoutCalendarEventsInput = {
   sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
   materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
 }
 
 export type ClassCreateOrConnectWithoutCalendarEventsInput = {
@@ -1375,6 +1504,9 @@ export type ClassUpdateWithoutCalendarEventsInput = {
   sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutCalendarEventsInput = {
@@ -1395,6 +1527,333 @@ export type ClassUncheckedUpdateWithoutCalendarEventsInput = {
   sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
+}
+
+export type ClassCreateWithoutAttendanceSessionsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  creator: Prisma.UserCreateNestedOneWithoutCreatedClassesInput
+  teacher: Prisma.UserCreateNestedOneWithoutTeachingClassesInput
+  members?: Prisma.EnrollmentCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
+}
+
+export type ClassUncheckedCreateWithoutAttendanceSessionsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdById: string
+  teacherId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
+}
+
+export type ClassCreateOrConnectWithoutAttendanceSessionsInput = {
+  where: Prisma.ClassWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceSessionsInput, Prisma.ClassUncheckedCreateWithoutAttendanceSessionsInput>
+}
+
+export type ClassUpsertWithoutAttendanceSessionsInput = {
+  update: Prisma.XOR<Prisma.ClassUpdateWithoutAttendanceSessionsInput, Prisma.ClassUncheckedUpdateWithoutAttendanceSessionsInput>
+  create: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceSessionsInput, Prisma.ClassUncheckedCreateWithoutAttendanceSessionsInput>
+  where?: Prisma.ClassWhereInput
+}
+
+export type ClassUpdateToOneWithWhereWithoutAttendanceSessionsInput = {
+  where?: Prisma.ClassWhereInput
+  data: Prisma.XOR<Prisma.ClassUpdateWithoutAttendanceSessionsInput, Prisma.ClassUncheckedUpdateWithoutAttendanceSessionsInput>
+}
+
+export type ClassUpdateWithoutAttendanceSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  creator?: Prisma.UserUpdateOneRequiredWithoutCreatedClassesNestedInput
+  teacher?: Prisma.UserUpdateOneRequiredWithoutTeachingClassesNestedInput
+  members?: Prisma.EnrollmentUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateWithoutAttendanceSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.EnrollmentUncheckedUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
+}
+
+export type ClassCreateWithoutMonthlyAttendanceSummariesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  creator: Prisma.UserCreateNestedOneWithoutCreatedClassesInput
+  teacher: Prisma.UserCreateNestedOneWithoutTeachingClassesInput
+  members?: Prisma.EnrollmentCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+}
+
+export type ClassUncheckedCreateWithoutMonthlyAttendanceSummariesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdById: string
+  teacherId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedCreateNestedOneWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+}
+
+export type ClassCreateOrConnectWithoutMonthlyAttendanceSummariesInput = {
+  where: Prisma.ClassWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassCreateWithoutMonthlyAttendanceSummariesInput, Prisma.ClassUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+}
+
+export type ClassUpsertWithoutMonthlyAttendanceSummariesInput = {
+  update: Prisma.XOR<Prisma.ClassUpdateWithoutMonthlyAttendanceSummariesInput, Prisma.ClassUncheckedUpdateWithoutMonthlyAttendanceSummariesInput>
+  create: Prisma.XOR<Prisma.ClassCreateWithoutMonthlyAttendanceSummariesInput, Prisma.ClassUncheckedCreateWithoutMonthlyAttendanceSummariesInput>
+  where?: Prisma.ClassWhereInput
+}
+
+export type ClassUpdateToOneWithWhereWithoutMonthlyAttendanceSummariesInput = {
+  where?: Prisma.ClassWhereInput
+  data: Prisma.XOR<Prisma.ClassUpdateWithoutMonthlyAttendanceSummariesInput, Prisma.ClassUncheckedUpdateWithoutMonthlyAttendanceSummariesInput>
+}
+
+export type ClassUpdateWithoutMonthlyAttendanceSummariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  creator?: Prisma.UserUpdateOneRequiredWithoutCreatedClassesNestedInput
+  teacher?: Prisma.UserUpdateOneRequiredWithoutTeachingClassesNestedInput
+  members?: Prisma.EnrollmentUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateWithoutMonthlyAttendanceSummariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.EnrollmentUncheckedUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+}
+
+export type ClassCreateWithoutAttendanceConfigInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  creator: Prisma.UserCreateNestedOneWithoutCreatedClassesInput
+  teacher: Prisma.UserCreateNestedOneWithoutTeachingClassesInput
+  members?: Prisma.EnrollmentCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClassInput
+}
+
+export type ClassUncheckedCreateWithoutAttendanceConfigInput = {
+  id?: string
+  name: string
+  description?: string | null
+  classCode?: string
+  joinCode?: string
+  maxStudents?: number | null
+  defaultMeetUrl?: string | null
+  monthlyTuition?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.ClassStatus
+  createdById: string
+  teacherId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutClassInput
+  sessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassInput
+  materials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutClassInput
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutClassInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClassInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClassInput
+}
+
+export type ClassCreateOrConnectWithoutAttendanceConfigInput = {
+  where: Prisma.ClassWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceConfigInput, Prisma.ClassUncheckedCreateWithoutAttendanceConfigInput>
+}
+
+export type ClassUpsertWithoutAttendanceConfigInput = {
+  update: Prisma.XOR<Prisma.ClassUpdateWithoutAttendanceConfigInput, Prisma.ClassUncheckedUpdateWithoutAttendanceConfigInput>
+  create: Prisma.XOR<Prisma.ClassCreateWithoutAttendanceConfigInput, Prisma.ClassUncheckedCreateWithoutAttendanceConfigInput>
+  where?: Prisma.ClassWhereInput
+}
+
+export type ClassUpdateToOneWithWhereWithoutAttendanceConfigInput = {
+  where?: Prisma.ClassWhereInput
+  data: Prisma.XOR<Prisma.ClassUpdateWithoutAttendanceConfigInput, Prisma.ClassUncheckedUpdateWithoutAttendanceConfigInput>
+}
+
+export type ClassUpdateWithoutAttendanceConfigInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  creator?: Prisma.UserUpdateOneRequiredWithoutCreatedClassesNestedInput
+  teacher?: Prisma.UserUpdateOneRequiredWithoutTeachingClassesNestedInput
+  members?: Prisma.EnrollmentUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateWithoutAttendanceConfigInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classCode?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  defaultMeetUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyTuition?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.EnrollmentUncheckedUpdateManyWithoutClassNestedInput
+  sessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassNestedInput
+  materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
+  calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassCreateManyCreatorInput = {
@@ -1445,6 +1904,9 @@ export type ClassUpdateWithoutCreatorInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutCreatorInput = {
@@ -1465,6 +1927,9 @@ export type ClassUncheckedUpdateWithoutCreatorInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateManyWithoutCreatorInput = {
@@ -1500,6 +1965,9 @@ export type ClassUpdateWithoutTeacherInput = {
   materials?: Prisma.ClassMaterialUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateWithoutTeacherInput = {
@@ -1520,6 +1988,9 @@ export type ClassUncheckedUpdateWithoutTeacherInput = {
   materials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutClassNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassNestedInput
   calendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutClassNestedInput
+  attendanceConfig?: Prisma.ClassAttendanceConfigUncheckedUpdateOneWithoutClassNestedInput
+  attendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClassNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClassNestedInput
 }
 
 export type ClassUncheckedUpdateManyWithoutTeacherInput = {
@@ -1548,6 +2019,8 @@ export type ClassCountOutputType = {
   materials: number
   assignments: number
   calendarEvents: number
+  attendanceSessions: number
+  monthlyAttendanceSummaries: number
 }
 
 export type ClassCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1556,6 +2029,8 @@ export type ClassCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   materials?: boolean | ClassCountOutputTypeCountMaterialsArgs
   assignments?: boolean | ClassCountOutputTypeCountAssignmentsArgs
   calendarEvents?: boolean | ClassCountOutputTypeCountCalendarEventsArgs
+  attendanceSessions?: boolean | ClassCountOutputTypeCountAttendanceSessionsArgs
+  monthlyAttendanceSummaries?: boolean | ClassCountOutputTypeCountMonthlyAttendanceSummariesArgs
 }
 
 /**
@@ -1603,6 +2078,20 @@ export type ClassCountOutputTypeCountCalendarEventsArgs<ExtArgs extends runtime.
   where?: Prisma.TeacherCalendarEventWhereInput
 }
 
+/**
+ * ClassCountOutputType without action
+ */
+export type ClassCountOutputTypeCountAttendanceSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceSessionWhereInput
+}
+
+/**
+ * ClassCountOutputType without action
+ */
+export type ClassCountOutputTypeCountMonthlyAttendanceSummariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MonthlyAttendanceSummaryWhereInput
+}
+
 
 export type ClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1625,6 +2114,9 @@ export type ClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   materials?: boolean | Prisma.Class$materialsArgs<ExtArgs>
   assignments?: boolean | Prisma.Class$assignmentsArgs<ExtArgs>
   calendarEvents?: boolean | Prisma.Class$calendarEventsArgs<ExtArgs>
+  attendanceConfig?: boolean | Prisma.Class$attendanceConfigArgs<ExtArgs>
+  attendanceSessions?: boolean | Prisma.Class$attendanceSessionsArgs<ExtArgs>
+  monthlyAttendanceSummaries?: boolean | Prisma.Class$monthlyAttendanceSummariesArgs<ExtArgs>
   _count?: boolean | Prisma.ClassCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["class"]>
 
@@ -1689,6 +2181,9 @@ export type ClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   materials?: boolean | Prisma.Class$materialsArgs<ExtArgs>
   assignments?: boolean | Prisma.Class$assignmentsArgs<ExtArgs>
   calendarEvents?: boolean | Prisma.Class$calendarEventsArgs<ExtArgs>
+  attendanceConfig?: boolean | Prisma.Class$attendanceConfigArgs<ExtArgs>
+  attendanceSessions?: boolean | Prisma.Class$attendanceSessionsArgs<ExtArgs>
+  monthlyAttendanceSummaries?: boolean | Prisma.Class$monthlyAttendanceSummariesArgs<ExtArgs>
   _count?: boolean | Prisma.ClassCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClassIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1710,6 +2205,9 @@ export type $ClassPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     materials: Prisma.$ClassMaterialPayload<ExtArgs>[]
     assignments: Prisma.$AssignmentPayload<ExtArgs>[]
     calendarEvents: Prisma.$TeacherCalendarEventPayload<ExtArgs>[]
+    attendanceConfig: Prisma.$ClassAttendanceConfigPayload<ExtArgs> | null
+    attendanceSessions: Prisma.$AttendanceSessionPayload<ExtArgs>[]
+    monthlyAttendanceSummaries: Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2126,6 +2624,9 @@ export interface Prisma__ClassClient<T, Null = never, ExtArgs extends runtime.Ty
   materials<T extends Prisma.Class$materialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignments<T extends Prisma.Class$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   calendarEvents<T extends Prisma.Class$calendarEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$calendarEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceConfig<T extends Prisma.Class$attendanceConfigArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$attendanceConfigArgs<ExtArgs>>): Prisma.Prisma__ClassAttendanceConfigClient<runtime.Types.Result.GetResult<Prisma.$ClassAttendanceConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  attendanceSessions<T extends Prisma.Class$attendanceSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$attendanceSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  monthlyAttendanceSummaries<T extends Prisma.Class$monthlyAttendanceSummariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$monthlyAttendanceSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2686,6 +3187,73 @@ export type Class$calendarEventsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.TeacherCalendarEventScalarFieldEnum | Prisma.TeacherCalendarEventScalarFieldEnum[]
+}
+
+/**
+ * Class.attendanceConfig
+ */
+export type Class$attendanceConfigArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClassAttendanceConfig
+   */
+  select?: Prisma.ClassAttendanceConfigSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClassAttendanceConfig
+   */
+  omit?: Prisma.ClassAttendanceConfigOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClassAttendanceConfigInclude<ExtArgs> | null
+  where?: Prisma.ClassAttendanceConfigWhereInput
+}
+
+/**
+ * Class.attendanceSessions
+ */
+export type Class$attendanceSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceSession
+   */
+  select?: Prisma.AttendanceSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceSession
+   */
+  omit?: Prisma.AttendanceSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceSessionInclude<ExtArgs> | null
+  where?: Prisma.AttendanceSessionWhereInput
+  orderBy?: Prisma.AttendanceSessionOrderByWithRelationInput | Prisma.AttendanceSessionOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceSessionScalarFieldEnum | Prisma.AttendanceSessionScalarFieldEnum[]
+}
+
+/**
+ * Class.monthlyAttendanceSummaries
+ */
+export type Class$monthlyAttendanceSummariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MonthlyAttendanceSummary
+   */
+  select?: Prisma.MonthlyAttendanceSummarySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MonthlyAttendanceSummary
+   */
+  omit?: Prisma.MonthlyAttendanceSummaryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MonthlyAttendanceSummaryInclude<ExtArgs> | null
+  where?: Prisma.MonthlyAttendanceSummaryWhereInput
+  orderBy?: Prisma.MonthlyAttendanceSummaryOrderByWithRelationInput | Prisma.MonthlyAttendanceSummaryOrderByWithRelationInput[]
+  cursor?: Prisma.MonthlyAttendanceSummaryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MonthlyAttendanceSummaryScalarFieldEnum | Prisma.MonthlyAttendanceSummaryScalarFieldEnum[]
 }
 
 /**

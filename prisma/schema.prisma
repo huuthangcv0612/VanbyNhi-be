@@ -40,8 +40,23 @@ enum SessionStatus {
 
 enum AttendanceStatus {
   PRESENT
-  ABSENT
   LATE
+  EXCUSED_ABSENT
+  UNEXCUSED_ABSENT
+  NOT_MARKED
+  ABSENT
+}
+
+enum AttendanceSessionStatus {
+  OPEN
+  DRAFT
+  CLOSED
+}
+
+enum CorrectionRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum MaterialType {
@@ -146,6 +161,12 @@ model User {
   documents               Document[]               @relation("UserDocuments")
   documentCategories      DocumentCategory[]       @relation("TeacherCategories")
   uploadSessions          UploadSession[]
+  closedAttendanceSessions   AttendanceSession[]            @relation("AttendanceSessionCloser")
+  createdAttendanceSessions  AttendanceSession[]            @relation("AttendanceSessionCreator")
+  correctionRequests         AttendanceCorrectionRequest[]  @relation("CorrectionRequestStudent")
+  reviewedCorrectionRequests AttendanceCorrectionRequest[]  @relation("CorrectionRequestReviewer")
+  monthlyAttendanceSummaries MonthlyAttendanceSummary[]     @relation("StudentMonthlyAttendance")
+  closedMonthlySummaries     MonthlyAttendanceSummary[]     @relation("MonthlyAttendanceCloser")
 
   @@index([role, isActive])
   @@index([fullName])
@@ -187,6 +208,9 @@ model Class {
   materials      ClassMaterial[]
   assignments    Assignment[]
   calendarEvents TeacherCalendarEvent[]
+  attendanceConfig           ClassAttendanceConfig?
+  attendanceSessions         AttendanceSession[]
+  monthlyAttendanceSummaries MonthlyAttendanceSummary[]
 
   @@index([teacherId, status])
   @@index([createdById])
@@ -208,9 +232,10 @@ model Enrollment {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  class       Class        @relation(fields: [classId], references: [id], onDelete: Restrict)
-  student     User         @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Restrict)
-  tuitionFees TuitionFee[]
+  class                      Class                      @relation(fields: [classId], references: [id], onDelete: Restrict)
+  student                    User                       @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Restrict)
+  tuitionFees                TuitionFee[]
+  monthlyAttendanceSummaries MonthlyAttendanceSummary[]
 
   @@map("ClassMember")
   @@index([studentId, status])
@@ -237,30 +262,35 @@ model ClassSession {
   materials    ClassMaterial[]
   assignments  Assignment[]
   lessonRecord LessonRecord?
+  attendanceSession AttendanceSession?
 
   @@index([classId, startTime])
   @@index([status, startTime])
 }
 
 model Attendance {
-  id          String           @id @default(cuid())
-  sessionId   String
-  studentId   String
-  status      AttendanceStatus @default(ABSENT)
-  checkedInAt DateTime?
-  markedById  String?
-  note        String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id                 String                        @id @default(cuid())
+  sessionId          String
+  studentId          String
+  status             AttendanceStatus              @default(NOT_MARKED)
+  checkedInAt        DateTime?
+  markedById         String?
+  note               String?
+  isMakeUp           Boolean                       @default(false)
+  originalSessionId  String?
+  createdAt          DateTime                      @default(now())
+  updatedAt          DateTime                      @updatedAt
 
-  session    ClassSession          @relation(fields: [sessionId], references: [id], onDelete: Restrict)
-  student    User                  @relation("StudentAttendances", fields: [studentId], references: [id], onDelete: Restrict)
-  markedBy   User?                 @relation("AttendanceMarker", fields: [markedById], references: [id], onDelete: SetNull)
-  changeLogs AttendanceChangeLog[]
+  session            ClassSession                  @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  student            User                          @relation("StudentAttendances", fields: [studentId], references: [id], onDelete: Restrict)
+  markedBy           User?                         @relation("AttendanceMarker", fields: [markedById], references: [id], onDelete: SetNull)
+  changeLogs         AttendanceChangeLog[]
+  correctionRequests AttendanceCorrectionRequest[]
 
   @@unique([sessionId, studentId])
   @@index([studentId])
   @@index([sessionId, status])
+  @@index([studentId, status])
 }
 
 model AttendanceChangeLog {
@@ -601,3 +631,96 @@ model CalendarNotification {
   @@index([eventId, recipientId])
   @@index([recipientId])
 }
+
+model AttendanceSession {
+  id          String                  @id @default(cuid())
+  sessionId   String                  @unique
+  classId     String
+  status      AttendanceSessionStatus @default(OPEN)
+  notes       String?
+  closedAt    DateTime?
+  closedById  String?
+  createdById String
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  session   ClassSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  class     Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
+  closedBy  User?        @relation("AttendanceSessionCloser", fields: [closedById], references: [id], onDelete: SetNull)
+  createdBy User         @relation("AttendanceSessionCreator", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([classId, status])
+  @@index([sessionId])
+}
+
+model AttendanceCorrectionRequest {
+  id              String                  @id @default(cuid())
+  attendanceId    String
+  studentId       String
+  requestedStatus AttendanceStatus
+  reason          String                  @db.Text
+  evidenceUrl     String?
+  status          CorrectionRequestStatus @default(PENDING)
+  reviewNote      String?                 @db.Text
+  reviewedById    String?
+  reviewedAt      DateTime?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  attendance Attendance @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+  student    User       @relation("CorrectionRequestStudent", fields: [studentId], references: [id], onDelete: Restrict)
+  reviewedBy User?      @relation("CorrectionRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([attendanceId, status])
+  @@index([studentId, status])
+  @@index([status, createdAt])
+}
+
+model MonthlyAttendanceSummary {
+  id                   String    @id @default(cuid())
+  classId              String
+  studentId            String
+  enrollmentId         String?
+  billingYear          Int
+  billingMonth         Int
+  totalSessions        Int       @default(0)
+  presentCount         Int       @default(0)
+  lateCount            Int       @default(0)
+  excusedAbsentCount   Int       @default(0)
+  unexcusedAbsentCount Int       @default(0)
+  notMarkedCount       Int       @default(0)
+  chargeableSessions   Int       @default(0)
+  tuitionAmount        Decimal?  @db.Decimal(12, 2)
+  isClosed             Boolean   @default(false)
+  closedAt             DateTime?
+  closedById           String?
+  note                 String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  class      Class       @relation(fields: [classId], references: [id], onDelete: Restrict)
+  student    User        @relation("StudentMonthlyAttendance", fields: [studentId], references: [id], onDelete: Restrict)
+  enrollment Enrollment? @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
+  closedBy   User?       @relation("MonthlyAttendanceCloser", fields: [closedById], references: [id], onDelete: SetNull)
+
+  @@unique([classId, studentId, billingYear, billingMonth])
+  @@index([classId, billingYear, billingMonth])
+  @@index([studentId, billingYear, billingMonth])
+  @@index([isClosed])
+}
+
+model ClassAttendanceConfig {
+  id                    String   @id @default(cuid())
+  classId               String   @unique
+  chargePresent         Boolean  @default(true)
+  chargeLate            Boolean  @default(true)
+  chargeExcusedAbsent   Boolean  @default(false)
+  chargeUnexcusedAbsent Boolean  @default(false)
+  allowMakeUpSession    Boolean  @default(true)
+  retentionDays         Int      @default(60)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+}
+
