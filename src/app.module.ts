@@ -18,6 +18,7 @@ import { CalendarModule } from './calendar/calendar.module.js';
 import { SchedulesModule } from './schedules/schedules.module.js';
 import { StorageModule } from './storage/storage.module.js';
 import { DocumentsModule } from './documents/documents.module.js';
+import { GoogleModule } from './google/google.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -49,6 +50,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     SchedulesModule,
     StorageModule,
     DocumentsModule,
+    GoogleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

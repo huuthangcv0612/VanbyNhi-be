@@ -69,6 +69,17 @@ export class StudentClassesController {
   }
 
   /**
+   * GET /student/classes/:classId/meet — Học sinh lấy link Google Meet của lớp học
+   */
+  @Get(':classId/meet')
+  async getClassMeet(
+    @CurrentUser('sub') studentId: string,
+    @Param('classId') classId: string,
+  ) {
+    return this.studentClassesService.getClassMeetAccess(studentId, classId);
+  }
+
+  /**
    * DELETE /student/classes/:classId/membership — Học sinh tự rời khỏi lớp học
    */
   @Delete(':classId/membership')

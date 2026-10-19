@@ -62,6 +62,31 @@ export class TeacherClassesController {
   }
 
   /**
+   * GET /teacher/classes/:classId/meet — Chi tiết phòng Google Meet của lớp học
+   */
+  @Get(':classId/meet')
+  async getClassMeet(
+    @CurrentUser('sub') teacherId: string,
+    @Param('classId') classId: string,
+  ) {
+    return this.teacherClassesService.getClassMeetSpace(teacherId, classId);
+  }
+
+  /**
+   * POST /teacher/classes/:classId/meet/retry — Thử lại tạo phòng Google Meet khi lớp chưa có phòng READY
+   */
+  @Post(':classId/meet/retry')
+  async retryClassMeet(
+    @CurrentUser('sub') teacherId: string,
+    @Param('classId') classId: string,
+  ) {
+    return this.teacherClassesService.retryCreateClassMeetSpace(
+      teacherId,
+      classId,
+    );
+  }
+
+  /**
    * PATCH /teacher/classes/:classId — Sửa thông tin lớp học
    */
   @Patch(':classId')

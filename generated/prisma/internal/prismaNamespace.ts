@@ -422,7 +422,9 @@ export const ModelName = {
   AttendanceSession: 'AttendanceSession',
   AttendanceCorrectionRequest: 'AttendanceCorrectionRequest',
   MonthlyAttendanceSummary: 'MonthlyAttendanceSummary',
-  ClassAttendanceConfig: 'ClassAttendanceConfig'
+  ClassAttendanceConfig: 'ClassAttendanceConfig',
+  UserGoogleAccount: 'UserGoogleAccount',
+  ClassMeetSpace: 'ClassMeetSpace'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -438,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "classMaterial" | "documentCategory" | "document" | "uploadSession" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification" | "attendanceSession" | "attendanceCorrectionRequest" | "monthlyAttendanceSummary" | "classAttendanceConfig"
+    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "classMaterial" | "documentCategory" | "document" | "uploadSession" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification" | "attendanceSession" | "attendanceCorrectionRequest" | "monthlyAttendanceSummary" | "classAttendanceConfig" | "userGoogleAccount" | "classMeetSpace"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2366,6 +2368,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    UserGoogleAccount: {
+      payload: Prisma.$UserGoogleAccountPayload<ExtArgs>
+      fields: Prisma.UserGoogleAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserGoogleAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserGoogleAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.UserGoogleAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserGoogleAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>
+        }
+        findMany: {
+          args: Prisma.UserGoogleAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>[]
+        }
+        create: {
+          args: Prisma.UserGoogleAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>
+        }
+        createMany: {
+          args: Prisma.UserGoogleAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserGoogleAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.UserGoogleAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>
+        }
+        update: {
+          args: Prisma.UserGoogleAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserGoogleAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserGoogleAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserGoogleAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserGoogleAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserGoogleAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.UserGoogleAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserGoogleAccount>
+        }
+        groupBy: {
+          args: Prisma.UserGoogleAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserGoogleAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserGoogleAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserGoogleAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    ClassMeetSpace: {
+      payload: Prisma.$ClassMeetSpacePayload<ExtArgs>
+      fields: Prisma.ClassMeetSpaceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClassMeetSpaceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClassMeetSpaceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>
+        }
+        findFirst: {
+          args: Prisma.ClassMeetSpaceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClassMeetSpaceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>
+        }
+        findMany: {
+          args: Prisma.ClassMeetSpaceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>[]
+        }
+        create: {
+          args: Prisma.ClassMeetSpaceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>
+        }
+        createMany: {
+          args: Prisma.ClassMeetSpaceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClassMeetSpaceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>[]
+        }
+        delete: {
+          args: Prisma.ClassMeetSpaceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>
+        }
+        update: {
+          args: Prisma.ClassMeetSpaceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>
+        }
+        deleteMany: {
+          args: Prisma.ClassMeetSpaceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClassMeetSpaceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClassMeetSpaceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>[]
+        }
+        upsert: {
+          args: Prisma.ClassMeetSpaceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetSpacePayload>
+        }
+        aggregate: {
+          args: Prisma.ClassMeetSpaceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClassMeetSpace>
+        }
+        groupBy: {
+          args: Prisma.ClassMeetSpaceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClassMeetSpaceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClassMeetSpaceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClassMeetSpaceCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2855,6 +3005,39 @@ export const ClassAttendanceConfigScalarFieldEnum = {
 export type ClassAttendanceConfigScalarFieldEnum = (typeof ClassAttendanceConfigScalarFieldEnum)[keyof typeof ClassAttendanceConfigScalarFieldEnum]
 
 
+export const UserGoogleAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  googleSub: 'googleSub',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  encryptedRefreshToken: 'encryptedRefreshToken',
+  status: 'status',
+  lastConnectedAt: 'lastConnectedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserGoogleAccountScalarFieldEnum = (typeof UserGoogleAccountScalarFieldEnum)[keyof typeof UserGoogleAccountScalarFieldEnum]
+
+
+export const ClassMeetSpaceScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  spaceName: 'spaceName',
+  meetingUri: 'meetingUri',
+  meetingCode: 'meetingCode',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  retryCount: 'retryCount',
+  lastAttemptAt: 'lastAttemptAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClassMeetSpaceScalarFieldEnum = (typeof ClassMeetSpaceScalarFieldEnum)[keyof typeof ClassMeetSpaceScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3187,6 +3370,34 @@ export type ListEnumCorrectionRequestStatusFieldRefInput<$PrismaModel> = FieldRe
 
 
 /**
+ * Reference to a field of type 'GoogleConnectionStatus'
+ */
+export type EnumGoogleConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GoogleConnectionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GoogleConnectionStatus[]'
+ */
+export type ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GoogleConnectionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetSpaceStatus'
+ */
+export type EnumMeetSpaceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetSpaceStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetSpaceStatus[]'
+ */
+export type ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetSpaceStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -3376,6 +3587,8 @@ export type GlobalOmitConfig = {
   attendanceCorrectionRequest?: Prisma.AttendanceCorrectionRequestOmit
   monthlyAttendanceSummary?: Prisma.MonthlyAttendanceSummaryOmit
   classAttendanceConfig?: Prisma.ClassAttendanceConfigOmit
+  userGoogleAccount?: Prisma.UserGoogleAccountOmit
+  classMeetSpace?: Prisma.ClassMeetSpaceOmit
 }
 
 /* Types for Logging */

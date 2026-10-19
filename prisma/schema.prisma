@@ -122,6 +122,18 @@ enum UploadSessionStatus {
   CANCELLED
 }
 
+enum GoogleConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  NEEDS_REAUTH
+}
+
+enum MeetSpaceStatus {
+  PENDING
+  READY
+  FAILED
+}
+
 // ==================== MODELS ====================
 
 model User {
@@ -167,6 +179,7 @@ model User {
   reviewedCorrectionRequests AttendanceCorrectionRequest[]  @relation("CorrectionRequestReviewer")
   monthlyAttendanceSummaries MonthlyAttendanceSummary[]     @relation("StudentMonthlyAttendance")
   closedMonthlySummaries     MonthlyAttendanceSummary[]     @relation("MonthlyAttendanceCloser")
+  googleAccount              UserGoogleAccount?
 
   @@index([role, isActive])
   @@index([fullName])
@@ -211,6 +224,7 @@ model Class {
   attendanceConfig           ClassAttendanceConfig?
   attendanceSessions         AttendanceSession[]
   monthlyAttendanceSummaries MonthlyAttendanceSummary[]
+  meetSpace                  ClassMeetSpace?
 
   @@index([teacherId, status])
   @@index([createdById])
@@ -725,5 +739,42 @@ model ClassAttendanceConfig {
   updatedAt             DateTime @updatedAt
 
   class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+}
+
+model UserGoogleAccount {
+  id                    String                 @id @default(cuid())
+  userId                String                 @unique
+  googleSub             String                 @unique
+  email                 String
+  emailVerified         Boolean                @default(false)
+  encryptedRefreshToken String?
+  status                GoogleConnectionStatus @default(CONNECTED)
+  lastConnectedAt       DateTime               @default(now())
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([googleSub])
+}
+
+model ClassMeetSpace {
+  id            String          @id @default(cuid())
+  classId       String          @unique
+  spaceName     String?
+  meetingUri    String?
+  meetingCode   String?
+  status        MeetSpaceStatus @default(PENDING)
+  errorMessage  String?
+  retryCount    Int             @default(0)
+  lastAttemptAt DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@index([classId])
+  @@index([status])
 }
 

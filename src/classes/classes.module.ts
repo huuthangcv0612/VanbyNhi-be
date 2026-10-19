@@ -8,9 +8,10 @@ import { StudentClassesController } from './student-classes.controller.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { SessionsModule } from '../sessions/sessions.module.js';
+import { GoogleModule } from '../google/google.module.js';
 
 @Module({
-  imports: [PrismaModule, AuthModule, SessionsModule],
+  imports: [PrismaModule, AuthModule, SessionsModule, GoogleModule],
   controllers: [
     ClassesController,
     TeacherClassesController,

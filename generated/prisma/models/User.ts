@@ -267,6 +267,7 @@ export type UserWhereInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestListRelationFilter
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
+  googleAccount?: Prisma.XOR<Prisma.UserGoogleAccountNullableScalarRelationFilter, Prisma.UserGoogleAccountWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -311,6 +312,7 @@ export type UserOrderByWithRelationInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestOrderByRelationAggregateInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryOrderByRelationAggregateInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryOrderByRelationAggregateInput
+  googleAccount?: Prisma.UserGoogleAccountOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -358,6 +360,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestListRelationFilter
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
+  googleAccount?: Prisma.XOR<Prisma.UserGoogleAccountNullableScalarRelationFilter, Prisma.UserGoogleAccountWhereInput> | null
 }, "id" | "phone" | "email" | "zaloId">
 
 export type UserOrderByWithAggregationInput = {
@@ -438,6 +441,7 @@ export type UserCreateInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -482,6 +486,7 @@ export type UserUncheckedCreateInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -526,6 +531,7 @@ export type UserUpdateInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -570,6 +576,7 @@ export type UserUncheckedUpdateInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1114,6 +1121,20 @@ export type UserUpdateOneWithoutClosedMonthlySummariesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutClosedMonthlySummariesInput, Prisma.UserUpdateWithoutClosedMonthlySummariesInput>, Prisma.UserUncheckedUpdateWithoutClosedMonthlySummariesInput>
 }
 
+export type UserCreateNestedOneWithoutGoogleAccountInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGoogleAccountInput, Prisma.UserUncheckedCreateWithoutGoogleAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGoogleAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutGoogleAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGoogleAccountInput, Prisma.UserUncheckedCreateWithoutGoogleAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGoogleAccountInput
+  upsert?: Prisma.UserUpsertWithoutGoogleAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGoogleAccountInput, Prisma.UserUpdateWithoutGoogleAccountInput>, Prisma.UserUncheckedUpdateWithoutGoogleAccountInput>
+}
+
 export type UserCreateWithoutAuthAccountsInput = {
   id?: string
   fullName: string
@@ -1155,6 +1176,7 @@ export type UserCreateWithoutAuthAccountsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuthAccountsInput = {
@@ -1198,6 +1220,7 @@ export type UserUncheckedCreateWithoutAuthAccountsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuthAccountsInput = {
@@ -1257,6 +1280,7 @@ export type UserUpdateWithoutAuthAccountsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuthAccountsInput = {
@@ -1300,6 +1324,7 @@ export type UserUncheckedUpdateWithoutAuthAccountsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedClassesInput = {
@@ -1343,6 +1368,7 @@ export type UserCreateWithoutCreatedClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedClassesInput = {
@@ -1386,6 +1412,7 @@ export type UserUncheckedCreateWithoutCreatedClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedClassesInput = {
@@ -1434,6 +1461,7 @@ export type UserCreateWithoutTeachingClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeachingClassesInput = {
@@ -1477,6 +1505,7 @@ export type UserUncheckedCreateWithoutTeachingClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeachingClassesInput = {
@@ -1536,6 +1565,7 @@ export type UserUpdateWithoutCreatedClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedClassesInput = {
@@ -1579,6 +1609,7 @@ export type UserUncheckedUpdateWithoutCreatedClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTeachingClassesInput = {
@@ -1633,6 +1664,7 @@ export type UserUpdateWithoutTeachingClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeachingClassesInput = {
@@ -1676,6 +1708,7 @@ export type UserUncheckedUpdateWithoutTeachingClassesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEnrollmentsInput = {
@@ -1719,6 +1752,7 @@ export type UserCreateWithoutEnrollmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEnrollmentsInput = {
@@ -1762,6 +1796,7 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEnrollmentsInput = {
@@ -1821,6 +1856,7 @@ export type UserUpdateWithoutEnrollmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEnrollmentsInput = {
@@ -1864,6 +1900,7 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedSessionsInput = {
@@ -1907,6 +1944,7 @@ export type UserCreateWithoutCreatedSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedSessionsInput = {
@@ -1950,6 +1988,7 @@ export type UserUncheckedCreateWithoutCreatedSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedSessionsInput = {
@@ -2009,6 +2048,7 @@ export type UserUpdateWithoutCreatedSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedSessionsInput = {
@@ -2052,6 +2092,7 @@ export type UserUncheckedUpdateWithoutCreatedSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAttendancesInput = {
@@ -2095,6 +2136,7 @@ export type UserCreateWithoutAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAttendancesInput = {
@@ -2138,6 +2180,7 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAttendancesInput = {
@@ -2186,6 +2229,7 @@ export type UserCreateWithoutMarkedAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
@@ -2229,6 +2273,7 @@ export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMarkedAttendancesInput = {
@@ -2288,6 +2333,7 @@ export type UserUpdateWithoutAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendancesInput = {
@@ -2331,6 +2377,7 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutMarkedAttendancesInput = {
@@ -2385,6 +2432,7 @@ export type UserUpdateWithoutMarkedAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
@@ -2428,6 +2476,7 @@ export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAttendanceChangesInput = {
@@ -2471,6 +2520,7 @@ export type UserCreateWithoutAttendanceChangesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAttendanceChangesInput = {
@@ -2514,6 +2564,7 @@ export type UserUncheckedCreateWithoutAttendanceChangesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAttendanceChangesInput = {
@@ -2573,6 +2624,7 @@ export type UserUpdateWithoutAttendanceChangesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendanceChangesInput = {
@@ -2616,6 +2668,7 @@ export type UserUncheckedUpdateWithoutAttendanceChangesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRecordedTuitionPaymentsInput = {
@@ -2659,6 +2712,7 @@ export type UserCreateWithoutRecordedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRecordedTuitionPaymentsInput = {
@@ -2702,6 +2756,7 @@ export type UserUncheckedCreateWithoutRecordedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRecordedTuitionPaymentsInput = {
@@ -2750,6 +2805,7 @@ export type UserCreateWithoutVoidedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVoidedTuitionPaymentsInput = {
@@ -2793,6 +2849,7 @@ export type UserUncheckedCreateWithoutVoidedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVoidedTuitionPaymentsInput = {
@@ -2852,6 +2909,7 @@ export type UserUpdateWithoutRecordedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecordedTuitionPaymentsInput = {
@@ -2895,6 +2953,7 @@ export type UserUncheckedUpdateWithoutRecordedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutVoidedTuitionPaymentsInput = {
@@ -2949,6 +3008,7 @@ export type UserUpdateWithoutVoidedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVoidedTuitionPaymentsInput = {
@@ -2992,6 +3052,7 @@ export type UserUncheckedUpdateWithoutVoidedTuitionPaymentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedAssignmentsInput = {
@@ -3035,6 +3096,7 @@ export type UserCreateWithoutCreatedAssignmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedAssignmentsInput = {
@@ -3078,6 +3140,7 @@ export type UserUncheckedCreateWithoutCreatedAssignmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedAssignmentsInput = {
@@ -3137,6 +3200,7 @@ export type UserUpdateWithoutCreatedAssignmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedAssignmentsInput = {
@@ -3180,6 +3244,7 @@ export type UserUncheckedUpdateWithoutCreatedAssignmentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubmissionsInput = {
@@ -3223,6 +3288,7 @@ export type UserCreateWithoutSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionsInput = {
@@ -3266,6 +3332,7 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionsInput = {
@@ -3314,6 +3381,7 @@ export type UserCreateWithoutGradedSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGradedSubmissionsInput = {
@@ -3357,6 +3425,7 @@ export type UserUncheckedCreateWithoutGradedSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGradedSubmissionsInput = {
@@ -3416,6 +3485,7 @@ export type UserUpdateWithoutSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionsInput = {
@@ -3459,6 +3529,7 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutGradedSubmissionsInput = {
@@ -3513,6 +3584,7 @@ export type UserUpdateWithoutGradedSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGradedSubmissionsInput = {
@@ -3556,6 +3628,7 @@ export type UserUncheckedUpdateWithoutGradedSubmissionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedMaterialsInput = {
@@ -3599,6 +3672,7 @@ export type UserCreateWithoutUploadedMaterialsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedMaterialsInput = {
@@ -3642,6 +3716,7 @@ export type UserUncheckedCreateWithoutUploadedMaterialsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedMaterialsInput = {
@@ -3701,6 +3776,7 @@ export type UserUpdateWithoutUploadedMaterialsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedMaterialsInput = {
@@ -3744,6 +3820,7 @@ export type UserUncheckedUpdateWithoutUploadedMaterialsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDocumentCategoriesInput = {
@@ -3787,6 +3864,7 @@ export type UserCreateWithoutDocumentCategoriesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDocumentCategoriesInput = {
@@ -3830,6 +3908,7 @@ export type UserUncheckedCreateWithoutDocumentCategoriesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDocumentCategoriesInput = {
@@ -3889,6 +3968,7 @@ export type UserUpdateWithoutDocumentCategoriesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDocumentCategoriesInput = {
@@ -3932,6 +4012,7 @@ export type UserUncheckedUpdateWithoutDocumentCategoriesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDocumentsInput = {
@@ -3975,6 +4056,7 @@ export type UserCreateWithoutDocumentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -4018,6 +4100,7 @@ export type UserUncheckedCreateWithoutDocumentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -4077,6 +4160,7 @@ export type UserUpdateWithoutDocumentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -4120,6 +4204,7 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadSessionsInput = {
@@ -4163,6 +4248,7 @@ export type UserCreateWithoutUploadSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadSessionsInput = {
@@ -4206,6 +4292,7 @@ export type UserUncheckedCreateWithoutUploadSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadSessionsInput = {
@@ -4265,6 +4352,7 @@ export type UserUpdateWithoutUploadSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadSessionsInput = {
@@ -4308,6 +4396,7 @@ export type UserUncheckedUpdateWithoutUploadSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4351,6 +4440,7 @@ export type UserCreateWithoutNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -4394,6 +4484,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -4453,6 +4544,7 @@ export type UserUpdateWithoutNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -4496,6 +4588,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -4539,6 +4632,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -4582,6 +4676,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -4641,6 +4736,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -4684,6 +4780,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeacherCalendarLabelsInput = {
@@ -4727,6 +4824,7 @@ export type UserCreateWithoutTeacherCalendarLabelsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeacherCalendarLabelsInput = {
@@ -4770,6 +4868,7 @@ export type UserUncheckedCreateWithoutTeacherCalendarLabelsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeacherCalendarLabelsInput = {
@@ -4829,6 +4928,7 @@ export type UserUpdateWithoutTeacherCalendarLabelsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherCalendarLabelsInput = {
@@ -4872,6 +4972,7 @@ export type UserUncheckedUpdateWithoutTeacherCalendarLabelsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeacherCalendarEventsInput = {
@@ -4915,6 +5016,7 @@ export type UserCreateWithoutTeacherCalendarEventsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeacherCalendarEventsInput = {
@@ -4958,6 +5060,7 @@ export type UserUncheckedCreateWithoutTeacherCalendarEventsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeacherCalendarEventsInput = {
@@ -5017,6 +5120,7 @@ export type UserUpdateWithoutTeacherCalendarEventsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherCalendarEventsInput = {
@@ -5060,6 +5164,7 @@ export type UserUncheckedUpdateWithoutTeacherCalendarEventsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCalendarParticipationsInput = {
@@ -5103,6 +5208,7 @@ export type UserCreateWithoutCalendarParticipationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCalendarParticipationsInput = {
@@ -5146,6 +5252,7 @@ export type UserUncheckedCreateWithoutCalendarParticipationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCalendarParticipationsInput = {
@@ -5205,6 +5312,7 @@ export type UserUpdateWithoutCalendarParticipationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalendarParticipationsInput = {
@@ -5248,6 +5356,7 @@ export type UserUncheckedUpdateWithoutCalendarParticipationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCalendarNotificationsInput = {
@@ -5291,6 +5400,7 @@ export type UserCreateWithoutCalendarNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCalendarNotificationsInput = {
@@ -5334,6 +5444,7 @@ export type UserUncheckedCreateWithoutCalendarNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCalendarNotificationsInput = {
@@ -5393,6 +5504,7 @@ export type UserUpdateWithoutCalendarNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalendarNotificationsInput = {
@@ -5436,6 +5548,7 @@ export type UserUncheckedUpdateWithoutCalendarNotificationsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutClosedAttendanceSessionsInput = {
@@ -5479,6 +5592,7 @@ export type UserCreateWithoutClosedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClosedAttendanceSessionsInput = {
@@ -5522,6 +5636,7 @@ export type UserUncheckedCreateWithoutClosedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClosedAttendanceSessionsInput = {
@@ -5570,6 +5685,7 @@ export type UserCreateWithoutCreatedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedAttendanceSessionsInput = {
@@ -5613,6 +5729,7 @@ export type UserUncheckedCreateWithoutCreatedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedAttendanceSessionsInput = {
@@ -5672,6 +5789,7 @@ export type UserUpdateWithoutClosedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClosedAttendanceSessionsInput = {
@@ -5715,6 +5833,7 @@ export type UserUncheckedUpdateWithoutClosedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutCreatedAttendanceSessionsInput = {
@@ -5769,6 +5888,7 @@ export type UserUpdateWithoutCreatedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedAttendanceSessionsInput = {
@@ -5812,6 +5932,7 @@ export type UserUncheckedUpdateWithoutCreatedAttendanceSessionsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCorrectionRequestsInput = {
@@ -5855,6 +5976,7 @@ export type UserCreateWithoutCorrectionRequestsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCorrectionRequestsInput = {
@@ -5898,6 +6020,7 @@ export type UserUncheckedCreateWithoutCorrectionRequestsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCorrectionRequestsInput = {
@@ -5946,6 +6069,7 @@ export type UserCreateWithoutReviewedCorrectionRequestsInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewedCorrectionRequestsInput = {
@@ -5989,6 +6113,7 @@ export type UserUncheckedCreateWithoutReviewedCorrectionRequestsInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewedCorrectionRequestsInput = {
@@ -6048,6 +6173,7 @@ export type UserUpdateWithoutCorrectionRequestsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCorrectionRequestsInput = {
@@ -6091,6 +6217,7 @@ export type UserUncheckedUpdateWithoutCorrectionRequestsInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReviewedCorrectionRequestsInput = {
@@ -6145,6 +6272,7 @@ export type UserUpdateWithoutReviewedCorrectionRequestsInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedCorrectionRequestsInput = {
@@ -6188,6 +6316,7 @@ export type UserUncheckedUpdateWithoutReviewedCorrectionRequestsInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMonthlyAttendanceSummariesInput = {
@@ -6231,6 +6360,7 @@ export type UserCreateWithoutMonthlyAttendanceSummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMonthlyAttendanceSummariesInput = {
@@ -6274,6 +6404,7 @@ export type UserUncheckedCreateWithoutMonthlyAttendanceSummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMonthlyAttendanceSummariesInput = {
@@ -6322,6 +6453,7 @@ export type UserCreateWithoutClosedMonthlySummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClosedMonthlySummariesInput = {
@@ -6365,6 +6497,7 @@ export type UserUncheckedCreateWithoutClosedMonthlySummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClosedMonthlySummariesInput = {
@@ -6424,6 +6557,7 @@ export type UserUpdateWithoutMonthlyAttendanceSummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMonthlyAttendanceSummariesInput = {
@@ -6467,6 +6601,7 @@ export type UserUncheckedUpdateWithoutMonthlyAttendanceSummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutClosedMonthlySummariesInput = {
@@ -6521,6 +6656,7 @@ export type UserUpdateWithoutClosedMonthlySummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClosedMonthlySummariesInput = {
@@ -6564,6 +6700,199 @@ export type UserUncheckedUpdateWithoutClosedMonthlySummariesInput = {
   correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutGoogleAccountInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutGoogleAccountInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutGoogleAccountInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGoogleAccountInput, Prisma.UserUncheckedCreateWithoutGoogleAccountInput>
+}
+
+export type UserUpsertWithoutGoogleAccountInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGoogleAccountInput, Prisma.UserUncheckedUpdateWithoutGoogleAccountInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGoogleAccountInput, Prisma.UserUncheckedCreateWithoutGoogleAccountInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGoogleAccountInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGoogleAccountInput, Prisma.UserUncheckedUpdateWithoutGoogleAccountInput>
+}
+
+export type UserUpdateWithoutGoogleAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGoogleAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 
@@ -6891,6 +7220,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reviewedCorrectionRequests?: boolean | Prisma.User$reviewedCorrectionRequestsArgs<ExtArgs>
   monthlyAttendanceSummaries?: boolean | Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs>
   closedMonthlySummaries?: boolean | Prisma.User$closedMonthlySummariesArgs<ExtArgs>
+  googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -6970,6 +7300,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reviewedCorrectionRequests?: boolean | Prisma.User$reviewedCorrectionRequestsArgs<ExtArgs>
   monthlyAttendanceSummaries?: boolean | Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs>
   closedMonthlySummaries?: boolean | Prisma.User$closedMonthlySummariesArgs<ExtArgs>
+  googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -7007,6 +7338,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reviewedCorrectionRequests: Prisma.$AttendanceCorrectionRequestPayload<ExtArgs>[]
     monthlyAttendanceSummaries: Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>[]
     closedMonthlySummaries: Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>[]
+    googleAccount: Prisma.$UserGoogleAccountPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7444,6 +7776,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reviewedCorrectionRequests<T extends Prisma.User$reviewedCorrectionRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedCorrectionRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceCorrectionRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   monthlyAttendanceSummaries<T extends Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   closedMonthlySummaries<T extends Prisma.User$closedMonthlySummariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$closedMonthlySummariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  googleAccount<T extends Prisma.User$googleAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$googleAccountArgs<ExtArgs>>): Prisma.Prisma__UserGoogleAccountClient<runtime.Types.Result.GetResult<Prisma.$UserGoogleAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8571,6 +8904,25 @@ export type User$closedMonthlySummariesArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.MonthlyAttendanceSummaryScalarFieldEnum | Prisma.MonthlyAttendanceSummaryScalarFieldEnum[]
+}
+
+/**
+ * User.googleAccount
+ */
+export type User$googleAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserGoogleAccount
+   */
+  select?: Prisma.UserGoogleAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserGoogleAccount
+   */
+  omit?: Prisma.UserGoogleAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserGoogleAccountInclude<ExtArgs> | null
+  where?: Prisma.UserGoogleAccountWhereInput
 }
 
 /**

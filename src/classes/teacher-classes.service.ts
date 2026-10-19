@@ -13,7 +13,11 @@ import {
   ClassStatus,
   MemberStatus,
   SessionStatus,
+  GoogleConnectionStatus,
+  MeetSpaceStatus,
 } from '../../generated/prisma/client.js';
+import { GoogleAuthService } from '../google/google-auth.service.js';
+import { GoogleMeetService } from '../google/google-meet.service.js';
 import type { TeacherCreateClassDto } from './dto/teacher-create-class.dto.js';
 import type { TeacherUpdateClassDto } from './dto/teacher-update-class.dto.js';
 import type { TeacherUpdateClassStatusDto } from './dto/teacher-update-class-status.dto.js';
@@ -23,7 +27,11 @@ import type { QueryJoinRequestsDto } from './dto/query-join-requests.dto.js';
 
 @Injectable()
 export class TeacherClassesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly googleAuthService?: GoogleAuthService,
+    private readonly googleMeetService?: GoogleMeetService,
+  ) {}
 
   /**
    * Sinh mã joinCode an toàn gồm 8 ký tự chữ cái hoa và chữ số (loại bỏ ký tự dễ nhầm lẫn)
@@ -105,6 +113,23 @@ export class TeacherClassesService {
         ? new Prisma.Decimal(dto.monthlyTuition)
         : new Prisma.Decimal(0);
 
+    // Kiểm tra liên kết Google Workspace của giáo viên nếu dịch vụ Google được cấu hình
+    if (this.googleAuthService && this.googleMeetService) {
+      const googleAccount = await this.prisma.userGoogleAccount.findUnique({
+        where: { userId: teacherId },
+      });
+
+      if (
+        !googleAccount ||
+        googleAccount.status !== GoogleConnectionStatus.CONNECTED ||
+        !googleAccount.encryptedRefreshToken
+      ) {
+        throw new BadRequestException(
+          'Bạn cần liên kết tài khoản Google Workspace trước khi tạo lớp học để hệ thống tự động khởi tạo phòng Google Meet.',
+        );
+      }
+    }
+
     const newClass = await this.prisma.class.create({
       data: {
         name: dto.name,
@@ -130,10 +155,218 @@ export class TeacherClassesService {
       },
     });
 
+    // Nếu có Google Service: Tự động khởi tạo phòng Meet riêng cho lớp
+    if (this.googleAuthService && this.googleMeetService) {
+      const meetSpace = await this.prisma.classMeetSpace.create({
+        data: {
+          classId: newClass.id,
+          status: MeetSpaceStatus.PENDING,
+          lastAttemptAt: new Date(),
+        },
+      });
+
+      try {
+        const accessToken =
+          await this.googleAuthService.getValidAccessToken(teacherId);
+        const space = await this.googleMeetService.createSpace(accessToken);
+
+        const [updatedMeetSpace, updatedClass] =
+          await this.prisma.$transaction([
+            this.prisma.classMeetSpace.update({
+              where: { id: meetSpace.id },
+              data: {
+                spaceName: space.name,
+                meetingUri: space.meetingUri,
+                meetingCode: space.meetingCode,
+                status: MeetSpaceStatus.READY,
+                errorMessage: null,
+              },
+            }),
+            this.prisma.class.update({
+              where: { id: newClass.id },
+              data: { defaultMeetUrl: space.meetingUri },
+              include: {
+                teacher: {
+                  select: {
+                    id: true,
+                    fullName: true,
+                    email: true,
+                    phone: true,
+                    avatarUrl: true,
+                  },
+                },
+              },
+            }),
+          ]);
+
+        return {
+          message: 'Tạo lớp học thành công',
+          class: {
+            ...updatedClass,
+            meetSpace: updatedMeetSpace,
+          },
+        };
+      } catch (err: any) {
+        // Ghi nhận lỗi và không xóa lớp học
+        const failedMeetSpace = await this.prisma.classMeetSpace.update({
+          where: { id: meetSpace.id },
+          data: {
+            status: MeetSpaceStatus.FAILED,
+            errorMessage: err.message || 'Khởi tạo phòng Google Meet thất bại',
+            retryCount: 1,
+          },
+        });
+
+        return {
+          message:
+            'Tạo lớp học thành công nhưng chưa thể tạo phòng Google Meet. Vui lòng bấm thử lại trong trang quản lý lớp.',
+          class: {
+            ...newClass,
+            meetSpace: failedMeetSpace,
+          },
+        };
+      }
+    }
+
     return {
       message: 'Tạo lớp học thành công',
       class: newClass,
     };
+  }
+
+  /**
+   * Giáo viên lấy thông tin phòng Google Meet của lớp học
+   */
+  async getClassMeetSpace(teacherId: string, classId: string) {
+    const classEntity = await this.verifyClassOwnership(teacherId, classId);
+
+    const meetSpace = await this.prisma.classMeetSpace.findUnique({
+      where: { classId },
+    });
+
+    return {
+      classId,
+      className: classEntity.name,
+      meetSpace: meetSpace || null,
+      defaultMeetUrl: classEntity.defaultMeetUrl,
+    };
+  }
+
+  /**
+   * Giáo viên thử lại (retry) khởi tạo phòng Google Meet khi lớp chưa có phòng READY
+   */
+  async retryCreateClassMeetSpace(teacherId: string, classId: string) {
+    await this.verifyClassOwnership(teacherId, classId);
+
+    let meetSpace = await this.prisma.classMeetSpace.findUnique({
+      where: { classId },
+    });
+
+    // Nếu đã READY và có link: không được tạo phòng mới
+    if (
+      meetSpace &&
+      meetSpace.status === MeetSpaceStatus.READY &&
+      meetSpace.meetingUri
+    ) {
+      return {
+        message: 'Lớp học đã có phòng Google Meet sẵn sàng',
+        meetSpace,
+      };
+    }
+
+    // Chống lặp request dồn dập nếu đang PENDING trong vòng 10 giây qua
+    if (
+      meetSpace &&
+      meetSpace.status === MeetSpaceStatus.PENDING &&
+      meetSpace.lastAttemptAt &&
+      Date.now() - new Date(meetSpace.lastAttemptAt).getTime() < 10000
+    ) {
+      return {
+        message:
+          'Yêu cầu tạo phòng đang được xử lý, vui lòng chờ trong giây lát',
+        meetSpace,
+      };
+    }
+
+    if (!this.googleAuthService || !this.googleMeetService) {
+      throw new BadRequestException(
+        'Dịch vụ Google Meet chưa được kích hoạt trên hệ thống',
+      );
+    }
+
+    const googleAccount = await this.prisma.userGoogleAccount.findUnique({
+      where: { userId: teacherId },
+    });
+
+    if (
+      !googleAccount ||
+      googleAccount.status !== GoogleConnectionStatus.CONNECTED ||
+      !googleAccount.encryptedRefreshToken
+    ) {
+      throw new BadRequestException(
+        'Bạn cần liên kết tài khoản Google Workspace trước khi thử tạo phòng Meet.',
+      );
+    }
+
+    // Khởi tạo hoặc cập nhật trạng thái PENDING
+    if (!meetSpace) {
+      meetSpace = await this.prisma.classMeetSpace.create({
+        data: {
+          classId,
+          status: MeetSpaceStatus.PENDING,
+          lastAttemptAt: new Date(),
+        },
+      });
+    } else {
+      meetSpace = await this.prisma.classMeetSpace.update({
+        where: { id: meetSpace.id },
+        data: {
+          status: MeetSpaceStatus.PENDING,
+          lastAttemptAt: new Date(),
+        },
+      });
+    }
+
+    try {
+      const accessToken =
+        await this.googleAuthService.getValidAccessToken(teacherId);
+      const space = await this.googleMeetService.createSpace(accessToken);
+
+      const [updatedMeetSpace] = await this.prisma.$transaction([
+        this.prisma.classMeetSpace.update({
+          where: { id: meetSpace.id },
+          data: {
+            spaceName: space.name,
+            meetingUri: space.meetingUri,
+            meetingCode: space.meetingCode,
+            status: MeetSpaceStatus.READY,
+            errorMessage: null,
+          },
+        }),
+        this.prisma.class.update({
+          where: { id: classId },
+          data: { defaultMeetUrl: space.meetingUri },
+        }),
+      ]);
+
+      return {
+        message: 'Khởi tạo phòng Google Meet thành công',
+        meetSpace: updatedMeetSpace,
+      };
+    } catch (err: any) {
+      await this.prisma.classMeetSpace.update({
+        where: { id: meetSpace.id },
+        data: {
+          status: MeetSpaceStatus.FAILED,
+          errorMessage: err.message || 'Khởi tạo phòng Google Meet thất bại',
+          retryCount: { increment: 1 },
+        },
+      });
+
+      throw new BadRequestException(
+        `Thử lại tạo phòng Google Meet thất bại: ${err.message || 'Lỗi không xác định'}`,
+      );
+    }
   }
 
   /**

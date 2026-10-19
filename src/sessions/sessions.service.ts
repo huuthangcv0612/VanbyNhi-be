@@ -530,6 +530,7 @@ export class SessionsService {
             name: true,
             teacherId: true,
             defaultMeetUrl: true,
+            meetSpace: true,
           },
         },
       },
@@ -557,12 +558,28 @@ export class SessionsService {
       );
     }
 
+    const effectiveMeetUrl =
+      session.meetUrl ??
+      session.class.meetSpace?.meetingUri ??
+      session.class.defaultMeetUrl;
+
+    if (
+      session.class.meetSpace &&
+      session.class.meetSpace.status !== 'READY' &&
+      !effectiveMeetUrl
+    ) {
+      throw new BadRequestException(
+        'Lớp học chưa có phòng Google Meet ở trạng thái sẵn sàng (READY). Vui lòng thử tạo lại phòng trong trang quản lý lớp.',
+      );
+    }
+
     if (session.status === SessionStatus.IN_PROGRESS) {
       return {
         message: 'Buổi học đã đang trong trạng thái diễn ra (LIVE)',
+        meetingUri: effectiveMeetUrl,
         session: {
           ...session,
-          effectiveMeetUrl: session.meetUrl ?? session.class.defaultMeetUrl,
+          effectiveMeetUrl,
         },
       };
     }
@@ -577,6 +594,7 @@ export class SessionsService {
             name: true,
             teacherId: true,
             defaultMeetUrl: true,
+            meetSpace: true,
           },
         },
       },
@@ -596,9 +614,10 @@ export class SessionsService {
 
     return {
       message: 'Bắt đầu buổi học thành công (LIVE)',
+      meetingUri: effectiveMeetUrl,
       session: {
         ...updated,
-        effectiveMeetUrl: updated.meetUrl ?? updated.class.defaultMeetUrl,
+        effectiveMeetUrl,
       },
     };
   }

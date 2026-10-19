@@ -76,7 +76,9 @@ export const ModelName = {
   AttendanceSession: 'AttendanceSession',
   AttendanceCorrectionRequest: 'AttendanceCorrectionRequest',
   MonthlyAttendanceSummary: 'MonthlyAttendanceSummary',
-  ClassAttendanceConfig: 'ClassAttendanceConfig'
+  ClassAttendanceConfig: 'ClassAttendanceConfig',
+  UserGoogleAccount: 'UserGoogleAccount',
+  ClassMeetSpace: 'ClassMeetSpace'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -543,6 +545,39 @@ export const ClassAttendanceConfigScalarFieldEnum = {
 } as const
 
 export type ClassAttendanceConfigScalarFieldEnum = (typeof ClassAttendanceConfigScalarFieldEnum)[keyof typeof ClassAttendanceConfigScalarFieldEnum]
+
+
+export const UserGoogleAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  googleSub: 'googleSub',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  encryptedRefreshToken: 'encryptedRefreshToken',
+  status: 'status',
+  lastConnectedAt: 'lastConnectedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserGoogleAccountScalarFieldEnum = (typeof UserGoogleAccountScalarFieldEnum)[keyof typeof UserGoogleAccountScalarFieldEnum]
+
+
+export const ClassMeetSpaceScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  spaceName: 'spaceName',
+  meetingUri: 'meetingUri',
+  meetingCode: 'meetingCode',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  retryCount: 'retryCount',
+  lastAttemptAt: 'lastAttemptAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClassMeetSpaceScalarFieldEnum = (typeof ClassMeetSpaceScalarFieldEnum)[keyof typeof ClassMeetSpaceScalarFieldEnum]
 
 
 export const SortOrder = {

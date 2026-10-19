@@ -582,6 +582,40 @@ export type EnumCorrectionRequestStatusWithAggregatesFilter<$PrismaModel = never
   _max?: Prisma.NestedEnumCorrectionRequestStatusFilter<$PrismaModel>
 }
 
+export type EnumGoogleConnectionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GoogleConnectionStatus | Prisma.EnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGoogleConnectionStatusFilter<$PrismaModel> | $Enums.GoogleConnectionStatus
+}
+
+export type EnumGoogleConnectionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GoogleConnectionStatus | Prisma.EnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGoogleConnectionStatusWithAggregatesFilter<$PrismaModel> | $Enums.GoogleConnectionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGoogleConnectionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGoogleConnectionStatusFilter<$PrismaModel>
+}
+
+export type EnumMeetSpaceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetSpaceStatus | Prisma.EnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetSpaceStatusFilter<$PrismaModel> | $Enums.MeetSpaceStatus
+}
+
+export type EnumMeetSpaceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetSpaceStatus | Prisma.EnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetSpaceStatusWithAggregatesFilter<$PrismaModel> | $Enums.MeetSpaceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeetSpaceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeetSpaceStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1161,6 +1195,40 @@ export type NestedEnumCorrectionRequestStatusWithAggregatesFilter<$PrismaModel =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCorrectionRequestStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCorrectionRequestStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumGoogleConnectionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GoogleConnectionStatus | Prisma.EnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGoogleConnectionStatusFilter<$PrismaModel> | $Enums.GoogleConnectionStatus
+}
+
+export type NestedEnumGoogleConnectionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GoogleConnectionStatus | Prisma.EnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GoogleConnectionStatus[] | Prisma.ListEnumGoogleConnectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGoogleConnectionStatusWithAggregatesFilter<$PrismaModel> | $Enums.GoogleConnectionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGoogleConnectionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGoogleConnectionStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumMeetSpaceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetSpaceStatus | Prisma.EnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetSpaceStatusFilter<$PrismaModel> | $Enums.MeetSpaceStatus
+}
+
+export type NestedEnumMeetSpaceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetSpaceStatus | Prisma.EnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetSpaceStatus[] | Prisma.ListEnumMeetSpaceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetSpaceStatusWithAggregatesFilter<$PrismaModel> | $Enums.MeetSpaceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeetSpaceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeetSpaceStatusFilter<$PrismaModel>
 }
 
 

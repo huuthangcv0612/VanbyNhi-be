@@ -171,3 +171,13 @@ export type MonthlyAttendanceSummary = Prisma.MonthlyAttendanceSummaryModel
  * 
  */
 export type ClassAttendanceConfig = Prisma.ClassAttendanceConfigModel
+/**
+ * Model UserGoogleAccount
+ * 
+ */
+export type UserGoogleAccount = Prisma.UserGoogleAccountModel
+/**
+ * Model ClassMeetSpace
+ * 
+ */
+export type ClassMeetSpace = Prisma.ClassMeetSpaceModel

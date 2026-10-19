@@ -488,4 +488,53 @@ export class StudentClassesService {
       membership: updated,
     };
   }
+
+  /**
+   * Học sinh lấy link Google Meet của lớp học mà mình đã tham gia (ACTIVE)
+   */
+  async getClassMeetAccess(studentId: string, classId: string) {
+    const classEntity = await this.prisma.class.findUnique({
+      where: { id: classId },
+      include: {
+        meetSpace: true,
+      },
+    });
+
+    if (!classEntity) {
+      throw new NotFoundException(`Không tìm thấy lớp học với ID ${classId}`);
+    }
+
+    // Kiểm tra học sinh là thành viên ACTIVE của lớp
+    const membership = await this.prisma.enrollment.findFirst({
+      where: {
+        classId,
+        studentId,
+        status: MemberStatus.ACTIVE,
+      },
+    });
+
+    if (!membership) {
+      throw new ForbiddenException(
+        'Bạn không phải là thành viên đang hoạt động của lớp học này',
+      );
+    }
+
+    const meetingUri =
+      classEntity.meetSpace?.meetingUri || classEntity.defaultMeetUrl || null;
+
+    if (!meetingUri) {
+      throw new BadRequestException(
+        'Lớp học chưa có đường dẫn Google Meet sẵn sàng',
+      );
+    }
+
+    return {
+      classId: classEntity.id,
+      className: classEntity.name,
+      meetingUri,
+      status: classEntity.meetSpace?.status || 'READY',
+      instructions:
+        'Lưu ý: Nếu bạn tham gia bằng tài khoản Google cá nhân (không thuộc miền trường học), bạn có thể cần chờ giáo viên phê duyệt yêu cầu tham gia (knock) trước khi vào phòng.',
+    };
+  }
 }

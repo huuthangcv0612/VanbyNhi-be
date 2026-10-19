@@ -168,3 +168,21 @@ export const UploadSessionStatus = {
 } as const
 
 export type UploadSessionStatus = (typeof UploadSessionStatus)[keyof typeof UploadSessionStatus]
+
+
+export const GoogleConnectionStatus = {
+  CONNECTED: 'CONNECTED',
+  DISCONNECTED: 'DISCONNECTED',
+  NEEDS_REAUTH: 'NEEDS_REAUTH'
+} as const
+
+export type GoogleConnectionStatus = (typeof GoogleConnectionStatus)[keyof typeof GoogleConnectionStatus]
+
+
+export const MeetSpaceStatus = {
+  PENDING: 'PENDING',
+  READY: 'READY',
+  FAILED: 'FAILED'
+} as const
+
+export type MeetSpaceStatus = (typeof MeetSpaceStatus)[keyof typeof MeetSpaceStatus]

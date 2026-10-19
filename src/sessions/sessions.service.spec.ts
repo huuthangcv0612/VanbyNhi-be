@@ -431,6 +431,106 @@ describe('SessionsService', () => {
         sessionsService.endSession('s1', 't_other', UserRole.TEACHER),
       ).rejects.toThrow(ForbiddenException);
     });
+
+    it('startSession trả về meetingUri của lớp khi bắt đầu LIVE (Test Case 15)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        title: 'Buổi 1',
+        status: SessionStatus.SCHEDULED,
+        class: {
+          id: 'c1',
+          name: 'Lớp 12A',
+          teacherId: 't1',
+          defaultMeetUrl: 'https://meet.google.com/class-meet-code',
+          meetSpace: {
+            status: 'READY',
+            meetingUri: 'https://meet.google.com/class-meet-code',
+          },
+        },
+      });
+
+      prismaMock.classSession.update.mockResolvedValue({
+        id: 's1',
+        status: SessionStatus.IN_PROGRESS,
+        class: {
+          defaultMeetUrl: 'https://meet.google.com/class-meet-code',
+        },
+      });
+
+      const res = await sessionsService.startSession('s1', 't1', UserRole.TEACHER);
+      expect(res.meetingUri).toBe('https://meet.google.com/class-meet-code');
+      expect(res.session.status).toBe(SessionStatus.IN_PROGRESS);
+    });
+
+    it('startSession lặp lại là idempotent, không tạo phòng mới và vẫn trả meetingUri (Test Case 16)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        title: 'Buổi 1',
+        status: SessionStatus.IN_PROGRESS, // Đã LIVE trước đó
+        class: {
+          id: 'c1',
+          name: 'Lớp 12A',
+          teacherId: 't1',
+          defaultMeetUrl: 'https://meet.google.com/class-meet-code',
+          meetSpace: {
+            status: 'READY',
+            meetingUri: 'https://meet.google.com/class-meet-code',
+          },
+        },
+      });
+
+      const res = await sessionsService.startSession('s1', 't1', UserRole.TEACHER);
+      expect(res.message).toContain('Buổi học đã đang trong trạng thái diễn ra');
+      expect(res.meetingUri).toBe('https://meet.google.com/class-meet-code');
+      // Không update DB lại
+      expect(prismaMock.classSession.update).not.toHaveBeenCalled();
+    });
+
+    it('báo lỗi nếu lớp có meetSpace FAILED và chưa có meetingUri sẵn sàng', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        title: 'Buổi 1',
+        status: SessionStatus.SCHEDULED,
+        class: {
+          id: 'c1',
+          name: 'Lớp 12A',
+          teacherId: 't1',
+          defaultMeetUrl: null,
+          meetSpace: {
+            status: 'FAILED',
+            meetingUri: null,
+          },
+        },
+      });
+
+      await expect(
+        sessionsService.startSession('s1', 't1', UserRole.TEACHER),
+      ).rejects.toThrow(
+        /chưa có phòng Google Meet ở trạng thái sẵn sàng/,
+      );
+    });
+
+    it('endSession chỉ cập nhật trạng thái session nội bộ, không giả lập ngắt cuộc gọi Google Meet (Test Case 17)', async () => {
+      prismaMock.classSession.findUnique.mockResolvedValue({
+        id: 's1',
+        classId: 'c1',
+        status: SessionStatus.IN_PROGRESS,
+        class: { id: 'c1', teacherId: 't1', defaultMeetUrl: 'https://meet.google.com/code' },
+      });
+
+      prismaMock.classSession.update.mockResolvedValue({
+        id: 's1',
+        status: SessionStatus.COMPLETED,
+        class: { defaultMeetUrl: 'https://meet.google.com/code' },
+      });
+
+      const res = await sessionsService.endSession('s1', 't1', UserRole.TEACHER);
+      expect(res.message).toBe('Kết thúc buổi học thành công (COMPLETED)');
+      expect(res.session.status).toBe(SessionStatus.COMPLETED);
+    });
   });
 
   describe('updateTeacherSessionMeetUrl & getTeacherMeetAccess', () => {
