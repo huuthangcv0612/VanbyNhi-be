@@ -14,6 +14,11 @@ export class SubmitAssignmentDto {
   fileUrls?: string[];
 
   @IsOptional()
+  @IsArray({ message: 'attachmentKeys phải là mảng chuỗi storageKey' })
+  @IsString({ each: true, message: 'Mỗi attachmentKey phải là chuỗi' })
+  attachmentKeys?: string[];
+
+  @IsOptional()
   @IsUrl(
     { require_protocol: true },
     { message: 'URL liên kết ngoài không hợp lệ' },

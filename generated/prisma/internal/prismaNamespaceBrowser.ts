@@ -63,6 +63,10 @@ export const ModelName = {
   LessonRecord: 'LessonRecord',
   Assignment: 'Assignment',
   AssignmentSubmission: 'AssignmentSubmission',
+  SubmissionReview: 'SubmissionReview',
+  AssignmentAttachment: 'AssignmentAttachment',
+  SubmissionAttachment: 'SubmissionAttachment',
+  ReviewAttachment: 'ReviewAttachment',
   ClassMaterial: 'ClassMaterial',
   DocumentCategory: 'DocumentCategory',
   Document: 'Document',
@@ -270,6 +274,9 @@ export const AssignmentScalarFieldEnum = {
   description: 'description',
   fileUrls: 'fileUrls',
   dueDate: 'dueDate',
+  maxScore: 'maxScore',
+  allowResubmission: 'allowResubmission',
+  maxAttempts: 'maxAttempts',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -286,6 +293,7 @@ export const AssignmentSubmissionScalarFieldEnum = {
   content: 'content',
   fileUrls: 'fileUrls',
   externalUrl: 'externalUrl',
+  isLate: 'isLate',
   submittedAt: 'submittedAt',
   score: 'score',
   feedback: 'feedback',
@@ -297,6 +305,84 @@ export const AssignmentSubmissionScalarFieldEnum = {
 } as const
 
 export type AssignmentSubmissionScalarFieldEnum = (typeof AssignmentSubmissionScalarFieldEnum)[keyof typeof AssignmentSubmissionScalarFieldEnum]
+
+
+export const SubmissionReviewScalarFieldEnum = {
+  id: 'id',
+  submissionId: 'submissionId',
+  reviewerId: 'reviewerId',
+  score: 'score',
+  feedback: 'feedback',
+  status: 'status',
+  returnedAt: 'returnedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubmissionReviewScalarFieldEnum = (typeof SubmissionReviewScalarFieldEnum)[keyof typeof SubmissionReviewScalarFieldEnum]
+
+
+export const AssignmentAttachmentScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  uploadedById: 'uploadedById',
+  retentionExpiresAt: 'retentionExpiresAt',
+  isKeepForever: 'isKeepForever',
+  cleanupStatus: 'cleanupStatus',
+  cleanupAttempts: 'cleanupAttempts',
+  lastCleanupError: 'lastCleanupError',
+  claimedAt: 'claimedAt',
+  cleanedAt: 'cleanedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AssignmentAttachmentScalarFieldEnum = (typeof AssignmentAttachmentScalarFieldEnum)[keyof typeof AssignmentAttachmentScalarFieldEnum]
+
+
+export const SubmissionAttachmentScalarFieldEnum = {
+  id: 'id',
+  submissionId: 'submissionId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  uploadedById: 'uploadedById',
+  retentionExpiresAt: 'retentionExpiresAt',
+  isKeepForever: 'isKeepForever',
+  cleanupStatus: 'cleanupStatus',
+  cleanupAttempts: 'cleanupAttempts',
+  lastCleanupError: 'lastCleanupError',
+  claimedAt: 'claimedAt',
+  cleanedAt: 'cleanedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SubmissionAttachmentScalarFieldEnum = (typeof SubmissionAttachmentScalarFieldEnum)[keyof typeof SubmissionAttachmentScalarFieldEnum]
+
+
+export const ReviewAttachmentScalarFieldEnum = {
+  id: 'id',
+  reviewId: 'reviewId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  uploadedById: 'uploadedById',
+  retentionExpiresAt: 'retentionExpiresAt',
+  isKeepForever: 'isKeepForever',
+  cleanupStatus: 'cleanupStatus',
+  cleanupAttempts: 'cleanupAttempts',
+  lastCleanupError: 'lastCleanupError',
+  claimedAt: 'claimedAt',
+  cleanedAt: 'cleanedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReviewAttachmentScalarFieldEnum = (typeof ReviewAttachmentScalarFieldEnum)[keyof typeof ReviewAttachmentScalarFieldEnum]
 
 
 export const ClassMaterialScalarFieldEnum = {

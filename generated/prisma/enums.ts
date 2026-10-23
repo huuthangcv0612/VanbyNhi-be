@@ -104,10 +104,19 @@ export type TuitionStatus = (typeof TuitionStatus)[keyof typeof TuitionStatus]
 export const AssignmentStatus = {
   SUBMITTED: 'SUBMITTED',
   GRADED: 'GRADED',
-  RESUBMIT_REQUESTED: 'RESUBMIT_REQUESTED'
+  RESUBMIT_REQUESTED: 'RESUBMIT_REQUESTED',
+  RETURNED: 'RETURNED'
 } as const
 
 export type AssignmentStatus = (typeof AssignmentStatus)[keyof typeof AssignmentStatus]
+
+
+export const ReviewStatus = {
+  DRAFT: 'DRAFT',
+  RETURNED: 'RETURNED'
+} as const
+
+export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
 
 
 export const NotificationType = {
@@ -154,7 +163,10 @@ export type ScheduleStatus = (typeof ScheduleStatus)[keyof typeof ScheduleStatus
 export const UploadTargetType = {
   LIBRARY: 'LIBRARY',
   CLASS: 'CLASS',
-  SESSION: 'SESSION'
+  SESSION: 'SESSION',
+  ASSIGNMENT: 'ASSIGNMENT',
+  SUBMISSION: 'SUBMISSION',
+  REVIEW: 'REVIEW'
 } as const
 
 export type UploadTargetType = (typeof UploadTargetType)[keyof typeof UploadTargetType]
@@ -168,6 +180,16 @@ export const UploadSessionStatus = {
 } as const
 
 export type UploadSessionStatus = (typeof UploadSessionStatus)[keyof typeof UploadSessionStatus]
+
+
+export const AttachmentCleanupStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  CLEANED: 'CLEANED',
+  FAILED: 'FAILED'
+} as const
+
+export type AttachmentCleanupStatus = (typeof AttachmentCleanupStatus)[keyof typeof AttachmentCleanupStatus]
 
 
 export const GoogleConnectionStatus = {

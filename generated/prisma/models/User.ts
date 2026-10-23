@@ -268,6 +268,10 @@ export type UserWhereInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
   googleAccount?: Prisma.XOR<Prisma.UserGoogleAccountNullableScalarRelationFilter, Prisma.UserGoogleAccountWhereInput> | null
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentListRelationFilter
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentListRelationFilter
+  submissionReviews?: Prisma.SubmissionReviewListRelationFilter
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -313,6 +317,10 @@ export type UserOrderByWithRelationInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryOrderByRelationAggregateInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryOrderByRelationAggregateInput
   googleAccount?: Prisma.UserGoogleAccountOrderByWithRelationInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentOrderByRelationAggregateInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentOrderByRelationAggregateInput
+  submissionReviews?: Prisma.SubmissionReviewOrderByRelationAggregateInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -361,6 +369,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryListRelationFilter
   googleAccount?: Prisma.XOR<Prisma.UserGoogleAccountNullableScalarRelationFilter, Prisma.UserGoogleAccountWhereInput> | null
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentListRelationFilter
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentListRelationFilter
+  submissionReviews?: Prisma.SubmissionReviewListRelationFilter
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentListRelationFilter
 }, "id" | "phone" | "email" | "zaloId">
 
 export type UserOrderByWithAggregationInput = {
@@ -442,6 +454,10 @@ export type UserCreateInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -487,6 +503,10 @@ export type UserUncheckedCreateInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUpdateInput = {
@@ -532,6 +552,10 @@ export type UserUpdateInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -577,6 +601,10 @@ export type UserUncheckedUpdateInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -891,6 +919,62 @@ export type UserUpdateOneWithoutGradedSubmissionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGradedSubmissionsInput, Prisma.UserUpdateWithoutGradedSubmissionsInput>, Prisma.UserUncheckedUpdateWithoutGradedSubmissionsInput>
 }
 
+export type UserCreateNestedOneWithoutSubmissionReviewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmissionReviewsInput, Prisma.UserUncheckedCreateWithoutSubmissionReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmissionReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSubmissionReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmissionReviewsInput, Prisma.UserUncheckedCreateWithoutSubmissionReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmissionReviewsInput
+  upsert?: Prisma.UserUpsertWithoutSubmissionReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubmissionReviewsInput, Prisma.UserUpdateWithoutSubmissionReviewsInput>, Prisma.UserUncheckedUpdateWithoutSubmissionReviewsInput>
+}
+
+export type UserCreateNestedOneWithoutUploadedAssignmentAttachmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedAssignmentAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAssignmentAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedAssignmentAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUploadedAssignmentAttachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedAssignmentAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAssignmentAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedAssignmentAttachmentsInput
+  upsert?: Prisma.UserUpsertWithoutUploadedAssignmentAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedAssignmentAttachmentsInput, Prisma.UserUpdateWithoutUploadedAssignmentAttachmentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedAssignmentAttachmentsInput>
+}
+
+export type UserCreateNestedOneWithoutUploadedSubmissionAttachmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedSubmissionAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedSubmissionAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedSubmissionAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUploadedSubmissionAttachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedSubmissionAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedSubmissionAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedSubmissionAttachmentsInput
+  upsert?: Prisma.UserUpsertWithoutUploadedSubmissionAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedSubmissionAttachmentsInput, Prisma.UserUpdateWithoutUploadedSubmissionAttachmentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedSubmissionAttachmentsInput>
+}
+
+export type UserCreateNestedOneWithoutUploadedReviewAttachmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedReviewAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedReviewAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedReviewAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUploadedReviewAttachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedReviewAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedReviewAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedReviewAttachmentsInput
+  upsert?: Prisma.UserUpsertWithoutUploadedReviewAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedReviewAttachmentsInput, Prisma.UserUpdateWithoutUploadedReviewAttachmentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedReviewAttachmentsInput>
+}
+
 export type UserCreateNestedOneWithoutUploadedMaterialsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedMaterialsInput, Prisma.UserUncheckedCreateWithoutUploadedMaterialsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedMaterialsInput
@@ -1177,6 +1261,10 @@ export type UserCreateWithoutAuthAccountsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutAuthAccountsInput = {
@@ -1221,6 +1309,10 @@ export type UserUncheckedCreateWithoutAuthAccountsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutAuthAccountsInput = {
@@ -1281,6 +1373,10 @@ export type UserUpdateWithoutAuthAccountsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuthAccountsInput = {
@@ -1325,6 +1421,10 @@ export type UserUncheckedUpdateWithoutAuthAccountsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutCreatedClassesInput = {
@@ -1369,6 +1469,10 @@ export type UserCreateWithoutCreatedClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedClassesInput = {
@@ -1413,6 +1517,10 @@ export type UserUncheckedCreateWithoutCreatedClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedClassesInput = {
@@ -1462,6 +1570,10 @@ export type UserCreateWithoutTeachingClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutTeachingClassesInput = {
@@ -1506,6 +1618,10 @@ export type UserUncheckedCreateWithoutTeachingClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutTeachingClassesInput = {
@@ -1566,6 +1682,10 @@ export type UserUpdateWithoutCreatedClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedClassesInput = {
@@ -1610,6 +1730,10 @@ export type UserUncheckedUpdateWithoutCreatedClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutTeachingClassesInput = {
@@ -1665,6 +1789,10 @@ export type UserUpdateWithoutTeachingClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeachingClassesInput = {
@@ -1709,6 +1837,10 @@ export type UserUncheckedUpdateWithoutTeachingClassesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutEnrollmentsInput = {
@@ -1753,6 +1885,10 @@ export type UserCreateWithoutEnrollmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutEnrollmentsInput = {
@@ -1797,6 +1933,10 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutEnrollmentsInput = {
@@ -1857,6 +1997,10 @@ export type UserUpdateWithoutEnrollmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEnrollmentsInput = {
@@ -1901,6 +2045,10 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutCreatedSessionsInput = {
@@ -1945,6 +2093,10 @@ export type UserCreateWithoutCreatedSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedSessionsInput = {
@@ -1989,6 +2141,10 @@ export type UserUncheckedCreateWithoutCreatedSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedSessionsInput = {
@@ -2049,6 +2205,10 @@ export type UserUpdateWithoutCreatedSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedSessionsInput = {
@@ -2093,6 +2253,10 @@ export type UserUncheckedUpdateWithoutCreatedSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutAttendancesInput = {
@@ -2137,6 +2301,10 @@ export type UserCreateWithoutAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutAttendancesInput = {
@@ -2181,6 +2349,10 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutAttendancesInput = {
@@ -2230,6 +2402,10 @@ export type UserCreateWithoutMarkedAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
@@ -2274,6 +2450,10 @@ export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutMarkedAttendancesInput = {
@@ -2334,6 +2514,10 @@ export type UserUpdateWithoutAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendancesInput = {
@@ -2378,6 +2562,10 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutMarkedAttendancesInput = {
@@ -2433,6 +2621,10 @@ export type UserUpdateWithoutMarkedAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
@@ -2477,6 +2669,10 @@ export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutAttendanceChangesInput = {
@@ -2521,6 +2717,10 @@ export type UserCreateWithoutAttendanceChangesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutAttendanceChangesInput = {
@@ -2565,6 +2765,10 @@ export type UserUncheckedCreateWithoutAttendanceChangesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutAttendanceChangesInput = {
@@ -2625,6 +2829,10 @@ export type UserUpdateWithoutAttendanceChangesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendanceChangesInput = {
@@ -2669,6 +2877,10 @@ export type UserUncheckedUpdateWithoutAttendanceChangesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutRecordedTuitionPaymentsInput = {
@@ -2713,6 +2925,10 @@ export type UserCreateWithoutRecordedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutRecordedTuitionPaymentsInput = {
@@ -2757,6 +2973,10 @@ export type UserUncheckedCreateWithoutRecordedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutRecordedTuitionPaymentsInput = {
@@ -2806,6 +3026,10 @@ export type UserCreateWithoutVoidedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutVoidedTuitionPaymentsInput = {
@@ -2850,6 +3074,10 @@ export type UserUncheckedCreateWithoutVoidedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutVoidedTuitionPaymentsInput = {
@@ -2910,6 +3138,10 @@ export type UserUpdateWithoutRecordedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecordedTuitionPaymentsInput = {
@@ -2954,6 +3186,10 @@ export type UserUncheckedUpdateWithoutRecordedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutVoidedTuitionPaymentsInput = {
@@ -3009,6 +3245,10 @@ export type UserUpdateWithoutVoidedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVoidedTuitionPaymentsInput = {
@@ -3053,6 +3293,10 @@ export type UserUncheckedUpdateWithoutVoidedTuitionPaymentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutCreatedAssignmentsInput = {
@@ -3097,6 +3341,10 @@ export type UserCreateWithoutCreatedAssignmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedAssignmentsInput = {
@@ -3141,6 +3389,10 @@ export type UserUncheckedCreateWithoutCreatedAssignmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedAssignmentsInput = {
@@ -3201,6 +3453,10 @@ export type UserUpdateWithoutCreatedAssignmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedAssignmentsInput = {
@@ -3245,6 +3501,10 @@ export type UserUncheckedUpdateWithoutCreatedAssignmentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutSubmissionsInput = {
@@ -3289,6 +3549,10 @@ export type UserCreateWithoutSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionsInput = {
@@ -3333,6 +3597,10 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionsInput = {
@@ -3382,6 +3650,10 @@ export type UserCreateWithoutGradedSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutGradedSubmissionsInput = {
@@ -3426,6 +3698,10 @@ export type UserUncheckedCreateWithoutGradedSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutGradedSubmissionsInput = {
@@ -3486,6 +3762,10 @@ export type UserUpdateWithoutSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionsInput = {
@@ -3530,6 +3810,10 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutGradedSubmissionsInput = {
@@ -3585,6 +3869,10 @@ export type UserUpdateWithoutGradedSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGradedSubmissionsInput = {
@@ -3629,6 +3917,842 @@ export type UserUncheckedUpdateWithoutGradedSubmissionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserCreateWithoutSubmissionReviewsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserUncheckedCreateWithoutSubmissionReviewsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserCreateOrConnectWithoutSubmissionReviewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmissionReviewsInput, Prisma.UserUncheckedCreateWithoutSubmissionReviewsInput>
+}
+
+export type UserUpsertWithoutSubmissionReviewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSubmissionReviewsInput, Prisma.UserUncheckedUpdateWithoutSubmissionReviewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmissionReviewsInput, Prisma.UserUncheckedCreateWithoutSubmissionReviewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSubmissionReviewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSubmissionReviewsInput, Prisma.UserUncheckedUpdateWithoutSubmissionReviewsInput>
+}
+
+export type UserUpdateWithoutSubmissionReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSubmissionReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserCreateWithoutUploadedAssignmentAttachmentsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserUncheckedCreateWithoutUploadedAssignmentAttachmentsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserCreateOrConnectWithoutUploadedAssignmentAttachmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedAssignmentAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAssignmentAttachmentsInput>
+}
+
+export type UserUpsertWithoutUploadedAssignmentAttachmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedAssignmentAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedAssignmentAttachmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedAssignmentAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAssignmentAttachmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadedAssignmentAttachmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedAssignmentAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedAssignmentAttachmentsInput>
+}
+
+export type UserUpdateWithoutUploadedAssignmentAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadedAssignmentAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserCreateWithoutUploadedSubmissionAttachmentsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserUncheckedCreateWithoutUploadedSubmissionAttachmentsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserCreateOrConnectWithoutUploadedSubmissionAttachmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedSubmissionAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedSubmissionAttachmentsInput>
+}
+
+export type UserUpsertWithoutUploadedSubmissionAttachmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedSubmissionAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedSubmissionAttachmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedSubmissionAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedSubmissionAttachmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadedSubmissionAttachmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedSubmissionAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedSubmissionAttachmentsInput>
+}
+
+export type UserUpdateWithoutUploadedSubmissionAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadedSubmissionAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserCreateWithoutUploadedReviewAttachmentsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+}
+
+export type UserUncheckedCreateWithoutUploadedReviewAttachmentsInput = {
+  id?: string
+  fullName: string
+  phone: string
+  passwordHash: string
+  email?: string | null
+  zaloId?: string | null
+  avatarUrl?: string | null
+  dateOfBirth?: Date | string | null
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedCreateNestedManyWithoutUserInput
+  createdClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutCreatorInput
+  teachingClasses?: Prisma.ClassUncheckedCreateNestedManyWithoutTeacherInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  createdSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedCreateNestedManyWithoutChangedByInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedCreateNestedManyWithoutUploadedByInput
+  createdAssignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedCreateNestedManyWithoutGradedByInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedCreateNestedManyWithoutVoidedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedCreateNestedManyWithoutTeacherInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedCreateNestedManyWithoutTeacherInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedCreateNestedManyWithoutStudentInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOwnerInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedCreateNestedManyWithoutTeacherInput
+  uploadSessions?: Prisma.UploadSessionUncheckedCreateNestedManyWithoutUserInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutClosedByInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedCreateNestedManyWithoutCreatedByInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutStudentInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+}
+
+export type UserCreateOrConnectWithoutUploadedReviewAttachmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedReviewAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedReviewAttachmentsInput>
+}
+
+export type UserUpsertWithoutUploadedReviewAttachmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedReviewAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedReviewAttachmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedReviewAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedReviewAttachmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadedReviewAttachmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedReviewAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedReviewAttachmentsInput>
+}
+
+export type UserUpdateWithoutUploadedReviewAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadedReviewAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zaloId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authAccounts?: Prisma.AuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  createdClasses?: Prisma.ClassUncheckedUpdateManyWithoutCreatorNestedInput
+  teachingClasses?: Prisma.ClassUncheckedUpdateManyWithoutTeacherNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  createdSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  attendanceChanges?: Prisma.AttendanceChangeLogUncheckedUpdateManyWithoutChangedByNestedInput
+  uploadedMaterials?: Prisma.ClassMaterialUncheckedUpdateManyWithoutUploadedByNestedInput
+  createdAssignments?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  submissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  gradedSubmissions?: Prisma.AssignmentSubmissionUncheckedUpdateManyWithoutGradedByNestedInput
+  recordedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  voidedTuitionPayments?: Prisma.TuitionPaymentUncheckedUpdateManyWithoutVoidedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  teacherCalendarEvents?: Prisma.TeacherCalendarEventUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherCalendarLabels?: Prisma.TeacherCalendarLabelUncheckedUpdateManyWithoutTeacherNestedInput
+  calendarParticipations?: Prisma.CalendarEventParticipantUncheckedUpdateManyWithoutStudentNestedInput
+  calendarNotifications?: Prisma.CalendarNotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOwnerNestedInput
+  documentCategories?: Prisma.DocumentCategoryUncheckedUpdateManyWithoutTeacherNestedInput
+  uploadSessions?: Prisma.UploadSessionUncheckedUpdateManyWithoutUserNestedInput
+  closedAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutClosedByNestedInput
+  createdAttendanceSessions?: Prisma.AttendanceSessionUncheckedUpdateManyWithoutCreatedByNestedInput
+  correctionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutStudentNestedInput
+  reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+  monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
+  closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserCreateWithoutUploadedMaterialsInput = {
@@ -3673,6 +4797,10 @@ export type UserCreateWithoutUploadedMaterialsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedMaterialsInput = {
@@ -3717,6 +4845,10 @@ export type UserUncheckedCreateWithoutUploadedMaterialsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedMaterialsInput = {
@@ -3777,6 +4909,10 @@ export type UserUpdateWithoutUploadedMaterialsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedMaterialsInput = {
@@ -3821,6 +4957,10 @@ export type UserUncheckedUpdateWithoutUploadedMaterialsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutDocumentCategoriesInput = {
@@ -3865,6 +5005,10 @@ export type UserCreateWithoutDocumentCategoriesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutDocumentCategoriesInput = {
@@ -3909,6 +5053,10 @@ export type UserUncheckedCreateWithoutDocumentCategoriesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutDocumentCategoriesInput = {
@@ -3969,6 +5117,10 @@ export type UserUpdateWithoutDocumentCategoriesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDocumentCategoriesInput = {
@@ -4013,6 +5165,10 @@ export type UserUncheckedUpdateWithoutDocumentCategoriesInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutDocumentsInput = {
@@ -4057,6 +5213,10 @@ export type UserCreateWithoutDocumentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -4101,6 +5261,10 @@ export type UserUncheckedCreateWithoutDocumentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -4161,6 +5325,10 @@ export type UserUpdateWithoutDocumentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -4205,6 +5373,10 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutUploadSessionsInput = {
@@ -4249,6 +5421,10 @@ export type UserCreateWithoutUploadSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadSessionsInput = {
@@ -4293,6 +5469,10 @@ export type UserUncheckedCreateWithoutUploadSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadSessionsInput = {
@@ -4353,6 +5533,10 @@ export type UserUpdateWithoutUploadSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadSessionsInput = {
@@ -4397,6 +5581,10 @@ export type UserUncheckedUpdateWithoutUploadSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4441,6 +5629,10 @@ export type UserCreateWithoutNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -4485,6 +5677,10 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -4545,6 +5741,10 @@ export type UserUpdateWithoutNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -4589,6 +5789,10 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -4633,6 +5837,10 @@ export type UserCreateWithoutRefreshTokensInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -4677,6 +5885,10 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -4737,6 +5949,10 @@ export type UserUpdateWithoutRefreshTokensInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -4781,6 +5997,10 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutTeacherCalendarLabelsInput = {
@@ -4825,6 +6045,10 @@ export type UserCreateWithoutTeacherCalendarLabelsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutTeacherCalendarLabelsInput = {
@@ -4869,6 +6093,10 @@ export type UserUncheckedCreateWithoutTeacherCalendarLabelsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutTeacherCalendarLabelsInput = {
@@ -4929,6 +6157,10 @@ export type UserUpdateWithoutTeacherCalendarLabelsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherCalendarLabelsInput = {
@@ -4973,6 +6205,10 @@ export type UserUncheckedUpdateWithoutTeacherCalendarLabelsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutTeacherCalendarEventsInput = {
@@ -5017,6 +6253,10 @@ export type UserCreateWithoutTeacherCalendarEventsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutTeacherCalendarEventsInput = {
@@ -5061,6 +6301,10 @@ export type UserUncheckedCreateWithoutTeacherCalendarEventsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutTeacherCalendarEventsInput = {
@@ -5121,6 +6365,10 @@ export type UserUpdateWithoutTeacherCalendarEventsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherCalendarEventsInput = {
@@ -5165,6 +6413,10 @@ export type UserUncheckedUpdateWithoutTeacherCalendarEventsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutCalendarParticipationsInput = {
@@ -5209,6 +6461,10 @@ export type UserCreateWithoutCalendarParticipationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCalendarParticipationsInput = {
@@ -5253,6 +6509,10 @@ export type UserUncheckedCreateWithoutCalendarParticipationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCalendarParticipationsInput = {
@@ -5313,6 +6573,10 @@ export type UserUpdateWithoutCalendarParticipationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalendarParticipationsInput = {
@@ -5357,6 +6621,10 @@ export type UserUncheckedUpdateWithoutCalendarParticipationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutCalendarNotificationsInput = {
@@ -5401,6 +6669,10 @@ export type UserCreateWithoutCalendarNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCalendarNotificationsInput = {
@@ -5445,6 +6717,10 @@ export type UserUncheckedCreateWithoutCalendarNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCalendarNotificationsInput = {
@@ -5505,6 +6781,10 @@ export type UserUpdateWithoutCalendarNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalendarNotificationsInput = {
@@ -5549,6 +6829,10 @@ export type UserUncheckedUpdateWithoutCalendarNotificationsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutClosedAttendanceSessionsInput = {
@@ -5593,6 +6877,10 @@ export type UserCreateWithoutClosedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutClosedAttendanceSessionsInput = {
@@ -5637,6 +6925,10 @@ export type UserUncheckedCreateWithoutClosedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutClosedAttendanceSessionsInput = {
@@ -5686,6 +6978,10 @@ export type UserCreateWithoutCreatedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedAttendanceSessionsInput = {
@@ -5730,6 +7026,10 @@ export type UserUncheckedCreateWithoutCreatedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedAttendanceSessionsInput = {
@@ -5790,6 +7090,10 @@ export type UserUpdateWithoutClosedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClosedAttendanceSessionsInput = {
@@ -5834,6 +7138,10 @@ export type UserUncheckedUpdateWithoutClosedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutCreatedAttendanceSessionsInput = {
@@ -5889,6 +7197,10 @@ export type UserUpdateWithoutCreatedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedAttendanceSessionsInput = {
@@ -5933,6 +7245,10 @@ export type UserUncheckedUpdateWithoutCreatedAttendanceSessionsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutCorrectionRequestsInput = {
@@ -5977,6 +7293,10 @@ export type UserCreateWithoutCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCorrectionRequestsInput = {
@@ -6021,6 +7341,10 @@ export type UserUncheckedCreateWithoutCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCorrectionRequestsInput = {
@@ -6070,6 +7394,10 @@ export type UserCreateWithoutReviewedCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutReviewedCorrectionRequestsInput = {
@@ -6114,6 +7442,10 @@ export type UserUncheckedCreateWithoutReviewedCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutReviewedCorrectionRequestsInput = {
@@ -6174,6 +7506,10 @@ export type UserUpdateWithoutCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCorrectionRequestsInput = {
@@ -6218,6 +7554,10 @@ export type UserUncheckedUpdateWithoutCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutReviewedCorrectionRequestsInput = {
@@ -6273,6 +7613,10 @@ export type UserUpdateWithoutReviewedCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedCorrectionRequestsInput = {
@@ -6317,6 +7661,10 @@ export type UserUncheckedUpdateWithoutReviewedCorrectionRequestsInput = {
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutMonthlyAttendanceSummariesInput = {
@@ -6361,6 +7709,10 @@ export type UserCreateWithoutMonthlyAttendanceSummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutMonthlyAttendanceSummariesInput = {
@@ -6405,6 +7757,10 @@ export type UserUncheckedCreateWithoutMonthlyAttendanceSummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutMonthlyAttendanceSummariesInput = {
@@ -6454,6 +7810,10 @@ export type UserCreateWithoutClosedMonthlySummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   googleAccount?: Prisma.UserGoogleAccountCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutClosedMonthlySummariesInput = {
@@ -6498,6 +7858,10 @@ export type UserUncheckedCreateWithoutClosedMonthlySummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedCreateNestedOneWithoutUserInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutClosedMonthlySummariesInput = {
@@ -6558,6 +7922,10 @@ export type UserUpdateWithoutMonthlyAttendanceSummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMonthlyAttendanceSummariesInput = {
@@ -6602,6 +7970,10 @@ export type UserUncheckedUpdateWithoutMonthlyAttendanceSummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutClosedMonthlySummariesInput = {
@@ -6657,6 +8029,10 @@ export type UserUpdateWithoutClosedMonthlySummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   googleAccount?: Prisma.UserGoogleAccountUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClosedMonthlySummariesInput = {
@@ -6701,6 +8077,10 @@ export type UserUncheckedUpdateWithoutClosedMonthlySummariesInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   googleAccount?: Prisma.UserGoogleAccountUncheckedUpdateOneWithoutUserNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutGoogleAccountInput = {
@@ -6745,6 +8125,10 @@ export type UserCreateWithoutGoogleAccountInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryCreateNestedManyWithoutClosedByInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutGoogleAccountInput = {
@@ -6789,6 +8173,10 @@ export type UserUncheckedCreateWithoutGoogleAccountInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedCreateNestedManyWithoutReviewedByInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutStudentInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedCreateNestedManyWithoutClosedByInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutGoogleAccountInput = {
@@ -6849,6 +8237,10 @@ export type UserUpdateWithoutGoogleAccountInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUpdateManyWithoutClosedByNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoogleAccountInput = {
@@ -6893,6 +8285,10 @@ export type UserUncheckedUpdateWithoutGoogleAccountInput = {
   reviewedCorrectionRequests?: Prisma.AttendanceCorrectionRequestUncheckedUpdateManyWithoutReviewedByNestedInput
   monthlyAttendanceSummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutStudentNestedInput
   closedMonthlySummaries?: Prisma.MonthlyAttendanceSummaryUncheckedUpdateManyWithoutClosedByNestedInput
+  uploadedAssignmentAttachments?: Prisma.AssignmentAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedSubmissionAttachments?: Prisma.SubmissionAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  submissionReviews?: Prisma.SubmissionReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedReviewAttachments?: Prisma.ReviewAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 
@@ -6930,6 +8326,10 @@ export type UserCountOutputType = {
   reviewedCorrectionRequests: number
   monthlyAttendanceSummaries: number
   closedMonthlySummaries: number
+  uploadedAssignmentAttachments: number
+  uploadedSubmissionAttachments: number
+  submissionReviews: number
+  uploadedReviewAttachments: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6962,6 +8362,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   reviewedCorrectionRequests?: boolean | UserCountOutputTypeCountReviewedCorrectionRequestsArgs
   monthlyAttendanceSummaries?: boolean | UserCountOutputTypeCountMonthlyAttendanceSummariesArgs
   closedMonthlySummaries?: boolean | UserCountOutputTypeCountClosedMonthlySummariesArgs
+  uploadedAssignmentAttachments?: boolean | UserCountOutputTypeCountUploadedAssignmentAttachmentsArgs
+  uploadedSubmissionAttachments?: boolean | UserCountOutputTypeCountUploadedSubmissionAttachmentsArgs
+  submissionReviews?: boolean | UserCountOutputTypeCountSubmissionReviewsArgs
+  uploadedReviewAttachments?: boolean | UserCountOutputTypeCountUploadedReviewAttachmentsArgs
 }
 
 /**
@@ -7177,6 +8581,34 @@ export type UserCountOutputTypeCountClosedMonthlySummariesArgs<ExtArgs extends r
   where?: Prisma.MonthlyAttendanceSummaryWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadedAssignmentAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssignmentAttachmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadedSubmissionAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SubmissionAttachmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSubmissionReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SubmissionReviewWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadedReviewAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReviewAttachmentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -7221,6 +8653,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   monthlyAttendanceSummaries?: boolean | Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs>
   closedMonthlySummaries?: boolean | Prisma.User$closedMonthlySummariesArgs<ExtArgs>
   googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
+  uploadedAssignmentAttachments?: boolean | Prisma.User$uploadedAssignmentAttachmentsArgs<ExtArgs>
+  uploadedSubmissionAttachments?: boolean | Prisma.User$uploadedSubmissionAttachmentsArgs<ExtArgs>
+  submissionReviews?: boolean | Prisma.User$submissionReviewsArgs<ExtArgs>
+  uploadedReviewAttachments?: boolean | Prisma.User$uploadedReviewAttachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -7301,6 +8737,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   monthlyAttendanceSummaries?: boolean | Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs>
   closedMonthlySummaries?: boolean | Prisma.User$closedMonthlySummariesArgs<ExtArgs>
   googleAccount?: boolean | Prisma.User$googleAccountArgs<ExtArgs>
+  uploadedAssignmentAttachments?: boolean | Prisma.User$uploadedAssignmentAttachmentsArgs<ExtArgs>
+  uploadedSubmissionAttachments?: boolean | Prisma.User$uploadedSubmissionAttachmentsArgs<ExtArgs>
+  submissionReviews?: boolean | Prisma.User$submissionReviewsArgs<ExtArgs>
+  uploadedReviewAttachments?: boolean | Prisma.User$uploadedReviewAttachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -7339,6 +8779,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     monthlyAttendanceSummaries: Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>[]
     closedMonthlySummaries: Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>[]
     googleAccount: Prisma.$UserGoogleAccountPayload<ExtArgs> | null
+    uploadedAssignmentAttachments: Prisma.$AssignmentAttachmentPayload<ExtArgs>[]
+    uploadedSubmissionAttachments: Prisma.$SubmissionAttachmentPayload<ExtArgs>[]
+    submissionReviews: Prisma.$SubmissionReviewPayload<ExtArgs>[]
+    uploadedReviewAttachments: Prisma.$ReviewAttachmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7777,6 +9221,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   monthlyAttendanceSummaries<T extends Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$monthlyAttendanceSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   closedMonthlySummaries<T extends Prisma.User$closedMonthlySummariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$closedMonthlySummariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyAttendanceSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   googleAccount<T extends Prisma.User$googleAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$googleAccountArgs<ExtArgs>>): Prisma.Prisma__UserGoogleAccountClient<runtime.Types.Result.GetResult<Prisma.$UserGoogleAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  uploadedAssignmentAttachments<T extends Prisma.User$uploadedAssignmentAttachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedAssignmentAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadedSubmissionAttachments<T extends Prisma.User$uploadedSubmissionAttachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedSubmissionAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  submissionReviews<T extends Prisma.User$submissionReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submissionReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadedReviewAttachments<T extends Prisma.User$uploadedReviewAttachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedReviewAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8923,6 +10371,102 @@ export type User$googleAccountArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.UserGoogleAccountInclude<ExtArgs> | null
   where?: Prisma.UserGoogleAccountWhereInput
+}
+
+/**
+ * User.uploadedAssignmentAttachments
+ */
+export type User$uploadedAssignmentAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssignmentAttachment
+   */
+  select?: Prisma.AssignmentAttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssignmentAttachment
+   */
+  omit?: Prisma.AssignmentAttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssignmentAttachmentInclude<ExtArgs> | null
+  where?: Prisma.AssignmentAttachmentWhereInput
+  orderBy?: Prisma.AssignmentAttachmentOrderByWithRelationInput | Prisma.AssignmentAttachmentOrderByWithRelationInput[]
+  cursor?: Prisma.AssignmentAttachmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssignmentAttachmentScalarFieldEnum | Prisma.AssignmentAttachmentScalarFieldEnum[]
+}
+
+/**
+ * User.uploadedSubmissionAttachments
+ */
+export type User$uploadedSubmissionAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SubmissionAttachment
+   */
+  select?: Prisma.SubmissionAttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SubmissionAttachment
+   */
+  omit?: Prisma.SubmissionAttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubmissionAttachmentInclude<ExtArgs> | null
+  where?: Prisma.SubmissionAttachmentWhereInput
+  orderBy?: Prisma.SubmissionAttachmentOrderByWithRelationInput | Prisma.SubmissionAttachmentOrderByWithRelationInput[]
+  cursor?: Prisma.SubmissionAttachmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SubmissionAttachmentScalarFieldEnum | Prisma.SubmissionAttachmentScalarFieldEnum[]
+}
+
+/**
+ * User.submissionReviews
+ */
+export type User$submissionReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SubmissionReview
+   */
+  select?: Prisma.SubmissionReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SubmissionReview
+   */
+  omit?: Prisma.SubmissionReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubmissionReviewInclude<ExtArgs> | null
+  where?: Prisma.SubmissionReviewWhereInput
+  orderBy?: Prisma.SubmissionReviewOrderByWithRelationInput | Prisma.SubmissionReviewOrderByWithRelationInput[]
+  cursor?: Prisma.SubmissionReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SubmissionReviewScalarFieldEnum | Prisma.SubmissionReviewScalarFieldEnum[]
+}
+
+/**
+ * User.uploadedReviewAttachments
+ */
+export type User$uploadedReviewAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReviewAttachment
+   */
+  select?: Prisma.ReviewAttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReviewAttachment
+   */
+  omit?: Prisma.ReviewAttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewAttachmentInclude<ExtArgs> | null
+  where?: Prisma.ReviewAttachmentWhereInput
+  orderBy?: Prisma.ReviewAttachmentOrderByWithRelationInput | Prisma.ReviewAttachmentOrderByWithRelationInput[]
+  cursor?: Prisma.ReviewAttachmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReviewAttachmentScalarFieldEnum | Prisma.ReviewAttachmentScalarFieldEnum[]
 }
 
 /**

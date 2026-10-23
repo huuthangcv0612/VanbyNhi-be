@@ -78,6 +78,12 @@ enum AssignmentStatus {
   SUBMITTED
   GRADED
   RESUBMIT_REQUESTED
+  RETURNED
+}
+
+enum ReviewStatus {
+  DRAFT
+  RETURNED
 }
 
 enum NotificationType {
@@ -113,6 +119,9 @@ enum UploadTargetType {
   LIBRARY
   CLASS
   SESSION
+  ASSIGNMENT
+  SUBMISSION
+  REVIEW
 }
 
 enum UploadSessionStatus {
@@ -120,6 +129,13 @@ enum UploadSessionStatus {
   COMPLETED
   EXPIRED
   CANCELLED
+}
+
+enum AttachmentCleanupStatus {
+  PENDING
+  PROCESSING
+  CLEANED
+  FAILED
 }
 
 enum GoogleConnectionStatus {
@@ -180,6 +196,10 @@ model User {
   monthlyAttendanceSummaries MonthlyAttendanceSummary[]     @relation("StudentMonthlyAttendance")
   closedMonthlySummaries     MonthlyAttendanceSummary[]     @relation("MonthlyAttendanceCloser")
   googleAccount              UserGoogleAccount?
+  uploadedAssignmentAttachments AssignmentAttachment[]      @relation("AssignmentAttachmentUploader")
+  uploadedSubmissionAttachments SubmissionAttachment[]      @relation("SubmissionAttachmentUploader")
+  submissionReviews             SubmissionReview[]          @relation("SubmissionReviewer")
+  uploadedReviewAttachments     ReviewAttachment[]          @relation("ReviewAttachmentUploader")
 
   @@index([role, isActive])
   @@index([fullName])
@@ -383,21 +403,25 @@ model LessonRecord {
 }
 
 model Assignment {
-  id          String    @id @default(cuid())
-  classId     String
-  sessionId   String?
-  title       String
-  description String?   @db.Text
-  fileUrls    String[]  @default([])
-  dueDate     DateTime?
-  createdById String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                String                 @id @default(cuid())
+  classId           String
+  sessionId         String?
+  title             String
+  description       String?                @db.Text
+  fileUrls          String[]               @default([])
+  dueDate           DateTime?
+  maxScore          Decimal                @default(10.00) @db.Decimal(5, 2)
+  allowResubmission Boolean                @default(true)
+  maxAttempts       Int?
+  createdById       String
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
 
-  class       Class                  @relation(fields: [classId], references: [id], onDelete: Restrict)
-  session     ClassSession?          @relation(fields: [sessionId], references: [id], onDelete: SetNull)
-  createdBy   User                   @relation("AssignmentCreator", fields: [createdById], references: [id], onDelete: Restrict)
-  submissions AssignmentSubmission[]
+  class             Class                  @relation(fields: [classId], references: [id], onDelete: Restrict)
+  session           ClassSession?          @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  createdBy         User                   @relation("AssignmentCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  submissions       AssignmentSubmission[]
+  attachments       AssignmentAttachment[]
 
   @@index([classId, dueDate])
   @@index([sessionId])
@@ -405,30 +429,132 @@ model Assignment {
 }
 
 model AssignmentSubmission {
-  id            String           @id @default(cuid())
+  id            String                 @id @default(cuid())
   assignmentId  String
   studentId     String
-  attemptNumber Int              @default(1)
-  content       String?          @db.Text
-  fileUrls      String[]         @default([])
+  attemptNumber Int                    @default(1)
+  content       String?                @db.Text
+  fileUrls      String[]               @default([])
   externalUrl   String?
-  submittedAt   DateTime         @default(now())
-  score         Decimal?         @db.Decimal(4, 2)
-  feedback      String?          @db.Text
+  isLate        Boolean                @default(false)
+  submittedAt   DateTime               @default(now())
+  score         Decimal?               @db.Decimal(5, 2)
+  feedback      String?                @db.Text
   gradedById    String?
   gradedAt      DateTime?
-  status        AssignmentStatus @default(SUBMITTED)
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  status        AssignmentStatus       @default(SUBMITTED)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
 
-  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
-  student    User       @relation("StudentSubmissions", fields: [studentId], references: [id], onDelete: Restrict)
-  gradedBy   User?      @relation("SubmissionGrader", fields: [gradedById], references: [id], onDelete: SetNull)
+  assignment    Assignment             @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  student       User                   @relation("StudentSubmissions", fields: [studentId], references: [id], onDelete: Restrict)
+  gradedBy      User?                  @relation("SubmissionGrader", fields: [gradedById], references: [id], onDelete: SetNull)
+  attachments   SubmissionAttachment[]
+  review        SubmissionReview?
 
   @@unique([assignmentId, studentId, attemptNumber])
   @@index([assignmentId, status])
   @@index([studentId])
+  @@index([studentId, assignmentId])
   @@index([gradedById])
+}
+
+model SubmissionReview {
+  id           String               @id @default(cuid())
+  submissionId String               @unique
+  reviewerId   String
+  score        Decimal?             @db.Decimal(5, 2)
+  feedback     String?              @db.Text
+  status       ReviewStatus         @default(DRAFT)
+  returnedAt   DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  submission   AssignmentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  reviewer     User                 @relation("SubmissionReviewer", fields: [reviewerId], references: [id], onDelete: Restrict)
+  attachments  ReviewAttachment[]
+
+  @@index([submissionId])
+  @@index([reviewerId])
+  @@index([status])
+}
+
+model AssignmentAttachment {
+  id                 String                  @id @default(cuid())
+  assignmentId       String
+  storageKey         String                  @unique
+  originalName       String
+  mimeType           String
+  sizeBytes          BigInt
+  uploadedById       String
+  retentionExpiresAt DateTime?
+  isKeepForever      Boolean                 @default(false)
+  cleanupStatus      AttachmentCleanupStatus @default(PENDING)
+  cleanupAttempts    Int                     @default(0)
+  lastCleanupError   String?                 @db.Text
+  claimedAt          DateTime?
+  cleanedAt          DateTime?
+  createdAt          DateTime                @default(now())
+
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  uploadedBy   User       @relation("AssignmentAttachmentUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([assignmentId])
+  @@index([storageKey])
+  @@index([cleanupStatus, retentionExpiresAt])
+  @@index([retentionExpiresAt])
+}
+
+model SubmissionAttachment {
+  id                 String                  @id @default(cuid())
+  submissionId       String
+  storageKey         String                  @unique
+  originalName       String
+  mimeType           String
+  sizeBytes          BigInt
+  uploadedById       String
+  retentionExpiresAt DateTime?
+  isKeepForever      Boolean                 @default(false)
+  cleanupStatus      AttachmentCleanupStatus @default(PENDING)
+  cleanupAttempts    Int                     @default(0)
+  lastCleanupError   String?                 @db.Text
+  claimedAt          DateTime?
+  cleanedAt          DateTime?
+  createdAt          DateTime                @default(now())
+
+  submission   AssignmentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  uploadedBy   User                 @relation("SubmissionAttachmentUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([submissionId])
+  @@index([storageKey])
+  @@index([cleanupStatus, retentionExpiresAt])
+  @@index([retentionExpiresAt])
+}
+
+model ReviewAttachment {
+  id                 String                  @id @default(cuid())
+  reviewId           String
+  storageKey         String                  @unique
+  originalName       String
+  mimeType           String
+  sizeBytes          BigInt
+  uploadedById       String
+  retentionExpiresAt DateTime?
+  isKeepForever      Boolean                 @default(false)
+  cleanupStatus      AttachmentCleanupStatus @default(PENDING)
+  cleanupAttempts    Int                     @default(0)
+  lastCleanupError   String?                 @db.Text
+  claimedAt          DateTime?
+  cleanedAt          DateTime?
+  createdAt          DateTime                @default(now())
+
+  review       SubmissionReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  uploadedBy   User             @relation("ReviewAttachmentUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([reviewId])
+  @@index([storageKey])
+  @@index([cleanupStatus, retentionExpiresAt])
+  @@index([retentionExpiresAt])
 }
 
 model ClassMaterial {

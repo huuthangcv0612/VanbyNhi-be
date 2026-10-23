@@ -78,6 +78,26 @@ export type Assignment = Prisma.AssignmentModel
  */
 export type AssignmentSubmission = Prisma.AssignmentSubmissionModel
 /**
+ * Model SubmissionReview
+ * 
+ */
+export type SubmissionReview = Prisma.SubmissionReviewModel
+/**
+ * Model AssignmentAttachment
+ * 
+ */
+export type AssignmentAttachment = Prisma.AssignmentAttachmentModel
+/**
+ * Model SubmissionAttachment
+ * 
+ */
+export type SubmissionAttachment = Prisma.SubmissionAttachmentModel
+/**
+ * Model ReviewAttachment
+ * 
+ */
+export type ReviewAttachment = Prisma.ReviewAttachmentModel
+/**
  * Model ClassMaterial
  * 
  */

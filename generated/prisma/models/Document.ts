@@ -651,14 +651,6 @@ export type DocumentUncheckedUpdateManyWithoutCategoryNestedInput = {
   deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
 }
 
-export type BigIntFieldUpdateOperationsInput = {
-  set?: bigint | number
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
 export type DocumentCreateWithoutOwnerInput = {
   id?: string
   title: string

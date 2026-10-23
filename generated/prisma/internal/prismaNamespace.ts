@@ -409,6 +409,10 @@ export const ModelName = {
   LessonRecord: 'LessonRecord',
   Assignment: 'Assignment',
   AssignmentSubmission: 'AssignmentSubmission',
+  SubmissionReview: 'SubmissionReview',
+  AssignmentAttachment: 'AssignmentAttachment',
+  SubmissionAttachment: 'SubmissionAttachment',
+  ReviewAttachment: 'ReviewAttachment',
   ClassMaterial: 'ClassMaterial',
   DocumentCategory: 'DocumentCategory',
   Document: 'Document',
@@ -440,7 +444,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "classMaterial" | "documentCategory" | "document" | "uploadSession" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification" | "attendanceSession" | "attendanceCorrectionRequest" | "monthlyAttendanceSummary" | "classAttendanceConfig" | "userGoogleAccount" | "classMeetSpace"
+    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "submissionReview" | "assignmentAttachment" | "submissionAttachment" | "reviewAttachment" | "classMaterial" | "documentCategory" | "document" | "uploadSession" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification" | "attendanceSession" | "attendanceCorrectionRequest" | "monthlyAttendanceSummary" | "classAttendanceConfig" | "userGoogleAccount" | "classMeetSpace"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1329,6 +1333,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AssignmentSubmissionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AssignmentSubmissionCountAggregateOutputType> | number
+        }
+      }
+    }
+    SubmissionReview: {
+      payload: Prisma.$SubmissionReviewPayload<ExtArgs>
+      fields: Prisma.SubmissionReviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SubmissionReviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SubmissionReviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>
+        }
+        findFirst: {
+          args: Prisma.SubmissionReviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SubmissionReviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>
+        }
+        findMany: {
+          args: Prisma.SubmissionReviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>[]
+        }
+        create: {
+          args: Prisma.SubmissionReviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>
+        }
+        createMany: {
+          args: Prisma.SubmissionReviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SubmissionReviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>[]
+        }
+        delete: {
+          args: Prisma.SubmissionReviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>
+        }
+        update: {
+          args: Prisma.SubmissionReviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.SubmissionReviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SubmissionReviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SubmissionReviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.SubmissionReviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionReviewPayload>
+        }
+        aggregate: {
+          args: Prisma.SubmissionReviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSubmissionReview>
+        }
+        groupBy: {
+          args: Prisma.SubmissionReviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubmissionReviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SubmissionReviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubmissionReviewCountAggregateOutputType> | number
+        }
+      }
+    }
+    AssignmentAttachment: {
+      payload: Prisma.$AssignmentAttachmentPayload<ExtArgs>
+      fields: Prisma.AssignmentAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssignmentAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssignmentAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.AssignmentAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssignmentAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.AssignmentAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.AssignmentAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.AssignmentAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssignmentAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.AssignmentAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>
+        }
+        update: {
+          args: Prisma.AssignmentAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssignmentAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssignmentAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssignmentAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssignmentAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.AssignmentAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssignmentAttachment>
+        }
+        groupBy: {
+          args: Prisma.AssignmentAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssignmentAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    SubmissionAttachment: {
+      payload: Prisma.$SubmissionAttachmentPayload<ExtArgs>
+      fields: Prisma.SubmissionAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SubmissionAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SubmissionAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.SubmissionAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SubmissionAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.SubmissionAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.SubmissionAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.SubmissionAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SubmissionAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.SubmissionAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>
+        }
+        update: {
+          args: Prisma.SubmissionAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.SubmissionAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SubmissionAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SubmissionAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.SubmissionAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubmissionAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.SubmissionAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSubmissionAttachment>
+        }
+        groupBy: {
+          args: Prisma.SubmissionAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubmissionAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SubmissionAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubmissionAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReviewAttachment: {
+      payload: Prisma.$ReviewAttachmentPayload<ExtArgs>
+      fields: Prisma.ReviewAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReviewAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReviewAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.ReviewAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReviewAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.ReviewAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.ReviewAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.ReviewAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReviewAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.ReviewAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>
+        }
+        update: {
+          args: Prisma.ReviewAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReviewAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReviewAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReviewAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReviewAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.ReviewAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReviewAttachment>
+        }
+        groupBy: {
+          args: Prisma.ReviewAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReviewAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReviewAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReviewAttachmentCountAggregateOutputType> | number
         }
       }
     }
@@ -2728,6 +3028,9 @@ export const AssignmentScalarFieldEnum = {
   description: 'description',
   fileUrls: 'fileUrls',
   dueDate: 'dueDate',
+  maxScore: 'maxScore',
+  allowResubmission: 'allowResubmission',
+  maxAttempts: 'maxAttempts',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2744,6 +3047,7 @@ export const AssignmentSubmissionScalarFieldEnum = {
   content: 'content',
   fileUrls: 'fileUrls',
   externalUrl: 'externalUrl',
+  isLate: 'isLate',
   submittedAt: 'submittedAt',
   score: 'score',
   feedback: 'feedback',
@@ -2755,6 +3059,84 @@ export const AssignmentSubmissionScalarFieldEnum = {
 } as const
 
 export type AssignmentSubmissionScalarFieldEnum = (typeof AssignmentSubmissionScalarFieldEnum)[keyof typeof AssignmentSubmissionScalarFieldEnum]
+
+
+export const SubmissionReviewScalarFieldEnum = {
+  id: 'id',
+  submissionId: 'submissionId',
+  reviewerId: 'reviewerId',
+  score: 'score',
+  feedback: 'feedback',
+  status: 'status',
+  returnedAt: 'returnedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubmissionReviewScalarFieldEnum = (typeof SubmissionReviewScalarFieldEnum)[keyof typeof SubmissionReviewScalarFieldEnum]
+
+
+export const AssignmentAttachmentScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  uploadedById: 'uploadedById',
+  retentionExpiresAt: 'retentionExpiresAt',
+  isKeepForever: 'isKeepForever',
+  cleanupStatus: 'cleanupStatus',
+  cleanupAttempts: 'cleanupAttempts',
+  lastCleanupError: 'lastCleanupError',
+  claimedAt: 'claimedAt',
+  cleanedAt: 'cleanedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AssignmentAttachmentScalarFieldEnum = (typeof AssignmentAttachmentScalarFieldEnum)[keyof typeof AssignmentAttachmentScalarFieldEnum]
+
+
+export const SubmissionAttachmentScalarFieldEnum = {
+  id: 'id',
+  submissionId: 'submissionId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  uploadedById: 'uploadedById',
+  retentionExpiresAt: 'retentionExpiresAt',
+  isKeepForever: 'isKeepForever',
+  cleanupStatus: 'cleanupStatus',
+  cleanupAttempts: 'cleanupAttempts',
+  lastCleanupError: 'lastCleanupError',
+  claimedAt: 'claimedAt',
+  cleanedAt: 'cleanedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SubmissionAttachmentScalarFieldEnum = (typeof SubmissionAttachmentScalarFieldEnum)[keyof typeof SubmissionAttachmentScalarFieldEnum]
+
+
+export const ReviewAttachmentScalarFieldEnum = {
+  id: 'id',
+  reviewId: 'reviewId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  uploadedById: 'uploadedById',
+  retentionExpiresAt: 'retentionExpiresAt',
+  isKeepForever: 'isKeepForever',
+  cleanupStatus: 'cleanupStatus',
+  cleanupAttempts: 'cleanupAttempts',
+  lastCleanupError: 'lastCleanupError',
+  claimedAt: 'claimedAt',
+  cleanedAt: 'cleanedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReviewAttachmentScalarFieldEnum = (typeof ReviewAttachmentScalarFieldEnum)[keyof typeof ReviewAttachmentScalarFieldEnum]
 
 
 export const ClassMaterialScalarFieldEnum = {
@@ -3230,16 +3612,16 @@ export type ListEnumAssignmentStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
- * Reference to a field of type 'MaterialType'
+ * Reference to a field of type 'ReviewStatus'
  */
-export type EnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType'>
+export type EnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus'>
     
 
 
 /**
- * Reference to a field of type 'MaterialType[]'
+ * Reference to a field of type 'ReviewStatus[]'
  */
-export type ListEnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType[]'>
+export type ListEnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus[]'>
     
 
 
@@ -3254,6 +3636,34 @@ export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'BigInt[]'
  */
 export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AttachmentCleanupStatus'
+ */
+export type EnumAttachmentCleanupStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttachmentCleanupStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AttachmentCleanupStatus[]'
+ */
+export type ListEnumAttachmentCleanupStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttachmentCleanupStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MaterialType'
+ */
+export type EnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType'>
+    
+
+
+/**
+ * Reference to a field of type 'MaterialType[]'
+ */
+export type ListEnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType[]'>
     
 
 
@@ -3573,6 +3983,10 @@ export type GlobalOmitConfig = {
   lessonRecord?: Prisma.LessonRecordOmit
   assignment?: Prisma.AssignmentOmit
   assignmentSubmission?: Prisma.AssignmentSubmissionOmit
+  submissionReview?: Prisma.SubmissionReviewOmit
+  assignmentAttachment?: Prisma.AssignmentAttachmentOmit
+  submissionAttachment?: Prisma.SubmissionAttachmentOmit
+  reviewAttachment?: Prisma.ReviewAttachmentOmit
   classMaterial?: Prisma.ClassMaterialOmit
   documentCategory?: Prisma.DocumentCategoryOmit
   document?: Prisma.DocumentOmit
