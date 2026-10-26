@@ -10,6 +10,9 @@ import {
   MaxLength,
 } from 'class-validator';
 import { MeetingType } from '../../../generated/prisma/client.js';
+import { ScheduleRecurrence } from '../utils/recurrence.util.js';
+
+export { ScheduleRecurrence };
 
 export class CreateScheduleDto {
   @IsString({ message: 'Tiêu đề lịch học phải là chuỗi ký tự' })
@@ -66,4 +69,10 @@ export class CreateScheduleDto {
   @IsOptional()
   @IsString({ message: 'Mã nhãn lịch (labelId) phải là chuỗi ký tự' })
   labelId?: string;
+
+  @IsOptional()
+  @IsEnum(ScheduleRecurrence, {
+    message: 'Kiểu lặp lại lịch học không hợp lệ (hỗ trợ NONE hoặc WEEKLY_FOR_MONTH)',
+  })
+  recurrence?: ScheduleRecurrence;
 }

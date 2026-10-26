@@ -18,6 +18,11 @@ import type { CreateScheduleDto } from './dto/create-schedule.dto.js';
 import type { UpdateScheduleDto } from './dto/update-schedule.dto.js';
 import type { QueryTeacherSchedulesDto } from './dto/query-teacher-schedules.dto.js';
 import type { QueryStudentSchedulesDto } from './dto/query-student-schedules.dto.js';
+import {
+  ScheduleRecurrence,
+  generateWeeklyMonthlyOccurrences,
+  type ScheduleOccurrence,
+} from './utils/recurrence.util.js';
 
 @Injectable()
 export class SchedulesService {
@@ -118,135 +123,301 @@ export class SchedulesService {
       }
     }
 
-    // Kiểm tra trùng giờ dạy của giáo viên (cảnh báo, không chặn)
-    const conflicts = await this.prisma.teacherCalendarEvent.findMany({
-      where: {
-        teacherId,
-        startAt: { lt: endAt },
-        endAt: { gt: startAt },
-        status: { not: ScheduleStatus.CANCELLED },
-      },
-      select: {
-        id: true,
-        title: true,
-        startAt: true,
-        endAt: true,
-      },
-    });
-
     const locationValue = dto.location ?? null;
     const meetingUrlValue = dto.meetingUrl ?? null;
     const descriptionValue = dto.description ?? null;
     const timezoneValue = dto.timezone ?? 'Asia/Ho_Chi_Minh';
     const meetingTypeValue = dto.meetingType ?? MeetingType.ONLINE_MEET;
 
-    // Thực hiện tạo lịch học trong Transaction
-    const schedule = await this.prisma.$transaction(async (tx) => {
-      const event = await tx.teacherCalendarEvent.create({
-        data: {
+    const isRecurring = dto.recurrence === ScheduleRecurrence.WEEKLY_FOR_MONTH;
+
+    // Kiểm tra trùng giờ dạy của giáo viên (cảnh báo, không chặn)
+    let conflicts: any[] = [];
+    let occurrences: ScheduleOccurrence[] = [];
+
+    if (isRecurring) {
+      occurrences = generateWeeklyMonthlyOccurrences(
+        startAt,
+        endAt,
+        timezoneValue,
+      );
+      conflicts = await this.prisma.teacherCalendarEvent.findMany({
+        where: {
           teacherId,
-          classId: dto.classId ?? null,
-          title: dto.title,
-          description: descriptionValue,
-          note: descriptionValue,
-          startAt,
-          endAt,
-          timezone: timezoneValue,
-          meetingType: meetingTypeValue,
-          meetingUrl: meetingUrlValue,
-          meetUrl: meetingUrlValue,
-          location: locationValue,
-          address: locationValue,
-          status: ScheduleStatus.SCHEDULED,
-          reminderMinutes: dto.reminderMinutes ?? null,
-          labelId: dto.labelId ?? null,
+          status: { not: ScheduleStatus.CANCELLED },
+          OR: occurrences.map((occ) => ({
+            startAt: { lt: occ.endAt },
+            endAt: { gt: occ.startAt },
+          })),
+        },
+        select: {
+          id: true,
+          title: true,
+          startAt: true,
+          endAt: true,
         },
       });
+    } else {
+      conflicts = await this.prisma.teacherCalendarEvent.findMany({
+        where: {
+          teacherId,
+          startAt: { lt: endAt },
+          endAt: { gt: startAt },
+          status: { not: ScheduleStatus.CANCELLED },
+        },
+        select: {
+          id: true,
+          title: true,
+          startAt: true,
+          endAt: true,
+        },
+      });
+    }
 
-      // Lưu quan hệ người tham gia riêng cho học sinh được chỉ định trực tiếp
-      if (studentIds.length > 0) {
-        await tx.calendarEventParticipant.createMany({
-          data: studentIds.map((studentId) => ({
-            eventId: event.id,
-            studentId,
-          })),
-        });
-      }
-
-      // Tạo nhắc lịch tự động nếu có reminderMinutes
-      if (
-        dto.reminderMinutes !== undefined &&
-        dto.reminderMinutes !== null &&
-        dto.reminderMinutes >= 0 &&
-        startAt > new Date()
-      ) {
-        const scheduledAt = new Date(
-          startAt.getTime() - dto.reminderMinutes * 60 * 1000,
-        );
-        const recipients = [teacherId, ...studentIds];
-
-        await tx.calendarNotification.createMany({
-          data: recipients.map((recipientId) => ({
-            eventId: event.id,
-            recipientId,
-            scheduledAt,
-            status: CalendarNotificationStatus.PENDING,
-          })),
-        });
-      }
-
-      return tx.teacherCalendarEvent.findUnique({
-        where: { id: event.id },
-        include: {
-          class: {
-            select: {
-              id: true,
-              name: true,
-              classCode: true,
-            },
+    // Nếu không phải lịch lặp lại: giữ nguyên hoàn toàn luồng và hành vi hiện tại
+    if (!isRecurring) {
+      const schedule = await this.prisma.$transaction(async (tx) => {
+        const event = await tx.teacherCalendarEvent.create({
+          data: {
+            teacherId,
+            classId: dto.classId ?? null,
+            title: dto.title,
+            description: descriptionValue,
+            note: descriptionValue,
+            startAt,
+            endAt,
+            timezone: timezoneValue,
+            meetingType: meetingTypeValue,
+            meetingUrl: meetingUrlValue,
+            meetUrl: meetingUrlValue,
+            location: locationValue,
+            address: locationValue,
+            status: ScheduleStatus.SCHEDULED,
+            reminderMinutes: dto.reminderMinutes ?? null,
+            labelId: dto.labelId ?? null,
           },
-          label: {
-            select: {
-              id: true,
-              name: true,
-              color: true,
+        });
+
+        // Lưu quan hệ người tham gia riêng cho học sinh được chỉ định trực tiếp
+        if (studentIds.length > 0) {
+          await tx.calendarEventParticipant.createMany({
+            data: studentIds.map((studentId) => ({
+              eventId: event.id,
+              studentId,
+            })),
+          });
+        }
+
+        // Tạo nhắc lịch tự động nếu có reminderMinutes
+        if (
+          dto.reminderMinutes !== undefined &&
+          dto.reminderMinutes !== null &&
+          dto.reminderMinutes >= 0 &&
+          startAt > new Date()
+        ) {
+          const scheduledAt = new Date(
+            startAt.getTime() - dto.reminderMinutes * 60 * 1000,
+          );
+          const recipients = [teacherId, ...studentIds];
+
+          await tx.calendarNotification.createMany({
+            data: recipients.map((recipientId) => ({
+              eventId: event.id,
+              recipientId,
+              scheduledAt,
+              status: CalendarNotificationStatus.PENDING,
+            })),
+          });
+        }
+
+        return tx.teacherCalendarEvent.findUnique({
+          where: { id: event.id },
+          include: {
+            class: {
+              select: {
+                id: true,
+                name: true,
+                classCode: true,
+              },
             },
-          },
-          participants: {
-            include: {
-              student: {
-                select: {
-                  id: true,
-                  fullName: true,
-                  phone: true,
-                  email: true,
-                  avatarUrl: true,
+            label: {
+              select: {
+                id: true,
+                name: true,
+                color: true,
+              },
+            },
+            participants: {
+              include: {
+                student: {
+                  select: {
+                    id: true,
+                    fullName: true,
+                    phone: true,
+                    email: true,
+                    avatarUrl: true,
+                  },
                 },
               },
             },
-          },
-          _count: {
-            select: {
-              participants: true,
+            _count: {
+              select: {
+                participants: true,
+              },
             },
           },
-        },
+        });
       });
+
+      // Tích hợp gửi thông báo in-app đến các học sinh được áp dụng lịch này
+      await this.notifyStudentsOnScheduleChange(
+        schedule!.id,
+        schedule!.title,
+        schedule!.classId,
+        studentIds,
+        'Lịch học mới',
+        `Bạn có lịch học mới: "${schedule!.title}" diễn ra từ ${startAt.toISOString()} đến ${endAt.toISOString()}`,
+      );
+
+      return {
+        message: 'Tạo lịch học thành công',
+        schedule,
+        hasConflict: conflicts.length > 0,
+        conflicts,
+      };
+    }
+
+    // Khi lặp lại hàng tuần trong một tháng: tạo nhiều bản ghi độc lập trong transaction
+    const createdEvents = await this.prisma.$transaction(async (tx) => {
+      const events: any[] = [];
+      const now = new Date();
+
+      for (const occ of occurrences) {
+        const event = await tx.teacherCalendarEvent.create({
+          data: {
+            teacherId,
+            classId: dto.classId ?? null,
+            title: dto.title,
+            description: descriptionValue,
+            note: descriptionValue,
+            startAt: occ.startAt,
+            endAt: occ.endAt,
+            timezone: timezoneValue,
+            meetingType: meetingTypeValue,
+            meetingUrl: meetingUrlValue,
+            meetUrl: meetingUrlValue,
+            location: locationValue,
+            address: locationValue,
+            status: ScheduleStatus.SCHEDULED,
+            reminderMinutes: dto.reminderMinutes ?? null,
+            labelId: dto.labelId ?? null,
+          },
+        });
+
+        if (studentIds.length > 0) {
+          await tx.calendarEventParticipant.createMany({
+            data: studentIds.map((studentId) => ({
+              eventId: event.id,
+              studentId,
+            })),
+          });
+        }
+
+        if (
+          dto.reminderMinutes !== undefined &&
+          dto.reminderMinutes !== null &&
+          dto.reminderMinutes >= 0 &&
+          occ.startAt > now
+        ) {
+          const scheduledAt = new Date(
+            occ.startAt.getTime() - dto.reminderMinutes * 60 * 1000,
+          );
+          const recipients = [teacherId, ...studentIds];
+
+          await tx.calendarNotification.createMany({
+            data: recipients.map((recipientId) => ({
+              eventId: event.id,
+              recipientId,
+              scheduledAt,
+              status: CalendarNotificationStatus.PENDING,
+            })),
+          });
+        }
+
+        const fullEvent = await tx.teacherCalendarEvent.findUnique({
+          where: { id: event.id },
+          include: {
+            class: {
+              select: {
+                id: true,
+                name: true,
+                classCode: true,
+              },
+            },
+            label: {
+              select: {
+                id: true,
+                name: true,
+                color: true,
+              },
+            },
+            participants: {
+              include: {
+                student: {
+                  select: {
+                    id: true,
+                    fullName: true,
+                    phone: true,
+                    email: true,
+                    avatarUrl: true,
+                  },
+                },
+              },
+            },
+            _count: {
+              select: {
+                participants: true,
+              },
+            },
+          },
+        });
+
+        events.push(fullEvent);
+      }
+
+      return events;
     });
 
-    // Tích hợp gửi thông báo in-app đến các học sinh được áp dụng lịch này
-    await this.notifyStudentsOnScheduleChange(
-      schedule!.id,
-      schedule!.title,
-      schedule!.classId,
-      studentIds,
-      'Lịch học mới',
-      `Bạn có lịch học mới: "${schedule!.title}" diễn ra từ ${startAt.toISOString()} đến ${endAt.toISOString()}`,
-    );
+    // Gửi thông báo in-app đến các học sinh cho từng buổi học đã tạo thành công
+    for (const item of createdEvents) {
+      if (item) {
+        const startIso = item.startAt
+          ? (item.startAt instanceof Date
+              ? item.startAt.toISOString()
+              : new Date(item.startAt).toISOString())
+          : '';
+        const endIso = item.endAt
+          ? (item.endAt instanceof Date
+              ? item.endAt.toISOString()
+              : new Date(item.endAt).toISOString())
+          : '';
+
+        await this.notifyStudentsOnScheduleChange(
+          item.id,
+          item.title,
+          item.classId,
+          studentIds,
+          'Lịch học mới',
+          `Bạn có lịch học mới: "${item.title}" diễn ra từ ${startIso} đến ${endIso}`,
+        );
+      }
+    }
 
     return {
-      message: 'Tạo lịch học thành công',
-      schedule,
+      message: 'Tạo chuỗi lịch học lặp lại thành công',
+      schedule: createdEvents[0] ?? null,
+      schedules: createdEvents,
+      totalOccurrences: createdEvents.length,
       hasConflict: conflicts.length > 0,
       conflicts,
     };

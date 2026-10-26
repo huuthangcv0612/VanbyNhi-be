@@ -17,6 +17,11 @@ import type { UpdateCalendarEventDto } from './dto/update-calendar-event.dto.js'
 import type { CreateCalendarLabelDto } from './dto/create-calendar-label.dto.js';
 import type { UpdateCalendarLabelDto } from './dto/update-calendar-label.dto.js';
 import type { AddCalendarParticipantsDto } from './dto/add-calendar-participants.dto.js';
+import {
+  ScheduleRecurrence,
+  generateWeeklyMonthlyOccurrences,
+  type ScheduleOccurrence,
+} from '../schedules/utils/recurrence.util.js';
 
 @Injectable()
 export class CalendarService {
@@ -269,97 +274,215 @@ export class CalendarService {
       }
     }
 
-    // Kiểm tra ca trùng giờ của giáo viên để cảnh báo
-    const conflicts = await this.prisma.teacherCalendarEvent.findMany({
-      where: {
-        teacherId,
-        startAt: { lt: endAt },
-        endAt: { gt: startAt },
-      },
-      select: {
-        id: true,
-        title: true,
-        startAt: true,
-        endAt: true,
-      },
-    });
+    const isRecurring = dto.recurrence === ScheduleRecurrence.WEEKLY_FOR_MONTH;
 
-    // Thực hiện tạo ca dạy trong transaction
-    const createdEvent = await this.prisma.$transaction(async (tx) => {
-      const event = await tx.teacherCalendarEvent.create({
-        data: {
+    let conflicts: any[] = [];
+    let occurrences: ScheduleOccurrence[] = [];
+
+    if (isRecurring) {
+      occurrences = generateWeeklyMonthlyOccurrences(
+        startAt,
+        endAt,
+        'Asia/Ho_Chi_Minh',
+      );
+      conflicts = await this.prisma.teacherCalendarEvent.findMany({
+        where: {
           teacherId,
-          classId: dto.classId,
-          title: dto.title,
-          address: dto.address,
-          meetUrl: dto.meetUrl,
-          startAt,
-          endAt,
-          labelId: dto.labelId,
-          reminderMinutes: dto.reminderMinutes,
-          note: dto.note,
+          OR: occurrences.map((occ) => ({
+            startAt: { lt: occ.endAt },
+            endAt: { gt: occ.startAt },
+          })),
+        },
+        select: {
+          id: true,
+          title: true,
+          startAt: true,
+          endAt: true,
         },
       });
+    } else {
+      conflicts = await this.prisma.teacherCalendarEvent.findMany({
+        where: {
+          teacherId,
+          startAt: { lt: endAt },
+          endAt: { gt: startAt },
+        },
+        select: {
+          id: true,
+          title: true,
+          startAt: true,
+          endAt: true,
+        },
+      });
+    }
 
-      // Tạo participants
-      if (studentIds.length > 0) {
-        await tx.calendarEventParticipant.createMany({
-          data: studentIds.map((studentId) => ({
-            eventId: event.id,
-            studentId,
-          })),
+    // Nếu không phải ca dạy lặp lại: giữ nguyên hoàn toàn luồng và hành vi hiện tại
+    if (!isRecurring) {
+      const createdEvent = await this.prisma.$transaction(async (tx) => {
+        const event = await tx.teacherCalendarEvent.create({
+          data: {
+            teacherId,
+            classId: dto.classId,
+            title: dto.title,
+            address: dto.address,
+            meetUrl: dto.meetUrl,
+            startAt,
+            endAt,
+            labelId: dto.labelId,
+            reminderMinutes: dto.reminderMinutes,
+            note: dto.note,
+          },
         });
-      }
 
-      // Tạo thông báo nhắc lịch cho giáo viên và học sinh nếu có reminderMinutes và sự kiện chưa bắt đầu
-      if (
-        dto.reminderMinutes !== undefined &&
-        dto.reminderMinutes !== null &&
-        dto.reminderMinutes >= 0 &&
-        startAt > new Date()
-      ) {
-        const scheduledAt = new Date(
-          startAt.getTime() - dto.reminderMinutes * 60 * 1000,
-        );
-        const recipients = [teacherId, ...studentIds];
+        // Tạo participants
+        if (studentIds.length > 0) {
+          await tx.calendarEventParticipant.createMany({
+            data: studentIds.map((studentId) => ({
+              eventId: event.id,
+              studentId,
+            })),
+          });
+        }
 
-        await tx.calendarNotification.createMany({
-          data: recipients.map((recipientId) => ({
-            eventId: event.id,
-            recipientId,
-            scheduledAt,
-            status: CalendarNotificationStatus.PENDING,
-          })),
-        });
-      }
+        // Tạo thông báo nhắc lịch cho giáo viên và học sinh nếu có reminderMinutes và sự kiện chưa bắt đầu
+        if (
+          dto.reminderMinutes !== undefined &&
+          dto.reminderMinutes !== null &&
+          dto.reminderMinutes >= 0 &&
+          startAt > new Date()
+        ) {
+          const scheduledAt = new Date(
+            startAt.getTime() - dto.reminderMinutes * 60 * 1000,
+          );
+          const recipients = [teacherId, ...studentIds];
 
-      return tx.teacherCalendarEvent.findUnique({
-        where: { id: event.id },
-        include: {
-          label: true,
-          participants: {
-            include: {
-              student: {
-                select: {
-                  id: true,
-                  fullName: true,
-                  phone: true,
-                  email: true,
-                  avatarUrl: true,
+          await tx.calendarNotification.createMany({
+            data: recipients.map((recipientId) => ({
+              eventId: event.id,
+              recipientId,
+              scheduledAt,
+              status: CalendarNotificationStatus.PENDING,
+            })),
+          });
+        }
+
+        return tx.teacherCalendarEvent.findUnique({
+          where: { id: event.id },
+          include: {
+            label: true,
+            participants: {
+              include: {
+                student: {
+                  select: {
+                    id: true,
+                    fullName: true,
+                    phone: true,
+                    email: true,
+                    avatarUrl: true,
+                  },
                 },
               },
             },
+            _count: {
+              select: { participants: true },
+            },
           },
-          _count: {
-            select: { participants: true },
-          },
-        },
+        });
       });
+
+      return {
+        message: 'Tạo ca dạy thành công',
+        event: createdEvent,
+        hasConflict: conflicts.length > 0,
+        conflicts,
+      };
+    }
+
+    // Khi lặp lại hàng tuần trong một tháng: tạo nhiều bản ghi ca dạy độc lập trong transaction
+    const createdEvents = await this.prisma.$transaction(async (tx) => {
+      const events: any[] = [];
+      const now = new Date();
+
+      for (const occ of occurrences) {
+        const event = await tx.teacherCalendarEvent.create({
+          data: {
+            teacherId,
+            classId: dto.classId,
+            title: dto.title,
+            address: dto.address,
+            meetUrl: dto.meetUrl,
+            startAt: occ.startAt,
+            endAt: occ.endAt,
+            labelId: dto.labelId,
+            reminderMinutes: dto.reminderMinutes,
+            note: dto.note,
+          },
+        });
+
+        if (studentIds.length > 0) {
+          await tx.calendarEventParticipant.createMany({
+            data: studentIds.map((studentId) => ({
+              eventId: event.id,
+              studentId,
+            })),
+          });
+        }
+
+        if (
+          dto.reminderMinutes !== undefined &&
+          dto.reminderMinutes !== null &&
+          dto.reminderMinutes >= 0 &&
+          occ.startAt > now
+        ) {
+          const scheduledAt = new Date(
+            occ.startAt.getTime() - dto.reminderMinutes * 60 * 1000,
+          );
+          const recipients = [teacherId, ...studentIds];
+
+          await tx.calendarNotification.createMany({
+            data: recipients.map((recipientId) => ({
+              eventId: event.id,
+              recipientId,
+              scheduledAt,
+              status: CalendarNotificationStatus.PENDING,
+            })),
+          });
+        }
+
+        const fullEvent = await tx.teacherCalendarEvent.findUnique({
+          where: { id: event.id },
+          include: {
+            label: true,
+            participants: {
+              include: {
+                student: {
+                  select: {
+                    id: true,
+                    fullName: true,
+                    phone: true,
+                    email: true,
+                    avatarUrl: true,
+                  },
+                },
+              },
+            },
+            _count: {
+              select: { participants: true },
+            },
+          },
+        });
+
+        events.push(fullEvent);
+      }
+
+      return events;
     });
 
     return {
-      message: 'Tạo ca dạy thành công',
-      event: createdEvent,
+      message: 'Tạo chuỗi ca dạy lặp lại thành công',
+      event: createdEvents[0] ?? null,
+      events: createdEvents,
+      totalOccurrences: createdEvents.length,
       hasConflict: conflicts.length > 0,
       conflicts,
     };

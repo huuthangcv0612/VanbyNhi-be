@@ -9,8 +9,12 @@ import {
   IsArray,
   MaxLength,
   Matches,
+  IsEnum,
 } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
+import { ScheduleRecurrence } from '../../schedules/utils/recurrence.util.js';
+
+export { ScheduleRecurrence };
 
 export class CreateCalendarEventDto {
   @IsNotEmpty({ message: 'Tiêu đề ca dạy không được để trống' })
@@ -67,4 +71,10 @@ export class CreateCalendarEventDto {
   @IsArray({ message: 'Danh sách học sinh phải là mảng chuỗi ID' })
   @IsString({ each: true, message: 'Mỗi học sinh ID phải là chuỗi ký tự' })
   studentIds?: string[];
+
+  @IsOptional()
+  @IsEnum(ScheduleRecurrence, {
+    message: 'Kiểu lặp lại lịch học không hợp lệ (hỗ trợ NONE hoặc WEEKLY_FOR_MONTH)',
+  })
+  recurrence?: ScheduleRecurrence;
 }

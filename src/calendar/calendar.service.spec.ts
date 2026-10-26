@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   NotFoundException,
   ForbiddenException,
@@ -10,12 +10,15 @@ import {
   UserRole,
   CalendarNotificationStatus,
 } from '../../generated/prisma/client.js';
+import { ScheduleRecurrence } from '../schedules/utils/recurrence.util.js';
 
 describe('CalendarService', () => {
   let calendarService: CalendarService;
   let prismaMock: any;
 
   beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-15T00:00:00.000Z'));
     prismaMock = {
       teacherCalendarEvent: {
         findMany: vi.fn(),
@@ -48,6 +51,10 @@ describe('CalendarService', () => {
     };
 
     calendarService = new CalendarService(prismaMock);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('createTeacherEvent', () => {
@@ -282,6 +289,39 @@ describe('CalendarService', () => {
           studentIds: ['teacher-3'],
         }),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('tạo chuỗi ca dạy lặp lại hàng tuần trong một tháng thành công (5 buổi)', async () => {
+      const recurringDto = {
+        title: 'Ca dạy ôn tập hàng tuần',
+        startAt: '2026-10-27T08:00:00.000Z',
+        endAt: '2026-10-27T10:00:00.000Z',
+        recurrence: ScheduleRecurrence.WEEKLY_FOR_MONTH,
+      };
+
+      prismaMock.teacherCalendarEvent.findMany.mockResolvedValue([]);
+      let counter = 0;
+      prismaMock.teacherCalendarEvent.create.mockImplementation(() => {
+        counter++;
+        return Promise.resolve({ id: `event-rec-${counter}` });
+      });
+      prismaMock.teacherCalendarEvent.findUnique.mockImplementation(({ where }: any) => {
+        return Promise.resolve({
+          id: where.id,
+          title: recurringDto.title,
+          startAt: new Date(recurringDto.startAt),
+          endAt: new Date(recurringDto.endAt),
+        });
+      });
+
+      const result = await calendarService.createTeacherEvent('teacher-1', recurringDto);
+
+      expect(result.message).toBe('Tạo chuỗi ca dạy lặp lại thành công');
+      expect(result.totalOccurrences).toBe(5);
+      expect(result.events).toHaveLength(5);
+      expect(result.event.id).toBe('event-rec-1');
+      expect(result.hasConflict).toBe(false);
+      expect(prismaMock.teacherCalendarEvent.create).toHaveBeenCalledTimes(5);
     });
   });
 

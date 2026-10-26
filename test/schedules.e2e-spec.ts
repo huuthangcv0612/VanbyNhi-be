@@ -13,6 +13,7 @@ import {
   ScheduleStatus,
   MeetingType,
 } from '../generated/prisma/client.js';
+import { ScheduleRecurrence } from '../src/schedules/utils/recurrence.util.js';
 
 describe('Schedules Management E2E Integration Audit (10 Scenarios)', () => {
   let app: INestApplication;
@@ -745,6 +746,162 @@ describe('Schedules Management E2E Integration Audit (10 Scenarios)', () => {
         .patch('/teacher/schedules/non-existent-schedule-id/cancel')
         .set('Authorization', `Bearer ${tokenTeacherA}`)
         .expect(404);
+    });
+  });
+
+  // =========================================================================
+  // KỊCH BẢN 11: LẶP LẠI HÀNG TUẦN TRONG MỘT THÁNG (RECURRENCE: WEEKLY_FOR_MONTH)
+  // =========================================================================
+  describe('Kịch bản 11: Lặp lại hàng tuần trong một tháng', () => {
+    let recurringScheduleIds: string[] = [];
+
+    it('Tạo chuỗi lịch lặp lại hàng tuần trong một tháng cho lớp: tạo đúng 5 buổi độc lập từ 27/10/2026', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/teacher/schedules')
+        .set('Authorization', `Bearer ${tokenTeacherA}`)
+        .send({
+          title: 'Khóa bồi dưỡng định kỳ Văn 12',
+          description: 'Luyện đề nghị luận văn học hàng tuần',
+          startAt: '2026-10-27T08:00:00.000Z',
+          endAt: '2026-10-27T10:00:00.000Z',
+          timezone: 'Asia/Ho_Chi_Minh',
+          classId: classA.id,
+          meetingType: MeetingType.ONLINE_MEET,
+          meetingUrl: 'https://meet.google.com/rec-lop-a',
+          location: 'Phòng học trực tuyến Google Meet',
+          reminderMinutes: 15,
+          recurrence: ScheduleRecurrence.WEEKLY_FOR_MONTH,
+        })
+        .expect(201);
+
+      expect(res.body.message).toBe('Tạo chuỗi lịch học lặp lại thành công');
+      expect(res.body.totalOccurrences).toBe(5);
+      expect(res.body.schedules).toBeDefined();
+      expect(res.body.schedules).toHaveLength(5);
+      expect(res.body.schedule).toBeDefined();
+      expect(res.body.schedule.id).toBe(res.body.schedules[0].id);
+
+      recurringScheduleIds = res.body.schedules.map((s: any) => s.id);
+      createdScheduleIds.push(...recurringScheduleIds);
+
+      // Kiểm tra tính độc lập và ngày của các buổi
+      const expectedDays = [27, 3, 10, 17, 24];
+      const expectedMonths = [10, 11, 11, 11, 11];
+
+      res.body.schedules.forEach((sch: any, idx: number) => {
+        const startDate = new Date(sch.startAt);
+        const endDate = new Date(sch.endAt);
+
+        expect(sch.classId).toBe(classA.id);
+        expect(sch.teacherId).toBe(teacherA.id);
+        expect(sch.status).toBe(ScheduleStatus.SCHEDULED);
+        expect(sch.meetingUrl).toBe('https://meet.google.com/rec-lop-a');
+        expect(sch.location).toBe('Phòng học trực tuyến Google Meet');
+
+        // Kiểm tra ngày và tháng
+        expect(startDate.getUTCDate()).toBe(expectedDays[idx]);
+        expect(startDate.getUTCMonth() + 1).toBe(expectedMonths[idx]);
+
+        // Giờ bắt đầu và kết thúc nhất quán theo startAt/endAt gốc (08:00 UTC và 10:00 UTC)
+        expect(startDate.getUTCHours()).toBe(8);
+        expect(startDate.getUTCMinutes()).toBe(0);
+        expect(endDate.getUTCHours()).toBe(10);
+        expect(endDate.getUTCMinutes()).toBe(0);
+
+        // Thứ trong tuần phải giữ nguyên: thứ Ba
+        expect(startDate.getUTCDay()).toBe(2);
+      });
+    });
+
+    it('Học sinh trong lớp xem được đầy đủ 5 buổi qua /student/schedules', async () => {
+      const listRes = await request(app.getHttpServer())
+        .get('/student/schedules')
+        .set('Authorization', `Bearer ${tokenStudent1}`)
+        .expect(200);
+
+      const foundSchedules = listRes.body.schedules.filter((s: any) =>
+        recurringScheduleIds.includes(s.id),
+      );
+      expect(foundSchedules).toHaveLength(5);
+    });
+
+    it('Từ chối kiểu lặp lại không hỗ trợ (400 Bad Request)', async () => {
+      await request(app.getHttpServer())
+        .post('/teacher/schedules')
+        .set('Authorization', `Bearer ${tokenTeacherA}`)
+        .send({
+          title: 'Lịch lặp không hợp lệ',
+          startAt: '2026-11-10T08:00:00.000Z',
+          endAt: '2026-11-10T10:00:00.000Z',
+          recurrence: 'DAILY', // không hỗ trợ
+        })
+        .expect(400);
+
+      await request(app.getHttpServer())
+        .post('/teacher/schedules')
+        .set('Authorization', `Bearer ${tokenTeacherA}`)
+        .send({
+          title: 'Lịch lặp không hợp lệ 2',
+          startAt: '2026-11-10T08:00:00.000Z',
+          endAt: '2026-11-10T10:00:00.000Z',
+          recurrence: 'YEARLY',
+        })
+        .expect(400);
+    });
+
+    it('Học sinh không thể gọi API tạo lịch (403 Forbidden)', async () => {
+      await request(app.getHttpServer())
+        .post('/teacher/schedules')
+        .set('Authorization', `Bearer ${tokenStudent1}`)
+        .send({
+          title: 'Học sinh giả mạo tạo lịch',
+          startAt: '2026-11-10T08:00:00.000Z',
+          endAt: '2026-11-10T10:00:00.000Z',
+          recurrence: ScheduleRecurrence.WEEKLY_FOR_MONTH,
+        })
+        .expect(403);
+    });
+
+    it('Hủy hoặc sửa một buổi trong chuỗi không làm ảnh hưởng các buổi còn lại', async () => {
+      const targetId = recurringScheduleIds[1]; // buổi thứ 2
+
+      // Hủy buổi thứ 2
+      await request(app.getHttpServer())
+        .patch(`/teacher/schedules/${targetId}/cancel`)
+        .set('Authorization', `Bearer ${tokenTeacherA}`)
+        .expect(200);
+
+      // Kiểm tra buổi thứ 2 đã bị CANCELLED
+      const detailRes = await request(app.getHttpServer())
+        .get(`/teacher/schedules/${targetId}`)
+        .set('Authorization', `Bearer ${tokenTeacherA}`)
+        .expect(200);
+      expect(detailRes.body.status).toBe(ScheduleStatus.CANCELLED);
+
+      // Kiểm tra các buổi khác vẫn giữ nguyên SCHEDULED
+      const otherDetailRes = await request(app.getHttpServer())
+        .get(`/teacher/schedules/${recurringScheduleIds[0]}`)
+        .set('Authorization', `Bearer ${tokenTeacherA}`)
+        .expect(200);
+      expect(otherDetailRes.body.status).toBe(ScheduleStatus.SCHEDULED);
+    });
+
+    it('Tạo một buổi cũ (không truyền recurrence): vẫn tạo 1 buổi độc lập bình thường', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/teacher/schedules')
+        .set('Authorization', `Bearer ${tokenTeacherA}`)
+        .send({
+          title: 'Buổi học phụ đạo 1-1',
+          startAt: '2026-11-20T14:00:00.000Z',
+          endAt: '2026-11-20T16:00:00.000Z',
+          studentIds: [student1.id],
+        })
+        .expect(201);
+
+      expect(res.body.message).toBe('Tạo lịch học thành công');
+      expect(res.body.schedule).toBeDefined();
+      expect(res.body.schedules).toBeUndefined();
+      createdScheduleIds.push(res.body.schedule.id);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   NotFoundException,
   ForbiddenException,
@@ -11,6 +11,7 @@ import {
   MeetingType,
   CalendarNotificationStatus,
 } from '../../generated/prisma/client.js';
+import { ScheduleRecurrence } from './utils/recurrence.util.js';
 
 describe('SchedulesService', () => {
   let service: SchedulesService;
@@ -18,6 +19,9 @@ describe('SchedulesService', () => {
   let notificationsServiceMock: any;
 
   beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-15T00:00:00.000Z'));
+
     prismaMock = {
       teacherCalendarEvent: {
         findMany: vi.fn(),
@@ -61,6 +65,10 @@ describe('SchedulesService', () => {
     };
 
     service = new SchedulesService(prismaMock, notificationsServiceMock);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   // =========================================================================
@@ -228,6 +236,99 @@ describe('SchedulesService', () => {
 
       expect(result.hasConflict).toBe(true);
       expect(result.conflicts).toHaveLength(1);
+    });
+
+    it('Tạo chuỗi lịch lặp lại hàng tuần trong một tháng thành công (5 buổi độc lập)', async () => {
+      // 27/10/2026 thứ Ba -> tạo 5 buổi: 27/10, 03/11, 10/11, 17/11, 24/11
+      const recurringDto = {
+        title: 'Chuyên đề ôn thi Đại học hàng tuần',
+        startAt: '2026-10-27T08:00:00.000Z',
+        endAt: '2026-10-27T10:00:00.000Z',
+        timezone: 'Asia/Ho_Chi_Minh',
+        meetingType: MeetingType.ONLINE_MEET,
+        meetingUrl: 'https://meet.google.com/rep-123',
+        location: 'Phòng học trực tuyến',
+        recurrence: ScheduleRecurrence.WEEKLY_FOR_MONTH,
+      };
+
+      prismaMock.teacherCalendarEvent.findMany.mockResolvedValue([]); // không xung đột
+      let createdCounter = 0;
+      prismaMock.teacherCalendarEvent.create.mockImplementation(() => {
+        createdCounter++;
+        return Promise.resolve({ id: `rec-schedule-${createdCounter}` });
+      });
+      prismaMock.teacherCalendarEvent.findUnique.mockImplementation(({ where }: any) => {
+        return Promise.resolve({
+          id: where.id,
+          title: recurringDto.title,
+          teacherId: 'teacher-1',
+          startAt: new Date(recurringDto.startAt),
+          endAt: new Date(recurringDto.endAt),
+          status: ScheduleStatus.SCHEDULED,
+        });
+      });
+
+      const result = await service.createSchedule('teacher-1', recurringDto);
+
+      expect(result.message).toBe('Tạo chuỗi lịch học lặp lại thành công');
+      expect(result.totalOccurrences).toBe(5);
+      expect(result.schedules).toHaveLength(5);
+      expect(result.schedule.id).toBe('rec-schedule-1');
+      expect(result.hasConflict).toBe(false);
+      expect(prismaMock.teacherCalendarEvent.create).toHaveBeenCalledTimes(5);
+    });
+
+    it('Tạo chuỗi lịch lặp lại hàng tuần: phát hiện xung đột của bất kỳ buổi nào', async () => {
+      const recurringDto = {
+        title: 'Lớp bồi dưỡng học sinh giỏi',
+        startAt: '2026-10-27T08:00:00.000Z',
+        endAt: '2026-10-27T10:00:00.000Z',
+        timezone: 'Asia/Ho_Chi_Minh',
+        recurrence: ScheduleRecurrence.WEEKLY_FOR_MONTH,
+      };
+
+      // Giả lập xung đột ở buổi thứ 2
+      prismaMock.teacherCalendarEvent.findMany.mockResolvedValue([
+        {
+          id: 'conflict-event-1',
+          title: 'Ca dạy trùng',
+          startAt: new Date('2026-11-03T08:00:00.000Z'),
+          endAt: new Date('2026-11-03T10:00:00.000Z'),
+        },
+      ]);
+      prismaMock.teacherCalendarEvent.create.mockResolvedValue({ id: 's-conflict' });
+      prismaMock.teacherCalendarEvent.findUnique.mockResolvedValue({
+        id: 's-conflict',
+        title: recurringDto.title,
+        startAt: new Date(recurringDto.startAt),
+        endAt: new Date(recurringDto.endAt),
+        status: ScheduleStatus.SCHEDULED,
+      });
+
+      const result = await service.createSchedule('teacher-1', recurringDto);
+
+      expect(result.hasConflict).toBe(true);
+      expect(result.conflicts).toHaveLength(1);
+      expect(result.conflicts[0].id).toBe('conflict-event-1');
+    });
+
+    it('Tạo chuỗi lịch lặp lại: rollback transaction khi có một occurrence bị lỗi DB', async () => {
+      const recurringDto = {
+        title: 'Lớp học bị lỗi DB',
+        startAt: '2026-10-27T08:00:00.000Z',
+        endAt: '2026-10-27T10:00:00.000Z',
+        timezone: 'Asia/Ho_Chi_Minh',
+        recurrence: ScheduleRecurrence.WEEKLY_FOR_MONTH,
+      };
+
+      prismaMock.teacherCalendarEvent.findMany.mockResolvedValue([]);
+      prismaMock.teacherCalendarEvent.create
+        .mockResolvedValueOnce({ id: 'ok-1' })
+        .mockRejectedValueOnce(new Error('DB Connection Dropped on second occurrence'));
+
+      await expect(
+        service.createSchedule('teacher-1', recurringDto),
+      ).rejects.toThrow('DB Connection Dropped on second occurrence');
     });
   });
 
