@@ -6,6 +6,7 @@ import { NotificationType } from '../../generated/prisma/client.js';
 describe('NotificationsService', () => {
   let notificationsService: NotificationsService;
   let prismaMock: any;
+  let notificationsGatewayMock: any;
 
   beforeEach(() => {
     prismaMock = {
@@ -23,7 +24,16 @@ describe('NotificationsService', () => {
       },
     };
 
-    notificationsService = new NotificationsService(prismaMock);
+    notificationsGatewayMock = {
+      sendNotificationToUser: vi.fn(),
+      sendNotificationReadToUser: vi.fn(),
+      sendNotificationReadAllToUser: vi.fn(),
+    };
+
+    notificationsService = new NotificationsService(
+      prismaMock,
+      notificationsGatewayMock,
+    );
   });
 
   describe('findAll', () => {
@@ -79,7 +89,7 @@ describe('NotificationsService', () => {
   });
 
   describe('markAsRead', () => {
-    it('đánh dấu một thông báo là đã đọc thành công', async () => {
+    it('đánh dấu một thông báo là đã đọc thành công và phát websocket', async () => {
       const notification = {
         id: 'n1',
         recipientId: 'u1',
@@ -101,6 +111,15 @@ describe('NotificationsService', () => {
           data: expect.objectContaining({ isRead: true }),
         }),
       );
+      expect(
+        notificationsGatewayMock.sendNotificationReadToUser,
+      ).toHaveBeenCalledWith(
+        'u1',
+        expect.objectContaining({
+          id: 'n1',
+          isRead: true,
+        }),
+      );
     });
 
     it('xử lý idempotent khi gọi lặp lại trên thông báo đã đọc', async () => {
@@ -115,8 +134,11 @@ describe('NotificationsService', () => {
       const result = await notificationsService.markAsRead('n1', 'u1');
 
       expect(result.notification.isRead).toBe(true);
-      // Không cần gọi update lại
+      // Không cần gọi update lại và không phát socket
       expect(prismaMock.notification.update).not.toHaveBeenCalled();
+      expect(
+        notificationsGatewayMock.sendNotificationReadToUser,
+      ).not.toHaveBeenCalled();
     });
 
     it('từ chối nếu user cố gắng đánh dấu đọc thông báo của người khác', async () => {
@@ -130,6 +152,9 @@ describe('NotificationsService', () => {
       await expect(notificationsService.markAsRead('n1', 'u1')).rejects.toThrow(
         ForbiddenException,
       );
+      expect(
+        notificationsGatewayMock.sendNotificationReadToUser,
+      ).not.toHaveBeenCalled();
     });
 
     it('ném NotFoundException nếu thông báo không tồn tại', async () => {
@@ -142,7 +167,7 @@ describe('NotificationsService', () => {
   });
 
   describe('markAllAsRead', () => {
-    it('đánh dấu tất cả thông báo chưa đọc của user', async () => {
+    it('đánh dấu tất cả thông báo chưa đọc của user và phát websocket', async () => {
       prismaMock.notification.updateMany.mockResolvedValue({ count: 3 });
 
       const result = await notificationsService.markAllAsRead('u1');
@@ -152,22 +177,38 @@ describe('NotificationsService', () => {
         where: { recipientId: 'u1', isRead: false },
         data: expect.objectContaining({ isRead: true }),
       });
+      expect(
+        notificationsGatewayMock.sendNotificationReadAllToUser,
+      ).toHaveBeenCalledWith(
+        'u1',
+        expect.objectContaining({
+          readAt: expect.any(Date),
+        }),
+      );
     });
   });
 
   describe('Internal helpers (createNotification & notifyClassStudents)', () => {
-    it('tạo thông báo đơn lẻ cho một người nhận', async () => {
+    it('tạo thông báo đơn lẻ trong DB và phát websocket tới user', async () => {
       const mockNotif = {
         id: 'n1',
         recipientId: 'u1',
         title: 'Chào mừng',
         content: 'Nội dung',
         type: NotificationType.SYSTEM,
+        referenceId: 'ref-1',
+        createdAt: new Date(),
+        isRead: false,
+        readAt: null,
       };
       prismaMock.notification.create.mockResolvedValue(mockNotif);
 
       const result = await notificationsService.createNotification(mockNotif);
       expect(result).toEqual(mockNotif);
+      expect(prismaMock.notification.create).toHaveBeenCalled();
+      expect(
+        notificationsGatewayMock.sendNotificationToUser,
+      ).toHaveBeenCalledWith('u1', expect.objectContaining({ id: 'n1' }));
     });
 
     it('gửi thông báo hàng loạt cho học sinh ACTIVE trong lớp', async () => {
@@ -190,6 +231,9 @@ describe('NotificationsService', () => {
           expect.objectContaining({ recipientId: 'stu2' }),
         ]),
       });
+      expect(
+        notificationsGatewayMock.sendNotificationToUser,
+      ).toHaveBeenCalledTimes(2);
     });
   });
 });

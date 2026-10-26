@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import {
@@ -9,6 +10,7 @@ import {
   MemberStatus,
 } from '../../generated/prisma/client.js';
 import type { QueryNotificationsDto } from './dto/query-notifications.dto.js';
+import { NotificationsGateway } from './notifications.gateway.js';
 
 export interface CreateNotificationInput {
   recipientId: string;
@@ -20,7 +22,12 @@ export interface CreateNotificationInput {
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(NotificationsService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsGateway: NotificationsGateway,
+  ) {}
 
   /**
    * Lấy danh sách thông báo của người dùng hiện tại (Phân trang, lọc theo isRead, type)
@@ -77,6 +84,7 @@ export class NotificationsService {
 
   /**
    * Đánh dấu một thông báo là đã đọc (Kiểm tra quyền sở hữu, idempotent)
+   * Cập nhật DB trước, sau đó phát realtime event qua WebSocket.
    */
   async markAsRead(notificationId: string, userId: string) {
     const notification = await this.prisma.notification.findUnique({
@@ -109,6 +117,17 @@ export class NotificationsService {
       },
     });
 
+    // Phát sự kiện realtime an toàn
+    try {
+      this.notificationsGateway.sendNotificationReadToUser(userId, {
+        id: updated.id,
+        isRead: updated.isRead,
+        readAt: updated.readAt,
+      });
+    } catch (err: any) {
+      this.logger.warn(`Lỗi phát socket notification.read: ${err?.message}`);
+    }
+
     return {
       message: 'Đánh dấu đã đọc thông báo thành công',
       notification: updated,
@@ -117,8 +136,10 @@ export class NotificationsService {
 
   /**
    * Đánh dấu tất cả thông báo của người dùng là đã đọc
+   * Cập nhật DB trước, sau đó phát realtime event.
    */
   async markAllAsRead(userId: string) {
+    const readAt = new Date();
     const result = await this.prisma.notification.updateMany({
       where: {
         recipientId: userId,
@@ -126,9 +147,17 @@ export class NotificationsService {
       },
       data: {
         isRead: true,
-        readAt: new Date(),
+        readAt,
       },
     });
+
+    try {
+      this.notificationsGateway.sendNotificationReadAllToUser(userId, {
+        readAt,
+      });
+    } catch (err: any) {
+      this.logger.warn(`Lỗi phát socket notification.read_all: ${err?.message}`);
+    }
 
     return {
       message: 'Đã đánh dấu tất cả thông báo là đã đọc',
@@ -137,10 +166,10 @@ export class NotificationsService {
   }
 
   /**
-   * Internal Service: Tạo một thông báo
+   * Internal Service: Tạo một thông báo trong DB trước, sau đó phát realtime WebSocket
    */
   async createNotification(input: CreateNotificationInput) {
-    return this.prisma.notification.create({
+    const notification = await this.prisma.notification.create({
       data: {
         recipientId: input.recipientId,
         title: input.title,
@@ -149,6 +178,26 @@ export class NotificationsService {
         referenceId: input.referenceId,
       },
     });
+
+    // Phát event realtime tới đúng user
+    try {
+      this.notificationsGateway.sendNotificationToUser(input.recipientId, {
+        id: notification.id,
+        type: notification.type,
+        title: notification.title,
+        content: notification.content,
+        createdAt: notification.createdAt,
+        isRead: notification.isRead,
+        readAt: notification.readAt,
+        referenceId: notification.referenceId,
+      });
+    } catch (err: any) {
+      this.logger.warn(
+        `Lỗi khi phát notification.created tới user ${input.recipientId}: ${err?.message}`,
+      );
+    }
+
+    return notification;
   }
 
   /**
@@ -184,6 +233,24 @@ export class NotificationsService {
     const result = await this.prisma.notification.createMany({
       data: notificationsData,
     });
+
+    // Phát socket cho từng học sinh
+    for (const item of notificationsData) {
+      try {
+        this.notificationsGateway.sendNotificationToUser(item.recipientId, {
+          id: '',
+          type: item.type,
+          title: item.title,
+          content: item.content,
+          createdAt: new Date(),
+          isRead: false,
+          readAt: null,
+          referenceId: item.referenceId ?? null,
+        });
+      } catch (err: any) {
+        this.logger.warn(`Lỗi phát socket tới student ${item.recipientId}: ${err?.message}`);
+      }
+    }
 
     return result;
   }

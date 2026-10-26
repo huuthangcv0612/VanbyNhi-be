@@ -9,6 +9,7 @@ import { NotificationsService } from '../notifications/notifications.service.js'
 import {
   CalendarNotificationStatus,
   NotificationType,
+  ScheduleStatus,
 } from '../../generated/prisma/client.js';
 
 @Injectable()
@@ -18,6 +19,16 @@ export class CalendarNotificationWorkerService
   private readonly logger = new Logger(CalendarNotificationWorkerService.name);
   private timer: NodeJS.Timeout | null = null;
   private isProcessing = false;
+
+  // Cấu hình Grace Period và Concurrency
+  // 1. Quá hạn nhắc tối đa 60 phút: Nếu server sập quá lâu, không gửi bù ồ ạt
+  static readonly GRACE_PERIOD_MS = 60 * 60 * 1000;
+  // 2. Không gửi nếu buổi học đã kết thúc hoặc đã bắt đầu quá 15 phút
+  static readonly MAX_LATE_AFTER_START_MS = 15 * 60 * 1000;
+  // 3. Khôi phục job bị treo sau 5 phút
+  static readonly STUCK_JOB_TIMEOUT_MS = 5 * 60 * 1000;
+  // 4. Giới hạn số lần thử lại tối đa
+  static readonly MAX_RETRIES = 3;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -61,17 +72,17 @@ export class CalendarNotificationWorkerService
   }
 
   /**
-   * Tự động khôi phục các job PROCESSING bị treo (quá 5 phút chưa hoàn tất do sự cố tiến trình)
+   * Tự động khôi phục các job PROCESSING bị treo (quá 5 phút chưa hoàn tất do sự cố tiến trình / crash)
    */
   async recoverStuckProcessingJobs(): Promise<number> {
-    const stuckThreshold = new Date(Date.now() - 5 * 60 * 1000);
+    const stuckThreshold = new Date(Date.now() - CalendarNotificationWorkerService.STUCK_JOB_TIMEOUT_MS);
 
-    // 1. Nếu retryCount < 3: đưa về PENDING để worker xử lý lại
+    // 1. Nếu retryCount < MAX_RETRIES: đưa về PENDING để worker xử lý lại
     const recovered = await this.prisma.calendarNotification.updateMany({
       where: {
         status: CalendarNotificationStatus.PROCESSING,
         updatedAt: { lte: stuckThreshold },
-        retryCount: { lt: 3 },
+        retryCount: { lt: CalendarNotificationWorkerService.MAX_RETRIES },
       },
       data: {
         status: CalendarNotificationStatus.PENDING,
@@ -86,16 +97,16 @@ export class CalendarNotificationWorkerService
       );
     }
 
-    // 2. Nếu retryCount >= 3: chuyển FAILED hẳn
+    // 2. Nếu retryCount >= MAX_RETRIES: chuyển FAILED hẳn
     await this.prisma.calendarNotification.updateMany({
       where: {
         status: CalendarNotificationStatus.PROCESSING,
         updatedAt: { lte: stuckThreshold },
-        retryCount: { gte: 3 },
+        retryCount: { gte: CalendarNotificationWorkerService.MAX_RETRIES },
       },
       data: {
         status: CalendarNotificationStatus.FAILED,
-        error: 'Tiến trình bị treo và đã vượt quá giới hạn thử lại (3 lần)',
+        error: `Tiến trình bị treo và đã vượt quá giới hạn thử lại (${CalendarNotificationWorkerService.MAX_RETRIES} lần)`,
       },
     });
 
@@ -103,19 +114,21 @@ export class CalendarNotificationWorkerService
   }
 
   /**
-   * Xử lý các thông báo nhắc lịch đến hạn (Hỗ trợ chống trùng lặp và đa tiến trình)
+   * Xử lý các thông báo nhắc lịch đến hạn (Hỗ trợ chống trùng lặp, graceful recovery và đa worker)
    */
   async processPendingNotifications(): Promise<{
     processed: number;
     sent: number;
+    skipped: number;
     failed: number;
   }> {
     if (this.isProcessing) {
-      return { processed: 0, sent: 0, failed: 0 };
+      return { processed: 0, sent: 0, skipped: 0, failed: 0 };
     }
 
     this.isProcessing = true;
     let sentCount = 0;
+    let skippedCount = 0;
     let failedCount = 0;
 
     try {
@@ -134,7 +147,7 @@ export class CalendarNotificationWorkerService
             },
             {
               status: CalendarNotificationStatus.FAILED,
-              retryCount: { lt: 3 },
+              retryCount: { lt: CalendarNotificationWorkerService.MAX_RETRIES },
               updatedAt: { lte: new Date(now.getTime() - 60 * 1000) },
               scheduledAt: {
                 lte: now,
@@ -153,6 +166,7 @@ export class CalendarNotificationWorkerService
               endAt: true,
               address: true,
               meetUrl: true,
+              status: true,
             },
           },
           recipient: {
@@ -160,6 +174,7 @@ export class CalendarNotificationWorkerService
               id: true,
               fullName: true,
               role: true,
+              isActive: true,
             },
           },
         },
@@ -184,21 +199,91 @@ export class CalendarNotificationWorkerService
         }
 
         try {
-          const timeFormatted = this.formatVietnamDateTime(item.event.startAt);
-          const locationDetails = item.event.meetUrl
-            ? `Google Meet: ${item.event.meetUrl}`
-            : item.event.address
-              ? `Địa điểm: ${item.event.address}`
+          const event = item.event;
+          const recipient = item.recipient;
+
+          // --- KIỂM TRA TÍNH HỢP LỆ VÀ GRACE PERIOD ---
+          // 1. Người nhận không còn active hoặc không tồn tại
+          if (!recipient || !recipient.isActive) {
+            await this.prisma.calendarNotification.update({
+              where: { id: item.id },
+              data: {
+                status: CalendarNotificationStatus.CANCELLED,
+                error: 'Người nhận đã bị vô hiệu hóa hoặc không tồn tại',
+              },
+            });
+            skippedCount++;
+            continue;
+          }
+
+          // 2. Buổi học đã bị hủy (CANCELLED)
+          if (event.status === ScheduleStatus.CANCELLED) {
+            await this.prisma.calendarNotification.update({
+              where: { id: item.id },
+              data: {
+                status: CalendarNotificationStatus.CANCELLED,
+                error: 'Buổi học đã bị hủy',
+              },
+            });
+            skippedCount++;
+            continue;
+          }
+
+          // 3. Buổi học đã kết thúc
+          if (now >= event.endAt) {
+            await this.prisma.calendarNotification.update({
+              where: { id: item.id },
+              data: {
+                status: CalendarNotificationStatus.CANCELLED,
+                error: 'Bỏ qua do buổi học đã kết thúc',
+              },
+            });
+            skippedCount++;
+            continue;
+          }
+
+          // 4. Buổi học đã bắt đầu quá 15 phút (nhắc muộn không còn ý nghĩa)
+          if (now.getTime() - event.startAt.getTime() > CalendarNotificationWorkerService.MAX_LATE_AFTER_START_MS) {
+            await this.prisma.calendarNotification.update({
+              where: { id: item.id },
+              data: {
+                status: CalendarNotificationStatus.CANCELLED,
+                error: 'Bỏ qua do buổi học đã diễn ra quá 15 phút',
+              },
+            });
+            skippedCount++;
+            continue;
+          }
+
+          // 5. Grace period: Thời điểm dự kiến gửi đã quá 60 phút trước (do outage server dài hạn)
+          if (now.getTime() - item.scheduledAt.getTime() > CalendarNotificationWorkerService.GRACE_PERIOD_MS) {
+            await this.prisma.calendarNotification.update({
+              where: { id: item.id },
+              data: {
+                status: CalendarNotificationStatus.CANCELLED,
+                error: 'Bỏ qua nhắc nhở do vượt quá Grace Period (60 phút)',
+              },
+            });
+            skippedCount++;
+            continue;
+          }
+
+          // --- ĐỊNH DẠNG NỘI DUNG VÀ GỬI THÔNG BÁO ---
+          const timeFormatted = this.formatVietnamDateTime(event.startAt);
+          const locationDetails = event.meetUrl
+            ? `Google Meet: ${event.meetUrl}`
+            : event.address
+              ? `Địa điểm: ${event.address}`
               : '';
 
-          const content = `Ca dạy "${item.event.title}" sẽ diễn ra vào lúc ${timeFormatted}.${
+          const content = `Ca dạy "${event.title}" sẽ diễn ra vào lúc ${timeFormatted}.${
             locationDetails ? ` (${locationDetails})` : ''
           }`;
 
-          // Tạo thông báo in-app (Trong ứng dụng)
+          // Tạo thông báo in-app (Trong DB trước, tự động phát WebSocket tới phòng user:{userId})
           await this.notificationsService.createNotification({
             recipientId: item.recipientId,
-            title: `Nhắc lịch ca dạy: ${item.event.title}`,
+            title: `Nhắc lịch ca dạy: ${event.title}`,
             content,
             type: NotificationType.CALENDAR,
             referenceId: item.eventId,
@@ -237,6 +322,7 @@ export class CalendarNotificationWorkerService
       return {
         processed: dueNotifications.length,
         sent: sentCount,
+        skipped: skippedCount,
         failed: failedCount,
       };
     } finally {

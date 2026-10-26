@@ -3,6 +3,7 @@ import { CalendarNotificationWorkerService } from './calendar-notification-worke
 import {
   CalendarNotificationStatus,
   NotificationType,
+  ScheduleStatus,
   UserRole,
 } from '../../generated/prisma/client.js';
 
@@ -35,24 +36,27 @@ describe('CalendarNotificationWorkerService', () => {
   });
 
   it('xử lý và gửi thành công thông báo nhắc lịch đến hạn', async () => {
+    const now = Date.now();
     const dueNotification = {
       id: 'notif-1',
       eventId: 'evt-1',
       recipientId: 'rec-1',
       status: CalendarNotificationStatus.PENDING,
-      scheduledAt: new Date(Date.now() - 60000), // Quá khứ 1 phút
+      scheduledAt: new Date(now - 60000), // Quá khứ 1 phút (vẫn trong grace period)
       event: {
         id: 'evt-1',
         title: 'Luyện đề đại học',
-        startAt: new Date('2026-10-15T08:00:00Z'),
-        endAt: new Date('2026-10-15T10:00:00Z'),
+        startAt: new Date(now + 15 * 60 * 1000), // Sắp diễn ra sau 15p
+        endAt: new Date(now + 75 * 60 * 1000),
         address: 'Hà Nội',
         meetUrl: 'https://meet.google.com/test-meet',
+        status: ScheduleStatus.SCHEDULED,
       },
       recipient: {
         id: 'rec-1',
         fullName: 'Nguyễn Văn A',
         role: UserRole.STUDENT,
+        isActive: true,
       },
     };
 
@@ -73,6 +77,7 @@ describe('CalendarNotificationWorkerService', () => {
 
     expect(result.processed).toBe(1);
     expect(result.sent).toBe(1);
+    expect(result.skipped).toBe(0);
     expect(result.failed).toBe(0);
 
     expect(prismaMock.calendarNotification.updateMany).toHaveBeenCalledWith({
@@ -109,8 +114,14 @@ describe('CalendarNotificationWorkerService', () => {
       id: 'notif-2',
       status: CalendarNotificationStatus.PENDING,
       scheduledAt: new Date(),
-      event: { id: 'e2', title: 'Tập huấn', startAt: new Date() },
-      recipient: { id: 'r2' },
+      event: {
+        id: 'e2',
+        title: 'Tập huấn',
+        startAt: new Date(Date.now() + 10000),
+        endAt: new Date(Date.now() + 60000),
+        status: ScheduleStatus.SCHEDULED,
+      },
+      recipient: { id: 'r2', isActive: true },
     };
 
     prismaMock.calendarNotification.findMany.mockResolvedValue([
@@ -127,13 +138,126 @@ describe('CalendarNotificationWorkerService', () => {
     expect(prismaMock.calendarNotification.update).not.toHaveBeenCalled();
   });
 
+  it('bỏ qua và chuyển sang CANCELLED nếu buổi học đã bị hủy (CANCELLED)', async () => {
+    const cancelledNotification = {
+      id: 'notif-cancelled',
+      eventId: 'evt-c',
+      recipientId: 'rec-c',
+      status: CalendarNotificationStatus.PENDING,
+      scheduledAt: new Date(Date.now() - 1000),
+      event: {
+        id: 'evt-c',
+        title: 'Lớp hủy',
+        startAt: new Date(Date.now() + 10000),
+        endAt: new Date(Date.now() + 60000),
+        status: ScheduleStatus.CANCELLED,
+      },
+      recipient: { id: 'rec-c', isActive: true },
+    };
+
+    prismaMock.calendarNotification.findMany.mockResolvedValue([
+      cancelledNotification,
+    ]);
+    prismaMock.calendarNotification.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await worker.processPendingNotifications();
+
+    expect(result.skipped).toBe(1);
+    expect(result.sent).toBe(0);
+    expect(notificationsServiceMock.createNotification).not.toHaveBeenCalled();
+    expect(prismaMock.calendarNotification.update).toHaveBeenCalledWith({
+      where: { id: 'notif-cancelled' },
+      data: {
+        status: CalendarNotificationStatus.CANCELLED,
+        error: 'Buổi học đã bị hủy',
+      },
+    });
+  });
+
+  it('bỏ qua và chuyển sang CANCELLED nếu buổi học đã kết thúc', async () => {
+    const finishedNotification = {
+      id: 'notif-finished',
+      eventId: 'evt-f',
+      recipientId: 'rec-f',
+      status: CalendarNotificationStatus.PENDING,
+      scheduledAt: new Date(Date.now() - 120 * 60 * 1000),
+      event: {
+        id: 'evt-f',
+        title: 'Lớp đã xong',
+        startAt: new Date(Date.now() - 90 * 60 * 1000),
+        endAt: new Date(Date.now() - 30 * 60 * 1000), // Đã kết thúc
+        status: ScheduleStatus.SCHEDULED,
+      },
+      recipient: { id: 'rec-f', isActive: true },
+    };
+
+    prismaMock.calendarNotification.findMany.mockResolvedValue([
+      finishedNotification,
+    ]);
+    prismaMock.calendarNotification.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await worker.processPendingNotifications();
+
+    expect(result.skipped).toBe(1);
+    expect(result.sent).toBe(0);
+    expect(prismaMock.calendarNotification.update).toHaveBeenCalledWith({
+      where: { id: 'notif-finished' },
+      data: {
+        status: CalendarNotificationStatus.CANCELLED,
+        error: 'Bỏ qua do buổi học đã kết thúc',
+      },
+    });
+  });
+
+  it('bỏ qua nếu thời điểm dự kiến gửi vượt quá Grace Period (60 phút)', async () => {
+    const expiredNotification = {
+      id: 'notif-grace-expired',
+      eventId: 'evt-g',
+      recipientId: 'rec-g',
+      status: CalendarNotificationStatus.PENDING,
+      scheduledAt: new Date(Date.now() - 65 * 60 * 1000), // Quá 65 phút
+      event: {
+        id: 'evt-g',
+        title: 'Lớp quá hạn',
+        startAt: new Date(Date.now() + 10 * 60 * 1000),
+        endAt: new Date(Date.now() + 60 * 60 * 1000),
+        status: ScheduleStatus.SCHEDULED,
+      },
+      recipient: { id: 'rec-g', isActive: true },
+    };
+
+    prismaMock.calendarNotification.findMany.mockResolvedValue([
+      expiredNotification,
+    ]);
+    prismaMock.calendarNotification.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await worker.processPendingNotifications();
+
+    expect(result.skipped).toBe(1);
+    expect(result.sent).toBe(0);
+    expect(prismaMock.calendarNotification.update).toHaveBeenCalledWith({
+      where: { id: 'notif-grace-expired' },
+      data: {
+        status: CalendarNotificationStatus.CANCELLED,
+        error: 'Bỏ qua nhắc nhở do vượt quá Grace Period (60 phút)',
+      },
+    });
+  });
+
   it('xử lý lỗi khi gửi thông báo: cập nhật status thành FAILED và tăng retryCount', async () => {
+    const now = Date.now();
     const dueNotification = {
       id: 'notif-fail',
       status: CalendarNotificationStatus.PENDING,
-      scheduledAt: new Date(),
-      event: { id: 'e3', title: 'Ca lỗi', startAt: new Date() },
-      recipient: { id: 'r3' },
+      scheduledAt: new Date(now - 1000),
+      event: {
+        id: 'e3',
+        title: 'Ca lỗi',
+        startAt: new Date(now + 15 * 60 * 1000),
+        endAt: new Date(now + 60 * 60 * 1000),
+        status: ScheduleStatus.SCHEDULED,
+      },
+      recipient: { id: 'r3', isActive: true },
     };
 
     prismaMock.calendarNotification.findMany.mockResolvedValue([
