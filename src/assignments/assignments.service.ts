@@ -669,7 +669,16 @@ export class AssignmentsService {
       throw new ForbiddenException('Bạn không có quyền xóa bài tập này');
     }
 
-    // Xóa assignment trong DB (attachments & submissions cascade delete)
+    const submissionCount = await this.prisma.assignmentSubmission.count({
+      where: { assignmentId: id },
+    });
+    if (submissionCount > 0) {
+      throw new BadRequestException(
+        'Không thể xóa bài tập đã có học sinh nộp bài.',
+      );
+    }
+
+    // Xóa assignment trong DB
     await this.prisma.assignment.delete({
       where: { id },
     });
