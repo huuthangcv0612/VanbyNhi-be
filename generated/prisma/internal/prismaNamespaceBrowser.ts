@@ -70,6 +70,9 @@ export const ModelName = {
   ClassMaterial: 'ClassMaterial',
   DocumentCategory: 'DocumentCategory',
   Document: 'Document',
+  DocumentVersion: 'DocumentVersion',
+  DocumentAsset: 'DocumentAsset',
+  DocumentExportJob: 'DocumentExportJob',
   UploadSession: 'UploadSession',
   Notification: 'Notification',
   RefreshToken: 'RefreshToken',
@@ -437,12 +440,61 @@ export const DocumentScalarFieldEnum = {
   checksum: 'checksum',
   ownerId: 'ownerId',
   categoryId: 'categoryId',
+  type: 'type',
+  status: 'status',
+  revision: 'revision',
+  content: 'content',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const DocumentVersionScalarFieldEnum = {
+  id: 'id',
+  documentId: 'documentId',
+  revision: 'revision',
+  title: 'title',
+  content: 'content',
+  actorId: 'actorId',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type DocumentVersionScalarFieldEnum = (typeof DocumentVersionScalarFieldEnum)[keyof typeof DocumentVersionScalarFieldEnum]
+
+
+export const DocumentAssetScalarFieldEnum = {
+  id: 'id',
+  documentId: 'documentId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  checksum: 'checksum',
+  createdAt: 'createdAt'
+} as const
+
+export type DocumentAssetScalarFieldEnum = (typeof DocumentAssetScalarFieldEnum)[keyof typeof DocumentAssetScalarFieldEnum]
+
+
+export const DocumentExportJobScalarFieldEnum = {
+  id: 'id',
+  documentId: 'documentId',
+  revision: 'revision',
+  format: 'format',
+  status: 'status',
+  storageKey: 'storageKey',
+  fileSize: 'fileSize',
+  errorMessage: 'errorMessage',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentExportJobScalarFieldEnum = (typeof DocumentExportJobScalarFieldEnum)[keyof typeof DocumentExportJobScalarFieldEnum]
 
 
 export const UploadSessionScalarFieldEnum = {
@@ -674,6 +726,21 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -688,4 +755,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

@@ -192,6 +192,41 @@ export const AttachmentCleanupStatus = {
 export type AttachmentCleanupStatus = (typeof AttachmentCleanupStatus)[keyof typeof AttachmentCleanupStatus]
 
 
+export const DocumentType = {
+  STATIC_FILE: 'STATIC_FILE',
+  STRUCTURED_NOTE: 'STRUCTURED_NOTE'
+} as const
+
+export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType]
+
+
+export const DocumentStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type DocumentStatus = (typeof DocumentStatus)[keyof typeof DocumentStatus]
+
+
+export const DocumentExportStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type DocumentExportStatus = (typeof DocumentExportStatus)[keyof typeof DocumentExportStatus]
+
+
+export const DocumentExportFormat = {
+  DOCX: 'DOCX',
+  PDF: 'PDF'
+} as const
+
+export type DocumentExportFormat = (typeof DocumentExportFormat)[keyof typeof DocumentExportFormat]
+
+
 export const GoogleConnectionStatus = {
   CONNECTED: 'CONNECTED',
   DISCONNECTED: 'DISCONNECTED',

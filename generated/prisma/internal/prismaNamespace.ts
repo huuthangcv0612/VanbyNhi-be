@@ -416,6 +416,9 @@ export const ModelName = {
   ClassMaterial: 'ClassMaterial',
   DocumentCategory: 'DocumentCategory',
   Document: 'Document',
+  DocumentVersion: 'DocumentVersion',
+  DocumentAsset: 'DocumentAsset',
+  DocumentExportJob: 'DocumentExportJob',
   UploadSession: 'UploadSession',
   Notification: 'Notification',
   RefreshToken: 'RefreshToken',
@@ -444,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "submissionReview" | "assignmentAttachment" | "submissionAttachment" | "reviewAttachment" | "classMaterial" | "documentCategory" | "document" | "uploadSession" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification" | "attendanceSession" | "attendanceCorrectionRequest" | "monthlyAttendanceSummary" | "classAttendanceConfig" | "userGoogleAccount" | "classMeetSpace"
+    modelProps: "user" | "authAccount" | "class" | "enrollment" | "classSession" | "attendance" | "attendanceChangeLog" | "tuitionFee" | "tuitionPayment" | "lessonRecord" | "assignment" | "assignmentSubmission" | "submissionReview" | "assignmentAttachment" | "submissionAttachment" | "reviewAttachment" | "classMaterial" | "documentCategory" | "document" | "documentVersion" | "documentAsset" | "documentExportJob" | "uploadSession" | "notification" | "refreshToken" | "teacherCalendarLabel" | "teacherCalendarEvent" | "calendarEventParticipant" | "calendarNotification" | "attendanceSession" | "attendanceCorrectionRequest" | "monthlyAttendanceSummary" | "classAttendanceConfig" | "userGoogleAccount" | "classMeetSpace"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1854,6 +1857,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DocumentVersion: {
+      payload: Prisma.$DocumentVersionPayload<ExtArgs>
+      fields: Prisma.DocumentVersionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DocumentVersionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DocumentVersionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>
+        }
+        findFirst: {
+          args: Prisma.DocumentVersionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DocumentVersionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>
+        }
+        findMany: {
+          args: Prisma.DocumentVersionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>[]
+        }
+        create: {
+          args: Prisma.DocumentVersionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>
+        }
+        createMany: {
+          args: Prisma.DocumentVersionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DocumentVersionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>[]
+        }
+        delete: {
+          args: Prisma.DocumentVersionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>
+        }
+        update: {
+          args: Prisma.DocumentVersionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>
+        }
+        deleteMany: {
+          args: Prisma.DocumentVersionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DocumentVersionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DocumentVersionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>[]
+        }
+        upsert: {
+          args: Prisma.DocumentVersionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentVersionPayload>
+        }
+        aggregate: {
+          args: Prisma.DocumentVersionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDocumentVersion>
+        }
+        groupBy: {
+          args: Prisma.DocumentVersionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentVersionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DocumentVersionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentVersionCountAggregateOutputType> | number
+        }
+      }
+    }
+    DocumentAsset: {
+      payload: Prisma.$DocumentAssetPayload<ExtArgs>
+      fields: Prisma.DocumentAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DocumentAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DocumentAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.DocumentAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DocumentAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>
+        }
+        findMany: {
+          args: Prisma.DocumentAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>[]
+        }
+        create: {
+          args: Prisma.DocumentAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>
+        }
+        createMany: {
+          args: Prisma.DocumentAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DocumentAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.DocumentAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>
+        }
+        update: {
+          args: Prisma.DocumentAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.DocumentAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DocumentAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DocumentAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.DocumentAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.DocumentAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDocumentAsset>
+        }
+        groupBy: {
+          args: Prisma.DocumentAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DocumentAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentAssetCountAggregateOutputType> | number
+        }
+      }
+    }
+    DocumentExportJob: {
+      payload: Prisma.$DocumentExportJobPayload<ExtArgs>
+      fields: Prisma.DocumentExportJobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DocumentExportJobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DocumentExportJobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>
+        }
+        findFirst: {
+          args: Prisma.DocumentExportJobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DocumentExportJobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>
+        }
+        findMany: {
+          args: Prisma.DocumentExportJobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>[]
+        }
+        create: {
+          args: Prisma.DocumentExportJobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>
+        }
+        createMany: {
+          args: Prisma.DocumentExportJobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DocumentExportJobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>[]
+        }
+        delete: {
+          args: Prisma.DocumentExportJobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>
+        }
+        update: {
+          args: Prisma.DocumentExportJobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>
+        }
+        deleteMany: {
+          args: Prisma.DocumentExportJobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DocumentExportJobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DocumentExportJobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>[]
+        }
+        upsert: {
+          args: Prisma.DocumentExportJobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentExportJobPayload>
+        }
+        aggregate: {
+          args: Prisma.DocumentExportJobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDocumentExportJob>
+        }
+        groupBy: {
+          args: Prisma.DocumentExportJobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentExportJobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DocumentExportJobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentExportJobCountAggregateOutputType> | number
+        }
+      }
+    }
     UploadSession: {
       payload: Prisma.$UploadSessionPayload<ExtArgs>
       fields: Prisma.UploadSessionFieldRefs
@@ -3191,12 +3416,61 @@ export const DocumentScalarFieldEnum = {
   checksum: 'checksum',
   ownerId: 'ownerId',
   categoryId: 'categoryId',
+  type: 'type',
+  status: 'status',
+  revision: 'revision',
+  content: 'content',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const DocumentVersionScalarFieldEnum = {
+  id: 'id',
+  documentId: 'documentId',
+  revision: 'revision',
+  title: 'title',
+  content: 'content',
+  actorId: 'actorId',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type DocumentVersionScalarFieldEnum = (typeof DocumentVersionScalarFieldEnum)[keyof typeof DocumentVersionScalarFieldEnum]
+
+
+export const DocumentAssetScalarFieldEnum = {
+  id: 'id',
+  documentId: 'documentId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  checksum: 'checksum',
+  createdAt: 'createdAt'
+} as const
+
+export type DocumentAssetScalarFieldEnum = (typeof DocumentAssetScalarFieldEnum)[keyof typeof DocumentAssetScalarFieldEnum]
+
+
+export const DocumentExportJobScalarFieldEnum = {
+  id: 'id',
+  documentId: 'documentId',
+  revision: 'revision',
+  format: 'format',
+  status: 'status',
+  storageKey: 'storageKey',
+  fileSize: 'fileSize',
+  errorMessage: 'errorMessage',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentExportJobScalarFieldEnum = (typeof DocumentExportJobScalarFieldEnum)[keyof typeof DocumentExportJobScalarFieldEnum]
 
 
 export const UploadSessionScalarFieldEnum = {
@@ -3428,6 +3702,21 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -3442,6 +3731,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -3664,6 +3962,76 @@ export type EnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'MaterialType[]'
  */
 export type ListEnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentType'
+ */
+export type EnumDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentType'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentType[]'
+ */
+export type ListEnumDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentStatus'
+ */
+export type EnumDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentStatus[]'
+ */
+export type ListEnumDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentExportFormat'
+ */
+export type EnumDocumentExportFormatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentExportFormat'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentExportFormat[]'
+ */
+export type ListEnumDocumentExportFormatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentExportFormat[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentExportStatus'
+ */
+export type EnumDocumentExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentExportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentExportStatus[]'
+ */
+export type ListEnumDocumentExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentExportStatus[]'>
     
 
 
@@ -3990,6 +4358,9 @@ export type GlobalOmitConfig = {
   classMaterial?: Prisma.ClassMaterialOmit
   documentCategory?: Prisma.DocumentCategoryOmit
   document?: Prisma.DocumentOmit
+  documentVersion?: Prisma.DocumentVersionOmit
+  documentAsset?: Prisma.DocumentAssetOmit
+  documentExportJob?: Prisma.DocumentExportJobOmit
   uploadSession?: Prisma.UploadSessionOmit
   notification?: Prisma.NotificationOmit
   refreshToken?: Prisma.RefreshTokenOmit

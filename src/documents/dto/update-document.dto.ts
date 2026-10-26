@@ -1,4 +1,5 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsString, MaxLength, IsEnum } from 'class-validator';
+import { DocumentStatus } from '../../../generated/prisma/client.js';
 
 export class UpdateDocumentDto {
   @IsOptional()
@@ -13,4 +14,8 @@ export class UpdateDocumentDto {
   @IsOptional()
   @IsString({ message: 'Mã danh mục phải là chuỗi ký tự' })
   categoryId?: string | null;
+
+  @IsOptional()
+  @IsEnum(DocumentStatus, { message: 'Trạng thái tài liệu không hợp lệ' })
+  status?: DocumentStatus;
 }

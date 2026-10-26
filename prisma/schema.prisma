@@ -137,6 +137,29 @@ enum AttachmentCleanupStatus {
   CLEANED
   FAILED
 }
+enum DocumentType {
+  STATIC_FILE
+  STRUCTURED_NOTE
+}
+
+enum DocumentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum DocumentExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum DocumentExportFormat {
+  DOCX
+  PDF
+}
+
 
 enum GoogleConnectionStatus {
   CONNECTED
@@ -187,6 +210,9 @@ model User {
   calendarParticipations  CalendarEventParticipant[] @relation("StudentCalendarParticipations")
   calendarNotifications   CalendarNotification[]   @relation("CalendarNotificationRecipient")
   documents               Document[]               @relation("UserDocuments")
+  documentVersions        DocumentVersion[]        @relation("VersionActor")
+  documentExports         DocumentExportJob[]      @relation("ExportCreator")
+
   documentCategories      DocumentCategory[]       @relation("TeacherCategories")
   uploadSessions          UploadSession[]
   closedAttendanceSessions   AttendanceSession[]            @relation("AttendanceSessionCloser")
@@ -614,27 +640,90 @@ model DocumentCategory {
 }
 
 model Document {
-  id           String    @id @default(cuid())
+  id           String         @id @default(cuid())
   title        String
-  description  String?   @db.Text
-  originalName String
-  storageKey   String    @unique
-  mimeType     String
-  sizeBytes    BigInt
+  description  String?        @db.Text
+  originalName String?
+  storageKey   String?        @unique
+  mimeType     String         @default("application/vnd.tiptap+json")
+  sizeBytes    BigInt         @default(0)
   checksum     String?
   ownerId      String
   categoryId   String?
+  type         DocumentType   @default(STATIC_FILE)
+  status       DocumentStatus @default(PUBLISHED)
+  revision     Int            @default(1)
+  content      Json?
   deletedAt    DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
-  owner     User              @relation("UserDocuments", fields: [ownerId], references: [id], onDelete: Restrict)
-  category  DocumentCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  materials ClassMaterial[]
+  owner      User                @relation("UserDocuments", fields: [ownerId], references: [id], onDelete: Restrict)
+  category   DocumentCategory?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  materials  ClassMaterial[]
+  versions   DocumentVersion[]
+  assets     DocumentAsset[]
+  exportJobs DocumentExportJob[]
 
   @@index([ownerId, deletedAt])
   @@index([categoryId])
   @@index([createdAt])
+  @@index([type, status])
+}
+
+model DocumentVersion {
+  id          String   @id @default(cuid())
+  documentId  String
+  revision    Int
+  title       String
+  content     Json
+  actorId     String
+  reason      String?
+  createdAt   DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  actor    User     @relation("VersionActor", fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@unique([documentId, revision])
+  @@index([documentId, createdAt])
+  @@index([actorId])
+}
+
+model DocumentAsset {
+  id           String   @id @default(cuid())
+  documentId   String
+  storageKey   String   @unique
+  originalName String
+  mimeType     String
+  sizeBytes    BigInt
+  checksum     String?
+  createdAt    DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([storageKey])
+}
+
+model DocumentExportJob {
+  id           String               @id @default(cuid())
+  documentId   String
+  revision     Int
+  format       DocumentExportFormat
+  status       DocumentExportStatus @default(PENDING)
+  storageKey   String?              @unique
+  fileSize     BigInt?
+  errorMessage String?              @db.Text
+  createdById  String
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  document  Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  createdBy User     @relation("ExportCreator", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([documentId, revision])
+  @@index([createdById])
+  @@index([status, createdAt])
 }
 
 model UploadSession {

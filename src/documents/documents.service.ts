@@ -11,6 +11,11 @@ import { R2StorageService } from '../storage/r2-storage.service.js';
 import {
   UploadTargetType,
   UploadSessionStatus,
+  DocumentType,
+  DocumentStatus,
+  DocumentExportStatus,
+  DocumentExportFormat,
+  UserRole,
   Prisma,
 } from '../../generated/prisma/client.js';
 import type { InitUploadDto } from './dto/init-upload.dto.js';
@@ -20,6 +25,15 @@ import type { UpdateDocumentDto } from './dto/update-document.dto.js';
 import type { CreateCategoryDto } from './dto/create-category.dto.js';
 import type { UpdateCategoryDto } from './dto/update-category.dto.js';
 import type { QueryCategoriesDto } from './dto/query-categories.dto.js';
+import type { CreateDocumentDto } from './dto/create-document.dto.js';
+import type { UpdateDocumentContentDto } from './dto/update-content.dto.js';
+import type { QueryVersionsDto } from './dto/query-versions.dto.js';
+import type { ImportDocumentDto } from './dto/import-document.dto.js';
+import type { ExportDocumentDto } from './dto/export-document.dto.js';
+import { validateAndSanitizeTiptapJson } from './utils/tiptap-validator.js';
+import { convertDocxBufferToTiptap } from './utils/docx-importer.js';
+import { convertTiptapToDocx } from './utils/docx-generator.js';
+import { convertTiptapToPdf } from './utils/pdf-generator.js';
 
 @Injectable()
 export class DocumentsService {
@@ -606,9 +620,13 @@ export class DocumentsService {
       throw new NotFoundException('Không tìm thấy tài liệu');
     }
 
+    if (!doc.storageKey) {
+      throw new BadRequestException('Tài liệu cấu trúc trực tuyến không có tệp tĩnh tải trực tiếp');
+    }
+
     const result = await this.r2StorageService.createPresignedGetUrl(
       doc.storageKey,
-      doc.originalName,
+      doc.originalName ?? undefined,
     );
 
     return {
@@ -725,7 +743,9 @@ export class DocumentsService {
       });
 
       try {
-        await this.r2StorageService.deleteObject(doc.storageKey);
+        if (doc.storageKey) {
+          await this.r2StorageService.deleteObject(doc.storageKey);
+        }
       } catch (err) {
         this.logger.error(
           `Không thể xóa object R2 ${doc.storageKey}: ${(err as Error).message}`,
@@ -737,4 +757,602 @@ export class DocumentsService {
       };
     }
   }
+
+  // ==================== TÀI LIỆU CẤU TRÚC, AUTOSAVE, VERSIONING, IMPORT/EXPORT ====================
+
+  /**
+   * Kiểm tra quyền xem tài liệu:
+   * 1. ADMIN luôn có quyền
+   * 2. Chủ sở hữu (Owner/Teacher) luôn có quyền
+   * 3. Học sinh (Student): Chỉ có quyền nếu tài liệu được chia sẻ vào lớp học mà học sinh là thành viên ACTIVE
+   *    và thỏa mãn accessStartTime/accessEndTime/isPublished.
+   */
+  async verifyUserCanViewDocument(user: { sub: string; role: UserRole }, documentId: string) {
+    const doc = await this.prisma.document.findUnique({
+      where: { id: documentId },
+      include: {
+        category: {
+          select: { id: true, name: true },
+        },
+        materials: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            classId: true,
+            sessionId: true,
+            isPublished: true,
+            accessStartTime: true,
+            accessEndTime: true,
+            class: {
+              select: { id: true, name: true, teacherId: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!doc || doc.deletedAt !== null) {
+      throw new NotFoundException('Không tìm thấy tài liệu');
+    }
+
+    if (user.role === UserRole.ADMIN || doc.ownerId === user.sub) {
+      return doc;
+    }
+
+    if (user.role === UserRole.STUDENT) {
+      const now = new Date();
+      // Lấy danh sách lớp mà tài liệu đang được gắn vào hợp lệ
+      const eligibleClassIds = doc.materials
+        .filter((mat) => {
+          if (!mat.isPublished) return false;
+          if (mat.accessStartTime && mat.accessStartTime > now) return false;
+          if (mat.accessEndTime && mat.accessEndTime < now) return false;
+          return true;
+        })
+        .map((mat) => mat.classId);
+
+      if (eligibleClassIds.length > 0) {
+        const activeEnrollment = await this.prisma.enrollment.findFirst({
+          where: {
+            studentId: user.sub,
+            classId: { in: eligibleClassIds },
+            status: 'ACTIVE',
+          },
+        });
+
+        if (activeEnrollment) {
+          return doc;
+        }
+      }
+    }
+
+    // Nếu là giáo viên khác không phải owner hoặc học sinh không thuộc lớp
+    throw new NotFoundException('Không tìm thấy tài liệu');
+  }
+
+  /**
+   * Kiểm tra quyền chỉnh sửa tài liệu:
+   * Chỉ Owner hoặc ADMIN mới có quyền chỉnh sửa.
+   */
+  async verifyUserCanEditDocument(user: { sub: string; role: UserRole }, documentId: string) {
+    const doc = await this.prisma.document.findUnique({
+      where: { id: documentId },
+    });
+
+    if (!doc || doc.deletedAt !== null) {
+      throw new NotFoundException('Không tìm thấy tài liệu');
+    }
+
+    if (user.role !== UserRole.ADMIN && doc.ownerId !== user.sub) {
+      throw new ForbiddenException('Bạn không có quyền chỉnh sửa tài liệu này');
+    }
+
+    return doc;
+  }
+
+  /**
+   * POST /documents: Tạo tài liệu cấu trúc mới
+   */
+  async createStructuredDocument(
+    userId: string,
+    dto: CreateDocumentDto,
+  ) {
+    let categoryId: string | null = null;
+    if (dto.categoryId) {
+      const cat = await this.prisma.documentCategory.findUnique({
+        where: { id: dto.categoryId },
+      });
+      if (!cat || cat.teacherId !== userId) {
+        throw new BadRequestException('Danh mục tài liệu không hợp lệ');
+      }
+      categoryId = dto.categoryId;
+    }
+
+    const initialContent = dto.content
+      ? validateAndSanitizeTiptapJson(dto.content)
+      : {
+          type: 'doc',
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: '' }],
+            },
+          ],
+        };
+
+    const doc = await this.prisma.$transaction(async (tx) => {
+      const newDoc = await tx.document.create({
+        data: {
+          title: dto.title.trim(),
+          description: dto.description?.trim(),
+          categoryId,
+          ownerId: userId,
+          type: DocumentType.STRUCTURED_NOTE,
+          status: dto.status ?? DocumentStatus.DRAFT,
+          mimeType: 'application/vnd.tiptap+json',
+          revision: 1,
+          content: initialContent as Prisma.InputJsonValue,
+          sizeBytes: BigInt(Buffer.byteLength(JSON.stringify(initialContent), 'utf8')),
+        },
+        include: {
+          category: { select: { id: true, name: true } },
+        },
+      });
+
+      // Tạo snapshot version 1 khởi tạo
+      await tx.documentVersion.create({
+        data: {
+          documentId: newDoc.id,
+          revision: 1,
+          title: newDoc.title,
+          content: initialContent as Prisma.InputJsonValue,
+          actorId: userId,
+          reason: 'Khởi tạo tài liệu',
+        },
+      });
+
+      return newDoc;
+    });
+
+    return {
+      message: 'Tạo tài liệu thành công',
+      document: this.formatDocument(doc),
+    };
+  }
+
+  /**
+   * GET /documents/:id: Lấy chi tiết tài liệu kèm nội dung theo quyền
+   */
+  async getDocumentByIdWithContent(user: { sub: string; role: UserRole }, id: string) {
+    const doc = await this.verifyUserCanViewDocument(user, id);
+    return this.formatDocument(doc);
+  }
+
+  /**
+   * PUT /documents/:id/content: Cập nhật nội dung có kiểm tra expectedRevision chống lost update (Optimistic Concurrency Control)
+   */
+  async updateDocumentContent(
+    user: { sub: string; role: UserRole },
+    id: string,
+    dto: UpdateDocumentContentDto,
+  ) {
+    await this.verifyUserCanEditDocument(user, id);
+
+    // Validate và sanitize JSON payload
+    const sanitizedContent = validateAndSanitizeTiptapJson(dto.content);
+    const contentSizeBytes = BigInt(
+      Buffer.byteLength(JSON.stringify(sanitizedContent), 'utf8'),
+    );
+
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        // Cập nhật có điều kiện: chỉ update khi revision == expectedRevision
+        const updateResult = await tx.document.updateMany({
+          where: {
+            id,
+            revision: dto.expectedRevision,
+            deletedAt: null,
+          },
+          data: {
+            content: sanitizedContent as Prisma.InputJsonValue,
+            revision: { increment: 1 },
+            sizeBytes: contentSizeBytes,
+          },
+        });
+
+        if (updateResult.count === 0) {
+          // Bị xung đột revision hoặc tài liệu đã bị xóa
+          const currentDoc = await tx.document.findUnique({
+            where: { id },
+            select: { revision: true, updatedAt: true },
+          });
+
+          throw new ConflictException({
+            statusCode: 409,
+            error: 'Conflict',
+            errorCode: 'REVISION_CONFLICT',
+            message:
+              'Xung đột phiên bản: Tài liệu đã được cập nhật bởi một phiên làm việc khác',
+            currentRevision: currentDoc?.revision ?? null,
+            expectedRevision: dto.expectedRevision,
+          });
+        }
+
+        const updatedDoc = await tx.document.findUniqueOrThrow({
+          where: { id },
+          select: { id: true, title: true, revision: true, updatedAt: true },
+        });
+
+        // Tạo snapshot version nếu có lý do hoặc theo mốc revision (mỗi 5 revisions hoặc có lý do cụ thể)
+        const shouldCreateSnapshot =
+          Boolean(dto.versionReason) || updatedDoc.revision % 5 === 0;
+
+        if (shouldCreateSnapshot) {
+          await tx.documentVersion.create({
+            data: {
+              documentId: id,
+              revision: updatedDoc.revision,
+              title: updatedDoc.title,
+              content: sanitizedContent as Prisma.InputJsonValue,
+              actorId: user.sub,
+              reason: dto.versionReason || `Lưu mốc phiên bản revision ${updatedDoc.revision}`,
+            },
+          });
+        }
+
+        return {
+          message: 'Lưu nội dung tài liệu thành công',
+          revision: updatedDoc.revision,
+          updatedAt: updatedDoc.updatedAt,
+        };
+      });
+    } catch (err: any) {
+      if (err instanceof ConflictException) {
+        throw err;
+      }
+      this.logger.error(`Lỗi khi lưu nội dung tài liệu ${id}: ${err.message}`);
+      throw err;
+    }
+  }
+
+  /**
+   * GET /documents/:id/versions: Danh sách lịch sử các phiên bản
+   */
+  async getDocumentVersions(
+    user: { sub: string; role: UserRole },
+    documentId: string,
+    query: QueryVersionsDto,
+  ) {
+    await this.verifyUserCanViewDocument(user, documentId);
+
+    const page = Math.max(1, query.page ?? 1);
+    const limit = Math.min(100, Math.max(1, query.limit ?? 10));
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.prisma.documentVersion.findMany({
+        where: { documentId },
+        select: {
+          id: true,
+          revision: true,
+          title: true,
+          reason: true,
+          createdAt: true,
+          actor: {
+            select: { id: true, fullName: true, role: true },
+          },
+        },
+        orderBy: { revision: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.documentVersion.count({ where: { documentId } }),
+    ]);
+
+    return {
+      items,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit) || 1,
+      },
+    };
+  }
+
+  /**
+   * POST /documents/:id/restore/:versionId: Khôi phục phiên bản snapshot tạo revision mới
+   */
+  async restoreDocumentVersion(
+    user: { sub: string; role: UserRole },
+    documentId: string,
+    versionId: string,
+  ) {
+    await this.verifyUserCanEditDocument(user, documentId);
+
+    const version = await this.prisma.documentVersion.findFirst({
+      where: { id: versionId, documentId },
+    });
+
+    if (!version) {
+      throw new NotFoundException('Không tìm thấy phiên bản lịch sử để khôi phục');
+    }
+
+    return await this.prisma.$transaction(async (tx) => {
+      const doc = await tx.document.findUniqueOrThrow({
+        where: { id: documentId },
+      });
+
+      const nextRevision = doc.revision + 1;
+      const contentSizeBytes = BigInt(
+        Buffer.byteLength(JSON.stringify(version.content), 'utf8'),
+      );
+
+      const updatedDoc = await tx.document.update({
+        where: { id: documentId },
+        data: {
+          content: version.content as Prisma.InputJsonValue,
+          revision: nextRevision,
+          sizeBytes: contentSizeBytes,
+        },
+      });
+
+      // Tạo snapshot mới cho hành động restore
+      await tx.documentVersion.create({
+        data: {
+          documentId,
+          revision: nextRevision,
+          title: updatedDoc.title,
+          content: version.content as Prisma.InputJsonValue,
+          actorId: user.sub,
+          reason: `Khôi phục từ phiên bản rev ${version.revision}`,
+        },
+      });
+
+      return {
+        message: `Đã khôi phục thành công từ phiên bản revision ${version.revision}`,
+        revision: nextRevision,
+        document: this.formatDocument(updatedDoc),
+      };
+    });
+  }
+
+  /**
+   * POST /documents/import: Nhập tài liệu DOCX từ file đã upload lên R2 qua presigned URL
+   */
+  async importDocxDocument(teacherId: string, dto: ImportDocumentDto) {
+    // 1. Kiểm tra session upload
+    const session = await this.prisma.uploadSession.findUnique({
+      where: { storageKey: dto.storageKey },
+    });
+
+    if (!session || session.userId !== teacherId) {
+      throw new ForbiddenException(
+        'Bạn không có quyền nhập tài liệu từ phiên upload này',
+      );
+    }
+
+    if (session.status === UploadSessionStatus.COMPLETED) {
+      // Idempotency: nếu đã import rồi, tìm document theo storageKey
+      const existing = await this.prisma.document.findFirst({
+        where: { storageKey: dto.storageKey },
+      });
+      if (existing) {
+        return {
+          message: 'Tài liệu đã được nhập trước đó',
+          document: this.formatDocument(existing),
+          warnings: [],
+        };
+      }
+    }
+
+    // 2. Tải buffer file DOCX từ R2
+    const docxBuffer = await this.r2StorageService.downloadObjectBuffer(
+      dto.storageKey,
+    );
+
+    // 3. Chuyển đổi DOCX -> Tiptap JSON
+    const { tiptapJson, warnings } = await convertDocxBufferToTiptap(docxBuffer);
+    const jsonSizeBytes = BigInt(
+      Buffer.byteLength(JSON.stringify(tiptapJson), 'utf8'),
+    );
+
+    const docTitle =
+      dto.title?.trim() || session.title?.trim() || session.originalName || 'Tài liệu nhập DOCX';
+
+    // 4. Lưu vào database trong transaction
+    const newDoc = await this.prisma.$transaction(async (tx) => {
+      await tx.uploadSession.update({
+        where: { id: session.id },
+        data: { status: UploadSessionStatus.COMPLETED },
+      });
+
+      const doc = await tx.document.create({
+        data: {
+          title: docTitle,
+          originalName: session.originalName,
+          storageKey: session.storageKey,
+          categoryId: dto.categoryId ?? session.categoryId,
+          ownerId: teacherId,
+          type: DocumentType.STRUCTURED_NOTE,
+          status: DocumentStatus.DRAFT,
+          mimeType: 'application/vnd.tiptap+json',
+          revision: 1,
+          content: tiptapJson as Prisma.InputJsonValue,
+          sizeBytes: jsonSizeBytes,
+        },
+        include: {
+          category: { select: { id: true, name: true } },
+        },
+      });
+
+      await tx.documentVersion.create({
+        data: {
+          documentId: doc.id,
+          revision: 1,
+          title: doc.title,
+          content: tiptapJson as Prisma.InputJsonValue,
+          actorId: teacherId,
+          reason: 'Nhập nội dung từ file DOCX',
+        },
+      });
+
+      return doc;
+    });
+
+    return {
+      message: 'Nhập tài liệu từ DOCX thành công',
+      document: this.formatDocument(newDoc),
+      warnings,
+    };
+  }
+
+  /**
+   * POST /documents/:id/export: Tạo file xuất DOCX hoặc PDF từ revision đã lưu
+   */
+  async exportDocument(
+    user: { sub: string; role: UserRole },
+    documentId: string,
+    dto: ExportDocumentDto,
+  ) {
+    const doc = await this.verifyUserCanViewDocument(user, documentId);
+
+    const content = (doc.content as Record<string, any>) ?? {
+      type: 'doc',
+      content: [{ type: 'paragraph', content: [{ type: 'text', text: '' }] }],
+    };
+
+    const currentRevision = doc.revision;
+
+    // Kiểm tra xem đã có export job hoàn tất cùng revision và format chưa
+    const existingJob = await this.prisma.documentExportJob.findFirst({
+      where: {
+        documentId,
+        revision: currentRevision,
+        format: dto.format,
+        status: DocumentExportStatus.COMPLETED,
+        storageKey: { not: null },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (existingJob && existingJob.storageKey) {
+      const presigned = await this.r2StorageService.createPresignedGetUrl(
+        existingJob.storageKey,
+        `${doc.title}.${dto.format.toLowerCase()}`,
+      );
+
+      return {
+        jobId: existingJob.id,
+        status: existingJob.status,
+        format: existingJob.format,
+        revision: existingJob.revision,
+        downloadUrl: presigned.downloadUrl,
+        expiresInSeconds: presigned.expiresInSeconds,
+      };
+    }
+
+    // Tạo job mới
+    const job = await this.prisma.documentExportJob.create({
+      data: {
+        documentId,
+        revision: currentRevision,
+        format: dto.format,
+        status: DocumentExportStatus.PROCESSING,
+        createdById: user.sub,
+      },
+    });
+
+    try {
+      let exportResult: { buffer: Buffer; mimeType: string };
+      if (dto.format === DocumentExportFormat.DOCX) {
+        exportResult = await convertTiptapToDocx(content, doc.title);
+      } else {
+        exportResult = await convertTiptapToPdf(content, doc.title);
+      }
+
+      const storageKey = `exports/${doc.id}/rev-${currentRevision}-${job.id}.${dto.format.toLowerCase()}`;
+      await this.r2StorageService.uploadObjectBuffer(
+        storageKey,
+        exportResult.buffer,
+        exportResult.mimeType,
+      );
+
+      const updatedJob = await this.prisma.documentExportJob.update({
+        where: { id: job.id },
+        data: {
+          status: DocumentExportStatus.COMPLETED,
+          storageKey,
+          fileSize: BigInt(exportResult.buffer.length),
+        },
+      });
+
+      const presigned = await this.r2StorageService.createPresignedGetUrl(
+        storageKey,
+        `${doc.title}.${dto.format.toLowerCase()}`,
+      );
+
+      return {
+        jobId: updatedJob.id,
+        status: updatedJob.status,
+        format: updatedJob.format,
+        revision: updatedJob.revision,
+        downloadUrl: presigned.downloadUrl,
+        expiresInSeconds: presigned.expiresInSeconds,
+      };
+    } catch (err: any) {
+      this.logger.error(`Lỗi khi tạo file xuất tài liệu ${doc.id}: ${err.message}`);
+      await this.prisma.documentExportJob.update({
+        where: { id: job.id },
+        data: {
+          status: DocumentExportStatus.FAILED,
+          errorMessage: err.message,
+        },
+      });
+      throw new BadRequestException(`Không thể tạo file xuất: ${err.message}`);
+    }
+  }
+
+  /**
+   * GET /documents/:id/export/:exportId: Lấy trạng thái và URL tải xuất
+   */
+  async getExportJobStatus(
+    user: { sub: string; role: UserRole },
+    documentId: string,
+    exportId: string,
+  ) {
+    const doc = await this.verifyUserCanViewDocument(user, documentId);
+
+    const job = await this.prisma.documentExportJob.findFirst({
+      where: { id: exportId, documentId },
+    });
+
+    if (!job) {
+      throw new NotFoundException('Không tìm thấy tác vụ xuất tài liệu');
+    }
+
+    let downloadUrl: string | null = null;
+    let expiresInSeconds: number | null = null;
+
+    if (job.status === DocumentExportStatus.COMPLETED && job.storageKey) {
+      const presigned = await this.r2StorageService.createPresignedGetUrl(
+        job.storageKey,
+        `${doc.title}.${job.format.toLowerCase()}`,
+      );
+      downloadUrl = presigned.downloadUrl;
+      expiresInSeconds = presigned.expiresInSeconds;
+    }
+
+    return {
+      jobId: job.id,
+      status: job.status,
+      format: job.format,
+      revision: job.revision,
+      errorMessage: job.errorMessage,
+      downloadUrl,
+      expiresInSeconds,
+      createdAt: job.createdAt,
+    };
+  }
 }
+

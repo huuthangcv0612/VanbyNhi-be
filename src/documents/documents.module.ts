@@ -8,9 +8,12 @@ import { TeacherDocumentCategoriesController } from './teacher-document-categori
 import { TeacherClassMaterialsController } from './teacher-class-materials.controller.js';
 import { StudentMaterialsController } from './student-materials.controller.js';
 
+import { DocumentsController } from './documents.controller.js';
+
 @Module({
   imports: [StorageModule, AuthModule],
   controllers: [
+    DocumentsController,
     TeacherDocumentsController,
     TeacherDocumentCategoriesController,
     TeacherClassMaterialsController,

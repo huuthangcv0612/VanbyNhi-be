@@ -1114,9 +1114,12 @@ export class ClassMaterialsService {
     }
 
     if (material.document) {
+      if (!material.document.storageKey) {
+        throw new BadRequestException('Tài liệu cấu trúc trực tuyến không có tệp tĩnh để tải về');
+      }
       const result = await this.r2StorageService.createPresignedGetUrl(
         material.document.storageKey,
-        material.document.originalName,
+        material.document.originalName ?? undefined,
       );
 
       return {
@@ -1347,9 +1350,12 @@ export class ClassMaterialsService {
 
     // 3. Cấp presigned URL
     if (material.document) {
+      if (!material.document.storageKey) {
+        throw new BadRequestException('Tài liệu cấu trúc trực tuyến không có tệp tĩnh để tải về');
+      }
       const result = await this.r2StorageService.createPresignedGetUrl(
         material.document.storageKey,
-        material.document.originalName,
+        material.document.originalName ?? undefined,
       );
 
       return {

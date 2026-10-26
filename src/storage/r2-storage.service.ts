@@ -2,6 +2,7 @@ import {
   Injectable,
   Logger,
   BadRequestException,
+  NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -388,4 +389,64 @@ export class R2StorageService {
       return 0;
     }
   }
+
+  /**
+   * Tải trực tiếp Buffer lên R2 (dùng cho xuất file DOCX/PDF hoặc trích xuất asset)
+   */
+  async uploadObjectBuffer(
+    storageKey: string,
+    buffer: Buffer,
+    mimeType: string,
+  ): Promise<void> {
+    try {
+      const command = new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: storageKey,
+        Body: buffer,
+        ContentType: mimeType,
+      });
+
+      await this.s3Client.send(command);
+    } catch (error) {
+      this.logger.error(
+        `Lỗi khi upload buffer lên R2 key ${storageKey}: ${(error as Error).message}`,
+      );
+      throw new InternalServerErrorException(
+        'Không thể lưu tệp vào hệ thống lưu trữ R2.',
+      );
+    }
+  }
+
+  /**
+   * Đọc trực tiếp Buffer của một object từ R2 (dùng cho import DOCX từ session)
+   */
+  async downloadObjectBuffer(storageKey: string): Promise<Buffer> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: storageKey,
+      });
+
+      const response = await this.s3Client.send(command);
+      if (!response.Body) {
+        throw new NotFoundException(`Không tìm thấy dữ liệu object ${storageKey}`);
+      }
+
+      const stream = response.Body as any;
+      const chunks: Buffer[] = [];
+      for await (const chunk of stream) {
+        chunks.push(Buffer.from(chunk));
+      }
+      return Buffer.concat(chunks);
+    } catch (error: any) {
+      if (error instanceof NotFoundException) throw error;
+      this.logger.error(
+        `Lỗi khi tải buffer từ R2 key ${storageKey}: ${error.message}`,
+      );
+      throw new InternalServerErrorException(
+        'Không thể đọc tệp từ hệ thống lưu trữ R2.',
+      );
+    }
+  }
 }
+

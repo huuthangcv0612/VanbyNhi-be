@@ -137,6 +137,21 @@ export type DocumentCategory = Prisma.DocumentCategoryModel
  */
 export type Document = Prisma.DocumentModel
 /**
+ * Model DocumentVersion
+ * 
+ */
+export type DocumentVersion = Prisma.DocumentVersionModel
+/**
+ * Model DocumentAsset
+ * 
+ */
+export type DocumentAsset = Prisma.DocumentAssetModel
+/**
+ * Model DocumentExportJob
+ * 
+ */
+export type DocumentExportJob = Prisma.DocumentExportJobModel
+/**
  * Model UploadSession
  * 
  */
