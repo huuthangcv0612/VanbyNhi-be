@@ -3,11 +3,15 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service.js';
 import {
   UploadTargetType,
   UploadSessionStatus,
+  DocumentType,
+  DocumentStatus,
+  UserRole,
 } from '../../generated/prisma/client.js';
 
 describe('DocumentsService', () => {
@@ -34,6 +38,10 @@ describe('DocumentsService', () => {
         update: vi.fn(),
         updateMany: vi.fn(),
       },
+      classMaterial: {
+        findMany: vi.fn().mockResolvedValue([]),
+        count: vi.fn().mockResolvedValue(0),
+      },
       uploadSession: {
         findUnique: vi.fn(),
         create: vi.fn(),
@@ -41,6 +49,7 @@ describe('DocumentsService', () => {
       },
       $transaction: vi.fn(async (cb) => cb(prismaMock)),
       $queryRawUnsafe: vi.fn(),
+      $executeRawUnsafe: vi.fn(),
     };
 
     r2Mock = {
@@ -62,6 +71,8 @@ describe('DocumentsService', () => {
       validateFileSignature: vi.fn().mockResolvedValue(true),
       deleteObject: vi.fn().mockResolvedValue(true),
       getMaxUploadSizeBytes: vi.fn().mockReturnValue(52428800),
+      downloadObjectBuffer: vi.fn(),
+      uploadObjectBuffer: vi.fn(),
     };
 
     service = new DocumentsService(prismaMock, r2Mock);
@@ -634,6 +645,410 @@ describe('DocumentsService', () => {
         page: 1,
         limit: 10,
         totalPages: 1,
+      });
+    });
+  });
+
+  // ==================== 6. REGRESSION TESTS: UPDATE, GET DETAIL & DELETE ====================
+  describe('Regression: updateDocument, getDocumentDetail & deleteDocument dual-mode', () => {
+    describe('updateDocument (PATCH /teacher/documents/:id)', () => {
+      it('cập nhật categoryId hợp lệ khi DB chưa migrate (fallback parameterized raw SQL)', async () => {
+        // information_schema trả về rỗng -> DB chưa có cột content/type
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([]) // checkStructuredSchemaReady
+          .mockResolvedValueOnce([   // SELECT doc in updateDocument
+            {
+              id: 'doc-1',
+              ownerId: 'teacher-A',
+              deletedAt: null,
+              title: 'Tài liệu cũ',
+              description: 'Mô tả cũ',
+              categoryId: null,
+            },
+          ])
+          .mockResolvedValueOnce([   // SELECT doc sau khi UPDATE
+            {
+              id: 'doc-1',
+              title: 'Tài liệu cũ',
+              description: 'Mô tả cũ',
+              originalName: 'tailieu.json',
+              storageKey: 'notes/teacher-A/doc-1.json',
+              mimeType: 'application/vnd.tiptap+json',
+              sizeBytes: 100n,
+              checksum: null,
+              ownerId: 'teacher-A',
+              categoryId: 'cat-new',
+              deletedAt: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              cat_id: 'cat-new',
+              cat_name: 'Danh mục mới',
+            },
+          ]);
+
+        prismaMock.documentCategory.findUnique.mockResolvedValue({
+          id: 'cat-new',
+          teacherId: 'teacher-A',
+        });
+        prismaMock.$executeRawUnsafe.mockResolvedValue(1);
+
+        const res = await service.updateDocument('teacher-A', 'doc-1', {
+          categoryId: 'cat-new',
+        });
+
+        expect(res.document.categoryId).toBe('cat-new');
+        expect(res.document.category).toEqual({ id: 'cat-new', name: 'Danh mục mới' });
+        expect(res.document.type).toBe('STRUCTURED_NOTE');
+        expect(prismaMock.$executeRawUnsafe).toHaveBeenCalledWith(
+          expect.stringContaining('UPDATE "Document" SET "categoryId" = $1, "updatedAt" = NOW()'),
+          'cat-new',
+          'doc-1',
+        );
+      });
+
+      it('ngắt liên kết categoryId khi truyền null (categoryId = null) trong schema cũ', async () => {
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([]) // checkStructuredSchemaReady
+          .mockResolvedValueOnce([
+            {
+              id: 'doc-1',
+              ownerId: 'teacher-A',
+              deletedAt: null,
+              title: 'Tài liệu',
+              categoryId: 'cat-old',
+            },
+          ])
+          .mockResolvedValueOnce([
+            {
+              id: 'doc-1',
+              title: 'Tài liệu',
+              description: null,
+              originalName: 'tailieu.json',
+              storageKey: 'notes/teacher-A/doc-1.json',
+              mimeType: 'application/vnd.tiptap+json',
+              sizeBytes: 100n,
+              ownerId: 'teacher-A',
+              categoryId: null,
+              deletedAt: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              cat_id: null,
+              cat_name: null,
+            },
+          ]);
+
+        prismaMock.$executeRawUnsafe.mockResolvedValue(1);
+
+        const res = await service.updateDocument('teacher-A', 'doc-1', {
+          categoryId: null,
+        });
+
+        expect(res.document.categoryId).toBeNull();
+        expect(res.document.category).toBeNull();
+        expect(prismaMock.$executeRawUnsafe).toHaveBeenCalledWith(
+          expect.stringContaining('UPDATE "Document" SET "categoryId" = $1, "updatedAt" = NOW()'),
+          null,
+          'doc-1',
+        );
+      });
+
+      it('chỉ cập nhật title mà không ghi đè description khi description không gửi trong DTO', async () => {
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([])
+          .mockResolvedValueOnce([
+            {
+              id: 'doc-1',
+              ownerId: 'teacher-A',
+              deletedAt: null,
+              title: 'Tên cũ',
+              description: 'Mô tả quan trọng cần giữ',
+              categoryId: null,
+            },
+          ])
+          .mockResolvedValueOnce([
+            {
+              id: 'doc-1',
+              title: 'Tên mới',
+              description: 'Mô tả quan trọng cần giữ',
+              originalName: 'tailieu.pdf',
+              storageKey: 'teachers/key-1',
+              mimeType: 'application/pdf',
+              sizeBytes: 100n,
+              ownerId: 'teacher-A',
+              categoryId: null,
+              deletedAt: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ]);
+
+        prismaMock.$executeRawUnsafe.mockResolvedValue(1);
+
+        const res = await service.updateDocument('teacher-A', 'doc-1', {
+          title: 'Tên mới',
+        });
+
+        expect(res.document.title).toBe('Tên mới');
+        expect(res.document.description).toBe('Mô tả quan trọng cần giữ');
+        // SQL update chỉ chứa "title" và "updatedAt", không có "description"
+        const updateCall = prismaMock.$executeRawUnsafe.mock.calls[0];
+        expect(updateCall[0]).toContain('"title" = $1');
+        expect(updateCall[0]).not.toContain('"description" =');
+      });
+
+      it('từ chối cập nhật categoryId nếu category thuộc giáo viên khác (400 BadRequestException)', async () => {
+        prismaMock.document.findUnique.mockResolvedValue({
+          id: 'doc-1',
+          ownerId: 'teacher-A',
+          deletedAt: null,
+        });
+
+        prismaMock.documentCategory.findUnique.mockResolvedValue({
+          id: 'cat-of-B',
+          teacherId: 'teacher-B', // Không phải của teacher-A
+        });
+
+        await expect(
+          service.updateDocument('teacher-A', 'doc-1', {
+            categoryId: 'cat-of-B',
+          }),
+        ).rejects.toThrow(BadRequestException);
+      });
+
+      it('hoạt động bình thường với Prisma update khi DB đã có schema mới', async () => {
+        // Schema ready (mock findUnique resolve)
+        prismaMock.document.findUnique.mockResolvedValue({
+          id: 'doc-1',
+          ownerId: 'teacher-A',
+          deletedAt: null,
+        });
+
+        prismaMock.document.update.mockResolvedValue({
+          id: 'doc-1',
+          title: 'Tên cập nhật',
+          ownerId: 'teacher-A',
+          sizeBytes: 100n,
+          type: DocumentType.STRUCTURED_NOTE,
+          status: DocumentStatus.PUBLISHED,
+          category: { id: 'cat-1', name: 'Toán' },
+        });
+
+        const res = await service.updateDocument('teacher-A', 'doc-1', {
+          title: 'Tên cập nhật',
+        });
+
+        expect(res.document.title).toBe('Tên cập nhật');
+        expect(prismaMock.document.update).toHaveBeenCalledWith(
+          expect.objectContaining({
+            where: { id: 'doc-1' },
+            data: expect.objectContaining({ title: 'Tên cập nhật' }),
+          }),
+        );
+      });
+    });
+
+    describe('getLibraryDocuments & getDocumentDetail: nhận diện STRUCTURED_NOTE vs STATIC_FILE', () => {
+      it('nhận diện đúng STRUCTURED_NOTE khi mimeType là application/vnd.tiptap+json', async () => {
+        const p2022Err: any = new Error('P2022');
+        p2022Err.code = 'P2022';
+        prismaMock.document.findMany.mockRejectedValue(p2022Err);
+
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([{ total: 1 }])
+          .mockResolvedValueOnce([
+            {
+              id: 'doc-tiptap-1',
+              title: 'Bài giảng Văn',
+              storageKey: 'notes/teacher-A/doc-tiptap-1.json',
+              mimeType: 'application/vnd.tiptap+json',
+              sizeBytes: 250n,
+              ownerId: 'teacher-A',
+              deletedAt: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ]);
+
+        const res = await service.getLibraryDocuments('teacher-A', { page: 1, limit: 10 });
+
+        expect(res.items[0].type).toBe('STRUCTURED_NOTE');
+      });
+
+      it('nhận diện đúng STATIC_FILE khi tài liệu là file PDF hoặc Word', async () => {
+        const p2022Err: any = new Error('P2022');
+        p2022Err.code = 'P2022';
+        prismaMock.document.findMany.mockRejectedValue(p2022Err);
+
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([{ total: 1 }])
+          .mockResolvedValueOnce([
+            {
+              id: 'doc-pdf-1',
+              title: 'Đề thi.pdf',
+              storageKey: 'teachers/teacher-A/doc-pdf-1.pdf',
+              mimeType: 'application/pdf',
+              sizeBytes: 50000n,
+              ownerId: 'teacher-A',
+              deletedAt: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ]);
+
+        const res = await service.getLibraryDocuments('teacher-A', { page: 1, limit: 10 });
+
+        expect(res.items[0].type).toBe('STATIC_FILE');
+      });
+
+      it('getDocumentDetail tải nội dung từ R2 và parse Tiptap JSON khi DB content là null', async () => {
+        const p2022Err: any = new Error('P2022');
+        p2022Err.code = 'P2022';
+        prismaMock.document.findUnique.mockRejectedValue(p2022Err);
+
+        prismaMock.$queryRawUnsafe.mockResolvedValueOnce([
+          {
+            id: 'doc-detail-1',
+            title: 'Chi tiết giáo án',
+            storageKey: 'notes/teacher-A/doc-detail-1.json',
+            mimeType: 'application/vnd.tiptap+json',
+            sizeBytes: 150n,
+            ownerId: 'teacher-A',
+            deletedAt: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ]);
+        prismaMock.classMaterial.findMany.mockResolvedValue([]);
+
+        const tiptapJson = {
+          type: 'doc',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Nội dung từ R2' }] }],
+        };
+        r2Mock.downloadObjectBuffer.mockResolvedValue(Buffer.from(JSON.stringify(tiptapJson), 'utf8'));
+
+        const res = await service.getDocumentDetail('teacher-A', 'doc-detail-1');
+
+        expect(res.type).toBe('STRUCTURED_NOTE');
+        expect(res.content).toEqual(tiptapJson);
+        expect(r2Mock.downloadObjectBuffer).toHaveBeenCalledWith('notes/teacher-A/doc-detail-1.json');
+      });
+
+      it('getDocumentDetail ném InternalServerErrorException khi R2 thiếu file hoặc JSON lỗi (không âm thầm trả tài liệu rỗng)', async () => {
+        const p2022Err: any = new Error('P2022');
+        p2022Err.code = 'P2022';
+        prismaMock.document.findUnique.mockRejectedValue(p2022Err);
+
+        prismaMock.$queryRawUnsafe.mockResolvedValueOnce([
+          {
+            id: 'doc-corrupt-1',
+            title: 'Tài liệu lỗi R2',
+            storageKey: 'notes/teacher-A/doc-corrupt-1.json',
+            mimeType: 'application/vnd.tiptap+json',
+            sizeBytes: 150n,
+            ownerId: 'teacher-A',
+            deletedAt: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ]);
+        prismaMock.classMaterial.findMany.mockResolvedValue([]);
+
+        r2Mock.downloadObjectBuffer.mockRejectedValue(new Error('NoSuchKey: Object not found'));
+
+        await expect(
+          service.getDocumentDetail('teacher-A', 'doc-corrupt-1'),
+        ).rejects.toThrow(InternalServerErrorException);
+      });
+
+      it('getDocumentByIdWithContent đọc được Tiptap JSON từ R2 khi DB content là null và mimeType bị null nhưng storageKey notes/...json', async () => {
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([]) // checkStructuredSchemaReady
+          .mockResolvedValueOnce([   // raw SELECT
+            {
+              id: 'doc-legacy-1',
+              title: 'Tài liệu Legacy mimeType null',
+              storageKey: 'notes/teacher-A/doc-legacy-1.json',
+              mimeType: null, // mimeType bị null trong DB cũ
+              sizeBytes: 150n,
+              ownerId: 'teacher-A',
+              deletedAt: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ]);
+        prismaMock.classMaterial.findMany.mockResolvedValue([]);
+
+        const validTiptap = {
+          type: 'doc',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Nội dung đọc từ R2' }] }],
+        };
+        r2Mock.downloadObjectBuffer.mockResolvedValue(Buffer.from(JSON.stringify(validTiptap)));
+
+        const res = await service.getDocumentByIdWithContent(
+          { sub: 'teacher-A', role: UserRole.TEACHER },
+          'doc-legacy-1',
+        );
+
+        expect(res.type).toBe('STRUCTURED_NOTE');
+        expect(res.content).toEqual(validTiptap);
+        expect(r2Mock.downloadObjectBuffer).toHaveBeenCalledWith('notes/teacher-A/doc-legacy-1.json');
+      });
+
+      it('getDocumentByIdWithContent ném InternalServerErrorException khi R2 đọc thất bại (không trả rỗng để tránh ghi đè)', async () => {
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([]) // checkStructuredSchemaReady
+          .mockResolvedValueOnce([   // raw SELECT
+            {
+              id: 'doc-legacy-err',
+              title: 'Tài liệu Legacy lỗi R2',
+              storageKey: 'notes/teacher-A/doc-legacy-err.json',
+              mimeType: 'application/vnd.tiptap+json',
+              sizeBytes: 150n,
+              ownerId: 'teacher-A',
+              deletedAt: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ]);
+        prismaMock.classMaterial.findMany.mockResolvedValue([]);
+
+        r2Mock.downloadObjectBuffer.mockRejectedValue(new Error('R2 Timeout / 404'));
+
+        await expect(
+          service.getDocumentByIdWithContent(
+            { sub: 'teacher-A', role: UserRole.TEACHER },
+            'doc-legacy-err',
+          ),
+        ).rejects.toThrow(InternalServerErrorException);
+      });
+    });
+
+    describe('deleteDocument (DELETE /teacher/documents/:id)', () => {
+      it('xóa mềm bằng parameterized raw SQL khi DB chưa migrate (không văng lỗi P2022)', async () => {
+        prismaMock.document.findUnique.mockRejectedValueOnce({ code: 'P2022' });
+
+        prismaMock.$queryRawUnsafe
+          .mockResolvedValueOnce([   // doc fallback
+            {
+              id: 'doc-del-1',
+              ownerId: 'teacher-A',
+              storageKey: 'teachers/key-del-1',
+              deletedAt: null,
+              materialCount: 0,
+            },
+          ])
+          .mockResolvedValueOnce([]); // checkStructuredSchemaReady
+
+        prismaMock.$executeRawUnsafe.mockResolvedValue(1);
+
+        const res = await service.deleteDocument('teacher-A', 'doc-del-1');
+
+        expect(res.message).toContain('thành công');
+        expect(prismaMock.$executeRawUnsafe).toHaveBeenCalledWith(
+          expect.stringContaining('UPDATE "Document" SET "deletedAt" = NOW()'),
+          'doc-del-1',
+        );
+        expect(r2Mock.deleteObject).toHaveBeenCalledWith('teachers/key-del-1');
       });
     });
   });

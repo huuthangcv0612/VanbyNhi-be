@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
   ConflictException,
+  InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -43,6 +44,34 @@ export class DocumentsService {
     private readonly prisma: PrismaService,
     private readonly r2StorageService: R2StorageService,
   ) {}
+
+  private isStructuredSchemaReady: boolean | null = null;
+  private lastSchemaCheckTime = 0;
+
+  /**
+   * Kiểm tra xem cơ sở dữ liệu đã có cột 'content' trong bảng 'Document' hay chưa
+   * Cache in-memory trong 30 giây để không query database liên tục nhưng vẫn tự động nhận diện khi migration được chạy
+   */
+  async checkStructuredSchemaReady(): Promise<boolean> {
+    const now = Date.now();
+    if (this.isStructuredSchemaReady !== null && now - this.lastSchemaCheckTime < 30_000) {
+      return this.isStructuredSchemaReady;
+    }
+
+    try {
+      const res: any = await this.prisma.$queryRawUnsafe(
+        `SELECT 1 FROM information_schema.columns WHERE table_name = 'Document' AND column_name = 'content' LIMIT 1`,
+      );
+      if (Array.isArray(res)) {
+        this.isStructuredSchemaReady = res.length > 0;
+        this.lastSchemaCheckTime = now;
+        return this.isStructuredSchemaReady;
+      }
+      return this.isStructuredSchemaReady ?? true;
+    } catch {
+      return this.isStructuredSchemaReady ?? false;
+    }
+  }
 
   /**
    * Helper chuyển BigInt trong document sang Number an toàn cho JSON serialize
@@ -701,27 +730,35 @@ export class DocumentsService {
           ...params,
         );
 
-        const items = (rawRows || []).map((row: any) => ({
-          id: row.id,
-          title: row.title,
-          description: row.description ?? null,
-          originalName: row.originalName ?? null,
-          storageKey: row.storageKey ?? null,
-          mimeType: row.mimeType ?? 'application/octet-stream',
-          sizeBytes: row.sizeBytes != null ? Number(row.sizeBytes) : 0,
-          checksum: row.checksum ?? null,
-          ownerId: row.ownerId,
-          categoryId: row.categoryId ?? null,
-          type: 'STATIC_FILE',
-          status: 'PUBLISHED',
-          revision: 1,
-          content: null,
-          deletedAt: row.deletedAt ?? null,
-          createdAt: row.createdAt,
-          updatedAt: row.updatedAt,
-          category: row.cat_id ? { id: row.cat_id, name: row.cat_name } : null,
-          usedInCount: Number(row.usedInCount || 0),
-        }));
+        const items = (rawRows || []).map((row: any) => {
+          const isStructured =
+            row.mimeType === 'application/vnd.tiptap+json' ||
+            (typeof row.storageKey === 'string' &&
+              row.storageKey.startsWith('notes/') &&
+              row.storageKey.endsWith('.json'));
+
+          return {
+            id: row.id,
+            title: row.title,
+            description: row.description ?? null,
+            originalName: row.originalName ?? null,
+            storageKey: row.storageKey ?? null,
+            mimeType: row.mimeType ?? 'application/octet-stream',
+            sizeBytes: row.sizeBytes != null ? Number(row.sizeBytes) : 0,
+            checksum: row.checksum ?? null,
+            ownerId: row.ownerId,
+            categoryId: row.categoryId ?? null,
+            type: isStructured ? DocumentType.STRUCTURED_NOTE : DocumentType.STATIC_FILE,
+            status: DocumentStatus.PUBLISHED,
+            revision: 1,
+            content: null,
+            deletedAt: row.deletedAt ?? null,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+            category: row.cat_id ? { id: row.cat_id, name: row.cat_name } : null,
+            usedInCount: Number(row.usedInCount || 0),
+          };
+        });
 
         return {
           items,
@@ -802,6 +839,12 @@ export class DocumentsService {
             session: { select: { id: true, title: true } },
           },
         });
+        const isStructured =
+          row.mimeType === 'application/vnd.tiptap+json' ||
+          (typeof row.storageKey === 'string' &&
+            row.storageKey.startsWith('notes/') &&
+            row.storageKey.endsWith('.json'));
+
         doc = {
           id: row.id,
           title: row.title,
@@ -813,8 +856,8 @@ export class DocumentsService {
           checksum: row.checksum ?? null,
           ownerId: row.ownerId,
           categoryId: row.categoryId ?? null,
-          type: 'STATIC_FILE',
-          status: 'PUBLISHED',
+          type: isStructured ? DocumentType.STRUCTURED_NOTE : DocumentType.STATIC_FILE,
+          status: DocumentStatus.PUBLISHED,
           revision: 1,
           content: null,
           deletedAt: row.deletedAt ?? null,
@@ -836,6 +879,29 @@ export class DocumentsService {
 
     if (doc.ownerId !== teacherId) {
       throw new NotFoundException('Không tìm thấy tài liệu'); // Chống tiết lộ tài liệu người khác
+    }
+
+    // Nếu doc.content là null nhưng là STRUCTURED_NOTE có storageKey -> Đọc R2 an toàn
+    const isStructuredDoc =
+      doc.type === DocumentType.STRUCTURED_NOTE ||
+      doc.mimeType === 'application/vnd.tiptap+json' ||
+      (typeof doc.storageKey === 'string' &&
+        doc.storageKey.startsWith('notes/') &&
+        doc.storageKey.endsWith('.json'));
+
+    if (doc.content == null && isStructuredDoc && doc.storageKey) {
+      try {
+        const buf = await this.r2StorageService.downloadObjectBuffer(doc.storageKey);
+        const parsed = JSON.parse(buf.toString('utf8'));
+        doc.content = validateAndSanitizeTiptapJson(parsed);
+      } catch (readErr: any) {
+        this.logger.error(
+          `Không thể đọc/parse nội dung JSON từ R2 ${doc.storageKey} cho tài liệu ${documentId}: ${readErr.message}`,
+        );
+        throw new InternalServerErrorException(
+          'Không thể tải nội dung tài liệu từ hệ thống lưu trữ Cloudflare R2',
+        );
+      }
     }
 
     return this.formatDocument(doc);
@@ -892,68 +958,185 @@ export class DocumentsService {
     teacherId: string,
     documentId: string,
     dto: UpdateDocumentDto,
-  ) {
+    userRole?: UserRole,
+  ): Promise<{ message: string; document: any }> {
+    const isSchemaReady = await this.checkStructuredSchemaReady();
     let doc: any;
-    try {
-      doc = await this.prisma.document.findUnique({
-        where: { id: documentId },
-      });
-    } catch (err: any) {
-      if (err?.code === 'P2022' || err?.message?.includes('does not exist')) {
-        const rows: any = await this.prisma.$queryRawUnsafe(
-          `SELECT "id", "ownerId", "deletedAt" FROM "Document" WHERE "id" = $1 LIMIT 1`,
-          documentId,
-        );
-        doc = rows?.[0] ?? null;
-      } else {
-        throw err;
+
+    if (!isSchemaReady) {
+      const rows: any = await this.prisma.$queryRawUnsafe(
+        `SELECT "id", "ownerId", "deletedAt", "title", "description", "categoryId", "storageKey", "mimeType", "sizeBytes", "createdAt", "updatedAt" FROM "Document" WHERE "id" = $1 LIMIT 1`,
+        documentId,
+      );
+      doc = rows?.[0] ?? null;
+    } else {
+      try {
+        doc = await this.prisma.document.findUnique({
+          where: { id: documentId },
+        });
+      } catch (err: any) {
+        if (err?.code === 'P2022' || err?.message?.includes('does not exist')) {
+          this.isStructuredSchemaReady = false;
+          const rows: any = await this.prisma.$queryRawUnsafe(
+            `SELECT "id", "ownerId", "deletedAt", "title", "description", "categoryId", "storageKey", "mimeType", "sizeBytes", "createdAt", "updatedAt" FROM "Document" WHERE "id" = $1 LIMIT 1`,
+            documentId,
+          );
+          doc = rows?.[0] ?? null;
+        } else {
+          throw err;
+        }
       }
     }
 
-    if (!doc || doc.deletedAt !== null || doc.ownerId !== teacherId) {
+    if (!doc || doc.deletedAt !== null) {
       throw new NotFoundException('Không tìm thấy tài liệu');
     }
 
-    const data: Prisma.DocumentUpdateInput = {};
-
-    if (dto.title !== undefined) {
-      data.title = dto.title.trim();
-    }
-    if (dto.description !== undefined) {
-      data.description = dto.description;
+    const isOwnerOrAdmin = doc.ownerId === teacherId || userRole === UserRole.ADMIN;
+    if (!isOwnerOrAdmin) {
+      throw new NotFoundException('Không tìm thấy tài liệu');
     }
 
+    // Kiểm tra categoryId nếu có gửi lên
+    let validatedCategoryId: string | null | undefined = undefined;
     if (dto.categoryId !== undefined) {
       if (dto.categoryId !== null) {
         const category = await this.prisma.documentCategory.findUnique({
           where: { id: dto.categoryId },
         });
 
-        if (!category || category.teacherId !== teacherId) {
+        if (!category || (category.teacherId !== doc.ownerId && category.teacherId !== teacherId)) {
           throw new BadRequestException(
             'Danh mục tài liệu không hợp lệ hoặc không thuộc quyền của bạn',
           );
         }
-        data.category = { connect: { id: dto.categoryId } };
+        validatedCategoryId = dto.categoryId;
+      } else {
+        validatedCategoryId = null;
+      }
+    }
+
+    // ===== NHÁNH 1: CƠ SỞ DỮ LIỆU CHƯA CÓ CÁC CỘT MỚI (PARAMETERIZED RAW SQL) =====
+    if (!isSchemaReady) {
+      const setClauses: string[] = [];
+      const params: any[] = [];
+
+      if (dto.title !== undefined) {
+        params.push(dto.title.trim());
+        setClauses.push(`"title" = $${params.length}`);
+      }
+
+      if (dto.description !== undefined) {
+        params.push(dto.description?.trim() || null);
+        setClauses.push(`"description" = $${params.length}`);
+      }
+
+      if (validatedCategoryId !== undefined) {
+        params.push(validatedCategoryId);
+        setClauses.push(`"categoryId" = $${params.length}`);
+      }
+
+      setClauses.push(`"updatedAt" = NOW()`);
+      params.push(documentId);
+      const idIdx = params.length;
+
+      await this.prisma.$executeRawUnsafe(
+        `UPDATE "Document" SET ${setClauses.join(', ')} WHERE "id" = $${idIdx} AND "deletedAt" IS NULL`,
+        ...params,
+      );
+
+      // Lấy bản ghi cập nhật kèm category
+      const rows: any = await this.prisma.$queryRawUnsafe(
+        `
+        SELECT 
+          d."id", d."title", d."description", d."originalName", d."storageKey",
+          d."mimeType", d."sizeBytes", d."checksum", d."ownerId", d."categoryId",
+          d."deletedAt", d."createdAt", d."updatedAt",
+          c."id" AS "cat_id", c."name" AS "cat_name"
+        FROM "Document" d
+        LEFT JOIN "DocumentCategory" c ON c."id" = d."categoryId"
+        WHERE d."id" = $1
+        LIMIT 1
+        `,
+        documentId,
+      );
+
+      const row = rows?.[0];
+      const isStructured =
+        row.mimeType === 'application/vnd.tiptap+json' ||
+        (typeof row.storageKey === 'string' &&
+          row.storageKey.startsWith('notes/') &&
+          row.storageKey.endsWith('.json'));
+
+      const fallbackDoc = {
+        id: row.id,
+        title: row.title,
+        description: row.description ?? null,
+        originalName: row.originalName ?? null,
+        storageKey: row.storageKey ?? null,
+        mimeType: row.mimeType ?? 'application/octet-stream',
+        sizeBytes: row.sizeBytes != null ? Number(row.sizeBytes) : 0,
+        checksum: row.checksum ?? null,
+        ownerId: row.ownerId,
+        categoryId: row.categoryId ?? null,
+        category: row.cat_id ? { id: row.cat_id, name: row.cat_name } : null,
+        type: isStructured ? DocumentType.STRUCTURED_NOTE : DocumentType.STATIC_FILE,
+        status: dto.status ?? DocumentStatus.PUBLISHED,
+        revision: 1,
+        content: null,
+        deletedAt: row.deletedAt ?? null,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+      };
+
+      return {
+        message: 'Cập nhật tài liệu thành công',
+        document: this.formatDocument(fallbackDoc),
+      };
+    }
+
+    // ===== NHÁNH 2: SCHEMA MỚI DÙNG PRISMA IMPLEMENTATION =====
+    const data: Prisma.DocumentUpdateInput = {};
+
+    if (dto.title !== undefined) {
+      data.title = dto.title.trim();
+    }
+    if (dto.description !== undefined) {
+      data.description = dto.description?.trim() || null;
+    }
+    if (validatedCategoryId !== undefined) {
+      if (validatedCategoryId !== null) {
+        data.category = { connect: { id: validatedCategoryId } };
       } else {
         data.category = { disconnect: true };
       }
     }
+    if (dto.status !== undefined) {
+      data.status = dto.status;
+    }
 
-    const updated = await this.prisma.document.update({
-      where: { id: documentId },
-      data,
-      include: {
-        category: {
-          select: { id: true, name: true },
+    try {
+      const updated = await this.prisma.document.update({
+        where: { id: documentId },
+        data,
+        include: {
+          category: {
+            select: { id: true, name: true },
+          },
         },
-      },
-    });
+      });
 
-    return {
-      message: 'Cập nhật tài liệu thành công',
-      document: this.formatDocument(updated),
-    };
+      return {
+        message: 'Cập nhật tài liệu thành công',
+        document: this.formatDocument(updated),
+      };
+    } catch (err: any) {
+      if (err?.code === 'P2022' || err?.code === 'P2021' || err?.message?.includes('does not exist')) {
+        this.isStructuredSchemaReady = false;
+        return this.updateDocument(teacherId, documentId, dto, userRole);
+      }
+      throw err;
+    }
   }
 
   /**
@@ -1011,23 +1194,44 @@ export class DocumentsService {
     }
 
     const activeLinksCount = doc._count?.materials ?? 0;
+    const isSchemaReady = await this.checkStructuredSchemaReady();
+
+    const executeDeleteInDb = async () => {
+      if (!isSchemaReady) {
+        await this.prisma.$executeRawUnsafe(
+          `UPDATE "Document" SET "deletedAt" = NOW(), "updatedAt" = NOW() WHERE "id" = $1 AND "deletedAt" IS NULL`,
+          documentId,
+        );
+      } else {
+        try {
+          await this.prisma.document.update({
+            where: { id: documentId },
+            data: { deletedAt: new Date() },
+          });
+        } catch (err: any) {
+          if (err?.code === 'P2022' || err?.code === 'P2021' || err?.message?.includes('does not exist')) {
+            this.isStructuredSchemaReady = false;
+            await this.prisma.$executeRawUnsafe(
+              `UPDATE "Document" SET "deletedAt" = NOW(), "updatedAt" = NOW() WHERE "id" = $1 AND "deletedAt" IS NULL`,
+              documentId,
+            );
+          } else {
+            throw err;
+          }
+        }
+      }
+    };
 
     if (activeLinksCount > 0) {
       // Đang được dùng trong các lớp -> Chỉ xóa mềm khỏi thư viện giáo viên
-      await this.prisma.document.update({
-        where: { id: documentId },
-        data: { deletedAt: new Date() },
-      });
+      await executeDeleteInDb();
 
       return {
         message: `Đã xóa tài liệu khỏi thư viện cá nhân. Do tài liệu đang được chia sẻ ở ${activeLinksCount} vị trí lớp/buổi học, file gốc vẫn được lưu trữ an toàn.`,
       };
     } else {
       // Không còn nơi nào dùng -> Xóa mềm và xóa file trên R2
-      await this.prisma.document.update({
-        where: { id: documentId },
-        data: { deletedAt: new Date() },
-      });
+      await executeDeleteInDb();
 
       try {
         if (doc.storageKey) {
@@ -1055,8 +1259,69 @@ export class DocumentsService {
    *    và thỏa mãn accessStartTime/accessEndTime/isPublished.
    */
   async verifyUserCanViewDocument(user: { sub: string; role: UserRole }, documentId: string) {
+    const isSchemaReady = await this.checkStructuredSchemaReady();
     let doc: any;
-    try {
+
+    if (!isSchemaReady) {
+      const rows: any = await this.prisma.$queryRawUnsafe(
+        `
+        SELECT 
+          d."id", d."title", d."description", d."originalName", d."storageKey",
+          d."mimeType", d."sizeBytes", d."checksum", d."ownerId", d."categoryId",
+          d."deletedAt", d."createdAt", d."updatedAt",
+          c."id" AS "cat_id", c."name" AS "cat_name"
+        FROM "Document" d
+        LEFT JOIN "DocumentCategory" c ON c."id" = d."categoryId"
+        WHERE d."id" = $1
+        LIMIT 1
+        `,
+        documentId,
+      );
+      if (!rows || rows.length === 0) {
+        throw new NotFoundException('Không tìm thấy tài liệu');
+      }
+      const row = rows[0];
+      const materials: any = await this.prisma.classMaterial.findMany({
+        where: { documentId, deletedAt: null },
+        select: {
+          id: true,
+          classId: true,
+          sessionId: true,
+          isPublished: true,
+          accessStartTime: true,
+          accessEndTime: true,
+          class: { select: { id: true, name: true, teacherId: true } },
+        },
+      });
+
+      const isStructured =
+        row.mimeType === 'application/vnd.tiptap+json' ||
+        (typeof row.storageKey === 'string' &&
+          row.storageKey.startsWith('notes/') &&
+          row.storageKey.endsWith('.json'));
+
+      doc = {
+        id: row.id,
+        title: row.title,
+        description: row.description ?? null,
+        originalName: row.originalName ?? null,
+        storageKey: row.storageKey ?? null,
+        mimeType: row.mimeType ?? 'application/octet-stream',
+        sizeBytes: row.sizeBytes != null ? Number(row.sizeBytes) : 0,
+        checksum: row.checksum ?? null,
+        ownerId: row.ownerId,
+        categoryId: row.categoryId ?? null,
+        type: isStructured ? DocumentType.STRUCTURED_NOTE : DocumentType.STATIC_FILE,
+        status: DocumentStatus.PUBLISHED,
+        revision: 1,
+        content: null,
+        deletedAt: row.deletedAt ?? null,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        category: row.cat_id ? { id: row.cat_id, name: row.cat_name } : null,
+        materials: materials || [],
+      };
+    } else {
       doc = await this.prisma.document.findUnique({
         where: { id: documentId },
         include: {
@@ -1079,76 +1344,32 @@ export class DocumentsService {
           },
         },
       });
-    } catch (err: any) {
-      if (err?.code === 'P2022' || err?.message?.includes('does not exist')) {
-        const rows: any = await this.prisma.$queryRawUnsafe(
-          `
-          SELECT 
-            d."id", d."title", d."description", d."originalName", d."storageKey",
-            d."mimeType", d."sizeBytes", d."checksum", d."ownerId", d."categoryId",
-            d."deletedAt", d."createdAt", d."updatedAt",
-            c."id" AS "cat_id", c."name" AS "cat_name"
-          FROM "Document" d
-          LEFT JOIN "DocumentCategory" c ON c."id" = d."categoryId"
-          WHERE d."id" = $1
-          LIMIT 1
-          `,
-          documentId,
-        );
-        if (!rows || rows.length === 0) {
-          throw new NotFoundException('Không tìm thấy tài liệu');
-        }
-        const row = rows[0];
-        const materials: any = await this.prisma.classMaterial.findMany({
-          where: { documentId, deletedAt: null },
-          select: {
-            id: true,
-            classId: true,
-            sessionId: true,
-            isPublished: true,
-            accessStartTime: true,
-            accessEndTime: true,
-            class: { select: { id: true, name: true, teacherId: true } },
-          },
-        });
-
-        doc = {
-          id: row.id,
-          title: row.title,
-          description: row.description ?? null,
-          originalName: row.originalName ?? null,
-          storageKey: row.storageKey ?? null,
-          mimeType: row.mimeType ?? 'application/octet-stream',
-          sizeBytes: row.sizeBytes != null ? Number(row.sizeBytes) : 0,
-          checksum: row.checksum ?? null,
-          ownerId: row.ownerId,
-          categoryId: row.categoryId ?? null,
-          type: DocumentType.STRUCTURED_NOTE,
-          status: DocumentStatus.PUBLISHED,
-          revision: 1,
-          content: null,
-          deletedAt: row.deletedAt ?? null,
-          createdAt: row.createdAt,
-          updatedAt: row.updatedAt,
-          category: row.cat_id ? { id: row.cat_id, name: row.cat_name } : null,
-          materials: materials || [],
-        };
-      } else {
-        throw err;
-      }
     }
 
     if (!doc || doc.deletedAt !== null) {
       throw new NotFoundException('Không tìm thấy tài liệu');
     }
 
-    // Nếu doc.content là null nhưng có storageKey JSON của structured note -> Tải nội dung từ R2
-    if (!doc.content && doc.storageKey && doc.mimeType === 'application/vnd.tiptap+json') {
+    // Nếu doc.content là null nhưng là STRUCTURED_NOTE có storageKey -> Đọc R2 an toàn
+    const isStructuredDoc =
+      doc.type === DocumentType.STRUCTURED_NOTE ||
+      doc.mimeType === 'application/vnd.tiptap+json' ||
+      (typeof doc.storageKey === 'string' &&
+        doc.storageKey.startsWith('notes/') &&
+        doc.storageKey.endsWith('.json'));
+
+    if (doc.content == null && isStructuredDoc && doc.storageKey) {
       try {
         const buf = await this.r2StorageService.downloadObjectBuffer(doc.storageKey);
-        doc.content = JSON.parse(buf.toString('utf8'));
-      } catch (readErr) {
-        this.logger.warn(`Không thể đọc nội dung file JSON từ R2 ${doc.storageKey}: ${(readErr as Error).message}`);
+        const parsed = JSON.parse(buf.toString('utf8'));
+        doc.content = validateAndSanitizeTiptapJson(parsed);
+      } catch (readErr: any) {
+        this.logger.error(
+          `Không thể đọc/parse nội dung JSON từ R2 ${doc.storageKey} cho tài liệu ${documentId}: ${readErr.message}`,
+        );
+        throw new InternalServerErrorException(
+          'Không thể tải nội dung tài liệu từ hệ thống lưu trữ Cloudflare R2',
+        );
       }
     }
 
@@ -1192,21 +1413,19 @@ export class DocumentsService {
    * Chỉ Owner hoặc ADMIN mới có quyền chỉnh sửa.
    */
   async verifyUserCanEditDocument(user: { sub: string; role: UserRole }, documentId: string) {
+    const isSchemaReady = await this.checkStructuredSchemaReady();
     let doc: any;
-    try {
+
+    if (!isSchemaReady) {
+      const rows: any = await this.prisma.$queryRawUnsafe(
+        `SELECT "id", "ownerId", "deletedAt", "storageKey", "mimeType", "sizeBytes", "title" FROM "Document" WHERE "id" = $1 LIMIT 1`,
+        documentId,
+      );
+      doc = rows?.[0] ?? null;
+    } else {
       doc = await this.prisma.document.findUnique({
         where: { id: documentId },
       });
-    } catch (err: any) {
-      if (err?.code === 'P2022' || err?.message?.includes('does not exist')) {
-        const rows: any = await this.prisma.$queryRawUnsafe(
-          `SELECT "id", "ownerId", "deletedAt", "storageKey", "mimeType", "sizeBytes" FROM "Document" WHERE "id" = $1 LIMIT 1`,
-          documentId,
-        );
-        doc = rows?.[0] ?? null;
-      } else {
-        throw err;
-      }
     }
 
     if (!doc || doc.deletedAt !== null) {
@@ -1250,117 +1469,118 @@ export class DocumentsService {
           ],
         };
 
-    try {
-      const doc = await this.prisma.$transaction(async (tx) => {
-        const newDoc = await tx.document.create({
-          data: {
-            title: dto.title.trim(),
-            description: dto.description?.trim(),
-            categoryId,
-            ownerId: userId,
-            type: DocumentType.STRUCTURED_NOTE,
-            status: dto.status ?? DocumentStatus.DRAFT,
-            mimeType: 'application/vnd.tiptap+json',
-            revision: 1,
-            content: initialContent as Prisma.InputJsonValue,
-            sizeBytes: BigInt(Buffer.byteLength(JSON.stringify(initialContent), 'utf8')),
-          },
-          include: {
-            category: { select: { id: true, name: true } },
-          },
-        });
+    const isSchemaReady = await this.checkStructuredSchemaReady();
 
-        // Tạo snapshot version 1 khởi tạo
-        await tx.documentVersion.create({
-          data: {
-            documentId: newDoc.id,
-            revision: 1,
-            title: newDoc.title,
-            content: initialContent as Prisma.InputJsonValue,
-            actorId: userId,
-            reason: 'Khởi tạo tài liệu',
-          },
-        });
-
-        return newDoc;
-      });
-
-      return {
-        message: 'Tạo tài liệu thành công',
-        document: this.formatDocument(doc),
-      };
-    } catch (err: any) {
-      if (err?.code === 'P2022' || err?.code === 'P2021' || err?.message?.includes('does not exist')) {
-        this.logger.warn(
-          `Cơ sở dữ liệu chưa có bảng/cột structured documents (${err.message}). Kích hoạt lưu trữ tương thích an toàn trên R2.`,
-        );
-
-        const jsonBuffer = Buffer.from(JSON.stringify(initialContent), 'utf8');
-        const docId = `c${Date.now().toString(36)}${Math.random().toString(36).substring(2, 9)}`;
-        const storageKey = `notes/${userId}/${docId}.json`;
-
-        // Lưu nội dung JSON lên R2
-        await this.r2StorageService.uploadObjectBuffer(
-          storageKey,
-          jsonBuffer,
-          'application/vnd.tiptap+json',
-        );
-
-        // Lưu bản ghi vào bảng Document qua SQL INSERT tương thích cấu trúc hiện có
-        await this.prisma.$executeRawUnsafe(
-          `
-          INSERT INTO "Document" ("id", "title", "description", "originalName", "storageKey", "mimeType", "sizeBytes", "ownerId", "categoryId", "createdAt", "updatedAt")
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
-          `,
-          docId,
-          dto.title.trim(),
-          dto.description?.trim() ?? null,
-          `${dto.title.trim()}.json`,
-          storageKey,
-          'application/vnd.tiptap+json',
-          BigInt(jsonBuffer.length),
-          userId,
-          categoryId,
-        );
-
-        let catObj: any = null;
-        if (categoryId) {
-          catObj = await this.prisma.documentCategory.findUnique({
-            where: { id: categoryId },
-            select: { id: true, name: true },
+    if (isSchemaReady) {
+      try {
+        const doc = await this.prisma.$transaction(async (tx) => {
+          const newDoc = await tx.document.create({
+            data: {
+              title: dto.title.trim(),
+              description: dto.description?.trim(),
+              categoryId,
+              ownerId: userId,
+              type: DocumentType.STRUCTURED_NOTE,
+              status: dto.status ?? DocumentStatus.DRAFT,
+              mimeType: 'application/vnd.tiptap+json',
+              revision: 1,
+              content: initialContent as Prisma.InputJsonValue,
+              sizeBytes: BigInt(Buffer.byteLength(JSON.stringify(initialContent), 'utf8')),
+            },
+            include: {
+              category: { select: { id: true, name: true } },
+            },
           });
-        }
 
-        const fallbackDoc = {
-          id: docId,
-          title: dto.title.trim(),
-          description: dto.description?.trim() ?? null,
-          originalName: `${dto.title.trim()}.json`,
-          storageKey,
-          mimeType: 'application/vnd.tiptap+json',
-          sizeBytes: jsonBuffer.length,
-          checksum: null,
-          ownerId: userId,
-          categoryId,
-          category: catObj,
-          type: DocumentType.STRUCTURED_NOTE,
-          status: dto.status ?? DocumentStatus.DRAFT,
-          revision: 1,
-          content: initialContent,
-          deletedAt: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+          // Tạo snapshot version 1 khởi tạo
+          await tx.documentVersion.create({
+            data: {
+              documentId: newDoc.id,
+              revision: 1,
+              title: newDoc.title,
+              content: initialContent as Prisma.InputJsonValue,
+              actorId: userId,
+              reason: 'Khởi tạo tài liệu',
+            },
+          });
+
+          return newDoc;
+        });
 
         return {
           message: 'Tạo tài liệu thành công',
-          document: this.formatDocument(fallbackDoc),
+          document: this.formatDocument(doc),
         };
+      } catch (err: any) {
+        if (!(err?.code === 'P2022' || err?.code === 'P2021' || err?.message?.includes('does not exist'))) {
+          throw err;
+        }
+        this.isStructuredSchemaReady = false;
       }
-
-      this.logger.error(`Lỗi khi tạo tài liệu cấu trúc: ${err.message}`, err.stack);
-      throw err;
     }
+
+    // Fallback lưu file trên R2 và SQL insert khi cơ sở dữ liệu chưa có các cột mới
+    const jsonBuffer = Buffer.from(JSON.stringify(initialContent), 'utf8');
+    const docId = `c${Date.now().toString(36)}${Math.random().toString(36).substring(2, 9)}`;
+    const storageKey = `notes/${userId}/${docId}.json`;
+
+    // Lưu nội dung JSON lên R2
+    await this.r2StorageService.uploadObjectBuffer(
+      storageKey,
+      jsonBuffer,
+      'application/vnd.tiptap+json',
+    );
+
+    // Lưu bản ghi vào bảng Document qua SQL INSERT tương thích cấu trúc hiện có
+    await this.prisma.$executeRawUnsafe(
+      `
+      INSERT INTO "Document" ("id", "title", "description", "originalName", "storageKey", "mimeType", "sizeBytes", "ownerId", "categoryId", "createdAt", "updatedAt")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
+      `,
+      docId,
+      dto.title.trim(),
+      dto.description?.trim() ?? null,
+      `${dto.title.trim()}.json`,
+      storageKey,
+      'application/vnd.tiptap+json',
+      BigInt(jsonBuffer.length),
+      userId,
+      categoryId,
+    );
+
+    let catObj: any = null;
+    if (categoryId) {
+      catObj = await this.prisma.documentCategory.findUnique({
+        where: { id: categoryId },
+        select: { id: true, name: true },
+      });
+    }
+
+    const fallbackDoc = {
+      id: docId,
+      title: dto.title.trim(),
+      description: dto.description?.trim() ?? null,
+      originalName: `${dto.title.trim()}.json`,
+      storageKey,
+      mimeType: 'application/vnd.tiptap+json',
+      sizeBytes: jsonBuffer.length,
+      checksum: null,
+      ownerId: userId,
+      categoryId,
+      category: catObj,
+      type: DocumentType.STRUCTURED_NOTE,
+      status: dto.status ?? DocumentStatus.DRAFT,
+      revision: 1,
+      content: initialContent,
+      deletedAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    return {
+      message: 'Tạo tài liệu thành công',
+      document: this.formatDocument(fallbackDoc),
+    };
   }
 
   /**
@@ -1379,110 +1599,116 @@ export class DocumentsService {
     id: string,
     dto: UpdateDocumentContentDto,
   ) {
-    await this.verifyUserCanEditDocument(user, id);
+    const doc = await this.verifyUserCanEditDocument(user, id);
 
     // Validate và sanitize JSON payload
     const sanitizedContent = validateAndSanitizeTiptapJson(dto.content);
-    const contentSizeBytes = BigInt(
-      Buffer.byteLength(JSON.stringify(sanitizedContent), 'utf8'),
-    );
+    const jsonString = JSON.stringify(sanitizedContent);
+    const contentSizeBytes = BigInt(Buffer.byteLength(jsonString, 'utf8'));
 
+    const isSchemaReady = await this.checkStructuredSchemaReady();
+
+    if (!isSchemaReady) {
+      // ===== NHÁNH FALLBACK: CƠ SỞ DỮ LIỆU CHƯA CÓ CỘT CONTENT =====
+      // 1. Xác định storageKey: nếu doc đã có storageKey thì giữ nguyên để không tạo file trùng!
+      const storageKey =
+        doc.storageKey && doc.storageKey.startsWith('notes/')
+          ? doc.storageKey
+          : `notes/${doc.ownerId}/${doc.id}.json`;
+
+      const jsonBuffer = Buffer.from(jsonString, 'utf8');
+
+      // 2. Ghi đè nội dung JSON lên Cloudflare R2
+      await this.r2StorageService.uploadObjectBuffer(
+        storageKey,
+        jsonBuffer,
+        'application/vnd.tiptap+json',
+      );
+
+      // 3. Chỉ cập nhật các cột THỰC SỰ TỒN TẠI trong bảng Document cũ
+      await this.prisma.$executeRawUnsafe(
+        `
+        UPDATE "Document"
+        SET "sizeBytes" = $1, "storageKey" = $2, "mimeType" = $3, "updatedAt" = NOW()
+        WHERE "id" = $4 AND "deletedAt" IS NULL
+        `,
+        contentSizeBytes,
+        storageKey,
+        'application/vnd.tiptap+json',
+        id,
+      );
+
+      return {
+        message: 'Lưu nội dung tài liệu thành công',
+        revision: dto.expectedRevision + 1,
+        updatedAt: new Date(),
+      };
+    }
+
+    // ===== NHÁNH CHUẨN: TRANSACTION PRISMA KHI CƠ SỞ DỮ LIỆU ĐÃ MIGRATE =====
     try {
       return await this.prisma.$transaction(async (tx) => {
-        // Cập nhật có điều kiện: chỉ update khi revision == expectedRevision
-        try {
-          const updateResult = await tx.document.updateMany({
-            where: {
-              id,
-              revision: dto.expectedRevision,
-              deletedAt: null,
-            },
-            data: {
-              content: sanitizedContent as Prisma.InputJsonValue,
-              revision: { increment: 1 },
-              sizeBytes: contentSizeBytes,
-            },
-          });
+        const updateResult = await tx.document.updateMany({
+          where: {
+            id,
+            revision: dto.expectedRevision,
+            deletedAt: null,
+          },
+          data: {
+            content: sanitizedContent as Prisma.InputJsonValue,
+            revision: { increment: 1 },
+            sizeBytes: contentSizeBytes,
+          },
+        });
 
-          if (updateResult.count === 0) {
-            // Bị xung đột revision hoặc tài liệu đã bị xóa
-            const currentDoc = await tx.document.findUnique({
-              where: { id },
-              select: { revision: true, updatedAt: true },
-            });
-
-            throw new ConflictException({
-              statusCode: 409,
-              error: 'Conflict',
-              errorCode: 'REVISION_CONFLICT',
-              message:
-                'Xung đột phiên bản: Tài liệu đã được cập nhật bởi một phiên làm việc khác',
-              currentRevision: currentDoc?.revision ?? null,
-              expectedRevision: dto.expectedRevision,
-            });
-          }
-
-          const updatedDoc = await tx.document.findUniqueOrThrow({
+        if (updateResult.count === 0) {
+          const currentDoc = await tx.document.findUnique({
             where: { id },
-            select: { id: true, title: true, revision: true, updatedAt: true },
+            select: { revision: true, updatedAt: true },
           });
 
-          // Tạo snapshot version nếu có lý do hoặc theo mốc revision (mỗi 5 revisions hoặc có lý do cụ thể)
-          const shouldCreateSnapshot =
-            Boolean(dto.versionReason) || updatedDoc.revision % 5 === 0;
-
-          if (shouldCreateSnapshot) {
-            try {
-              await tx.documentVersion.create({
-                data: {
-                  documentId: id,
-                  revision: updatedDoc.revision,
-                  title: updatedDoc.title,
-                  content: sanitizedContent as Prisma.InputJsonValue,
-                  actorId: user.sub,
-                  reason: dto.versionReason || `Lưu mốc phiên bản revision ${updatedDoc.revision}`,
-                },
-              });
-            } catch (vErr) {
-              this.logger.warn(`Không thể tạo DocumentVersion snapshot: ${(vErr as Error).message}`);
-            }
-          }
-
-          return {
-            message: 'Lưu nội dung tài liệu thành công',
-            revision: updatedDoc.revision,
-            updatedAt: updatedDoc.updatedAt,
-          };
-        } catch (innerErr: any) {
-          if (innerErr instanceof ConflictException) {
-            throw innerErr;
-          }
-          if (innerErr?.code === 'P2022' || innerErr?.message?.includes('does not exist')) {
-            // Fallback lưu file trên R2 khi DB chưa có cột content
-            const rows: any = await tx.$queryRawUnsafe(
-              `SELECT "storageKey" FROM "Document" WHERE "id" = $1 LIMIT 1`,
-              id,
-            );
-            const storageKey = rows?.[0]?.storageKey || `notes/${user.sub}/${id}.json`;
-            const jsonBuffer = Buffer.from(JSON.stringify(sanitizedContent), 'utf8');
-            await this.r2StorageService.uploadObjectBuffer(
-              storageKey,
-              jsonBuffer,
-              'application/vnd.tiptap+json',
-            );
-            await tx.$executeRawUnsafe(
-              `UPDATE "Document" SET "sizeBytes" = $1, "updatedAt" = NOW() WHERE "id" = $2`,
-              BigInt(jsonBuffer.length),
-              id,
-            );
-            return {
-              message: 'Lưu nội dung tài liệu thành công',
-              revision: dto.expectedRevision + 1,
-              updatedAt: new Date(),
-            };
-          }
-          throw innerErr;
+          throw new ConflictException({
+            statusCode: 409,
+            error: 'Conflict',
+            errorCode: 'REVISION_CONFLICT',
+            message:
+              'Xung đột phiên bản: Tài liệu đã được cập nhật bởi một phiên làm việc khác',
+            currentRevision: currentDoc?.revision ?? null,
+            expectedRevision: dto.expectedRevision,
+          });
         }
+
+        const updatedDoc = await tx.document.findUniqueOrThrow({
+          where: { id },
+          select: { id: true, title: true, revision: true, updatedAt: true },
+        });
+
+        // Tạo snapshot version nếu có lý do hoặc theo mốc revision (mỗi 5 revisions hoặc có lý do cụ thể)
+        const shouldCreateSnapshot =
+          Boolean(dto.versionReason) || updatedDoc.revision % 5 === 0;
+
+        if (shouldCreateSnapshot) {
+          try {
+            await tx.documentVersion.create({
+              data: {
+                documentId: id,
+                revision: updatedDoc.revision,
+                title: updatedDoc.title,
+                content: sanitizedContent as Prisma.InputJsonValue,
+                actorId: user.sub,
+                reason: dto.versionReason || `Lưu mốc phiên bản revision ${updatedDoc.revision}`,
+              },
+            });
+          } catch (vErr) {
+            this.logger.warn(`Không thể tạo DocumentVersion snapshot: ${(vErr as Error).message}`);
+          }
+        }
+
+        return {
+          message: 'Lưu nội dung tài liệu thành công',
+          revision: updatedDoc.revision,
+          updatedAt: updatedDoc.updatedAt,
+        };
       });
     } catch (err: any) {
       if (err instanceof ConflictException) {
