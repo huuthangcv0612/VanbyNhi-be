@@ -40,6 +40,7 @@ describe('DocumentsService', () => {
         update: vi.fn(),
       },
       $transaction: vi.fn(async (cb) => cb(prismaMock)),
+      $queryRawUnsafe: vi.fn(),
     };
 
     r2Mock = {
@@ -454,6 +455,186 @@ describe('DocumentsService', () => {
 
       expect(prismaMock.document.update).toHaveBeenCalled();
       expect(r2Mock.deleteObject).toHaveBeenCalledWith('teachers/standalone-key');
+    });
+  });
+
+  // ==================== 5. DANH SÁCH TÀI LIỆU (GET /teacher/documents) ====================
+  describe('getLibraryDocuments', () => {
+    it('lấy danh sách tài liệu thành công khi DB bình thường (page 1, limit 10)', async () => {
+      const mockDocs = [
+        {
+          id: 'doc-1',
+          title: 'Tài liệu 1',
+          sizeBytes: BigInt(1024),
+          ownerId: 'teacher-A',
+          category: { id: 'cat-1', name: 'Ngữ văn' },
+          _count: { materials: 3 },
+        },
+      ];
+      prismaMock.document.findMany.mockResolvedValue(mockDocs);
+      prismaMock.document.count.mockResolvedValue(1);
+
+      const res = await service.getLibraryDocuments('teacher-A', {
+        page: 1,
+        limit: 10,
+      });
+
+      expect(res.items).toHaveLength(1);
+      expect(res.items[0].id).toBe('doc-1');
+      expect(res.items[0].sizeBytes).toBe(1024);
+      expect(res.items[0].usedInCount).toBe(3);
+      expect(res.items[0]).not.toHaveProperty('_count');
+      expect(res.pagination).toEqual({
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      });
+      expect(prismaMock.document.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { ownerId: 'teacher-A', deletedAt: null },
+          skip: 0,
+          take: 10,
+        }),
+      );
+    });
+
+    it('hỗ trợ pagination page 2, limit 10 (skip = 10)', async () => {
+      prismaMock.document.findMany.mockResolvedValue([]);
+      prismaMock.document.count.mockResolvedValue(15);
+
+      const res = await service.getLibraryDocuments('teacher-A', {
+        page: 2,
+        limit: 10,
+      });
+
+      expect(res.items).toHaveLength(0);
+      expect(res.pagination).toEqual({
+        total: 15,
+        page: 2,
+        limit: 10,
+        totalPages: 2,
+      });
+      expect(prismaMock.document.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skip: 10,
+          take: 10,
+        }),
+      );
+    });
+
+    it('trả về danh sách rỗng khi giáo viên không có tài liệu', async () => {
+      prismaMock.document.findMany.mockResolvedValue([]);
+      prismaMock.document.count.mockResolvedValue(0);
+
+      const res = await service.getLibraryDocuments('teacher-empty', {
+        page: 1,
+        limit: 10,
+      });
+
+      expect(res.items).toEqual([]);
+      expect(res.pagination).toEqual({
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      });
+    });
+
+    it('giáo viên có nhiều tài liệu được phân trang và map sizeBytes an toàn', async () => {
+      const mockDocs = Array.from({ length: 5 }, (_, i) => ({
+        id: `doc-${i + 1}`,
+        title: `Tài liệu ${i + 1}`,
+        sizeBytes: BigInt((i + 1) * 2048),
+        ownerId: 'teacher-A',
+        category: null,
+        _count: { materials: i },
+      }));
+      prismaMock.document.findMany.mockResolvedValue(mockDocs);
+      prismaMock.document.count.mockResolvedValue(25);
+
+      const res = await service.getLibraryDocuments('teacher-A', {
+        page: 1,
+        limit: 5,
+      });
+
+      expect(res.items).toHaveLength(5);
+      expect(res.items[4].sizeBytes).toBe(10240);
+      expect(res.pagination.totalPages).toBe(5);
+    });
+
+    it('chỉ lọc tài liệu thuộc sở hữu của giáo viên hiện tại (không lộ tài liệu giáo viên khác)', async () => {
+      prismaMock.document.findMany.mockResolvedValue([]);
+      prismaMock.document.count.mockResolvedValue(0);
+
+      await service.getLibraryDocuments('teacher-X', {
+        search: 'Toán',
+        categoryId: 'cat-X',
+      });
+
+      expect(prismaMock.document.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            ownerId: 'teacher-X',
+            deletedAt: null,
+            categoryId: 'cat-X',
+          }),
+        }),
+      );
+    });
+
+    it('graceful fallback an toàn khi cơ sở dữ liệu gặp lỗi P2022 (chưa chạy migration)', async () => {
+      // Giả lập lỗi P2022 từ Prisma Client khi cột Document.type chưa tồn tại trong database
+      const p2022Error: any = new Error(
+        'The column `Document.type` does not exist in the current database.',
+      );
+      p2022Error.code = 'P2022';
+      prismaMock.document.findMany.mockRejectedValue(p2022Error);
+
+      // Mock $queryRawUnsafe cho count và rows fallback
+      prismaMock.$queryRawUnsafe
+        .mockResolvedValueOnce([{ total: 2 }]) // count
+        .mockResolvedValueOnce([
+          {
+            id: 'doc-fallback-1',
+            title: 'DH Đài Loan 2025',
+            description: null,
+            originalName: '8. DH Đài Loan 2025.pdf',
+            storageKey: 'teachers/key-1',
+            mimeType: 'application/pdf',
+            sizeBytes: 491464n,
+            checksum: null,
+            ownerId: 'teacher-A',
+            categoryId: 'cat-1',
+            deletedAt: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            cat_id: 'cat-1',
+            cat_name: 'Tài liệu học sinh',
+            usedInCount: 1,
+          },
+        ]); // items
+
+      const res = await service.getLibraryDocuments('teacher-A', {
+        page: 1,
+        limit: 10,
+      });
+
+      expect(res.items).toHaveLength(1);
+      expect(res.items[0].id).toBe('doc-fallback-1');
+      expect(res.items[0].sizeBytes).toBe(491464);
+      expect(res.items[0].type).toBe('STATIC_FILE');
+      expect(res.items[0].status).toBe('PUBLISHED');
+      expect(res.items[0].category).toEqual({
+        id: 'cat-1',
+        name: 'Tài liệu học sinh',
+      });
+      expect(res.pagination).toEqual({
+        total: 2,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      });
     });
   });
 });

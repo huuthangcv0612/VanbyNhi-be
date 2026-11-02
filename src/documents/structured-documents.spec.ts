@@ -17,6 +17,8 @@ describe('DocumentsService - Structured Documents, Autosave & OCC, Versions, Imp
   beforeEach(() => {
     prismaMock = {
       $transaction: vi.fn((cb) => cb(prismaMock)),
+      $executeRawUnsafe: vi.fn(),
+      $queryRawUnsafe: vi.fn(),
       document: {
         findUnique: vi.fn(),
         findUniqueOrThrow: vi.fn(),
@@ -191,6 +193,70 @@ describe('DocumentsService - Structured Documents, Autosave & OCC, Versions, Imp
           }),
         }),
       );
+    });
+
+    it('tạo tài liệu thành công khi DB chưa chạy migration (P2022 fallback lưu R2)', async () => {
+      const p2022Err: any = new Error('The column type of relation Document does not exist in the current database.');
+      p2022Err.code = 'P2022';
+      prismaMock.document.create.mockRejectedValue(p2022Err);
+
+      const res = await service.createStructuredDocument('teacher-1', {
+        title: 'Giáo án Lão Hạc',
+        content: {
+          type: 'doc',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Nội dung Lão Hạc' }] }],
+        },
+      });
+
+      expect(res.document.title).toBe('Giáo án Lão Hạc');
+      expect(res.document.type).toBe('STRUCTURED_NOTE');
+      expect(res.document.status).toBe('DRAFT');
+      expect(r2Mock.uploadObjectBuffer).toHaveBeenCalledWith(
+        expect.stringContaining('notes/teacher-1/'),
+        expect.any(Buffer),
+        'application/vnd.tiptap+json',
+      );
+      expect(prismaMock.$executeRawUnsafe).toHaveBeenCalled();
+    });
+
+    it('tạo tài liệu với nội dung rỗng (tự động khởi tạo Tiptap node rỗng hợp lệ)', async () => {
+      const createdDoc = {
+        id: 'doc-empty-1',
+        title: 'Văn bản rỗng',
+        ownerId: 'teacher-1',
+        type: DocumentType.STRUCTURED_NOTE,
+        status: DocumentStatus.DRAFT,
+        revision: 1,
+        content: {
+          type: 'doc',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: '' }] }],
+        },
+        sizeBytes: BigInt(50),
+      };
+
+      prismaMock.document.create.mockResolvedValue(createdDoc);
+      prismaMock.documentVersion.create.mockResolvedValue({});
+
+      const res = await service.createStructuredDocument('teacher-1', {
+        title: 'Văn bản rỗng',
+      });
+
+      expect(res.document.id).toBe('doc-empty-1');
+      expect(res.document.content).toBeDefined();
+    });
+
+    it('từ chối tạo tài liệu nếu categoryId không thuộc sở hữu của giáo viên', async () => {
+      prismaMock.documentCategory.findUnique.mockResolvedValue({
+        id: 'cat-other',
+        teacherId: 'teacher-hacker',
+      });
+
+      await expect(
+        service.createStructuredDocument('teacher-1', {
+          title: 'Giáo án lỗi',
+          categoryId: 'cat-other',
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
