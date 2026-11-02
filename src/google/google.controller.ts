@@ -3,12 +3,14 @@ import {
   Get,
   Delete,
   Query,
+  Req,
   Res,
   UseGuards,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { GoogleAuthService } from './google-auth.service.js';
 import { GoogleConnectQueryDto } from './dto/google-connect-query.dto.js';
@@ -26,13 +28,32 @@ export class GoogleController {
     private readonly configService: ConfigService,
   ) {}
 
+  private extractUserId(user: any): string {
+    const userId = typeof user === 'string' ? user : (user?.sub || user?.id);
+    if (!userId) {
+      throw new UnauthorizedException(
+        'Không tìm thấy thông tin định danh người dùng từ token xác thực',
+      );
+    }
+    return userId;
+  }
+
+  private getFrontendUrl(): string {
+    const configured = this.configService.get<string>('FRONTEND_URL');
+    if (configured && configured.trim() !== '') {
+      return configured.trim();
+    }
+    return 'https://vanby-nhi-fe.vercel.app';
+  }
+
   /**
    * GET /google/connection — Xem trạng thái liên kết Google Workspace của người dùng
    */
   @Get('connection')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.TEACHER, UserRole.ADMIN)
-  async getConnectionStatus(@CurrentUser('sub') userId: string) {
+  async getConnectionStatus(@CurrentUser() user: any) {
+    const userId = this.extractUserId(user);
     return this.googleAuthService.getConnectionStatus(userId);
   }
 
@@ -43,13 +64,22 @@ export class GoogleController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.TEACHER, UserRole.ADMIN)
   async connectGoogle(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser() user: any,
     @Query() query: GoogleConnectQueryDto,
     @Res() res: Response,
+    @Req() req?: Request,
   ) {
+    const userId = this.extractUserId(user);
     const authorizationUrl = this.googleAuthService.getAuthorizationUrl(userId);
 
-    if (query?.format === 'json') {
+    const isJsonRequested =
+      query?.format === 'json' ||
+      Boolean(req?.headers?.['accept']?.includes('application/json'));
+
+    if (isJsonRequested) {
+      if (typeof res.status === 'function') {
+        res.status(HttpStatus.OK);
+      }
       return res.json({ authorizationUrl });
     }
 
@@ -64,18 +94,33 @@ export class GoogleController {
     @Query() query: GoogleCallbackQueryDto,
     @Res() res: Response,
   ) {
-    const result = await this.googleAuthService.handleCallback(query);
+    const frontendUrl = this.getFrontendUrl();
 
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
-    if (frontendUrl && query?.format !== 'json') {
-      const redirectUrl = new URL(frontendUrl);
-      redirectUrl.pathname = '/teacher/settings/google';
-      redirectUrl.searchParams.set('status', 'success');
-      redirectUrl.searchParams.set('email', result.googleAccount.email);
-      return res.redirect(redirectUrl.toString());
+    try {
+      const result = await this.googleAuthService.handleCallback(query);
+
+      if (frontendUrl && query?.format !== 'json') {
+        const redirectUrl = new URL(frontendUrl);
+        redirectUrl.pathname = '/teacher/settings/google';
+        redirectUrl.searchParams.set('status', 'success');
+        redirectUrl.searchParams.set('email', result.googleAccount.email);
+        return res.redirect(redirectUrl.toString());
+      }
+
+      return res.status(HttpStatus.OK).json(result);
+    } catch (err: any) {
+      if (frontendUrl && query?.format !== 'json') {
+        const redirectUrl = new URL(frontendUrl);
+        redirectUrl.pathname = '/teacher/settings/google';
+        redirectUrl.searchParams.set('status', 'error');
+        redirectUrl.searchParams.set(
+          'message',
+          err.message || 'Xác thực Google Workspace thất bại',
+        );
+        return res.redirect(redirectUrl.toString());
+      }
+      throw err;
     }
-
-    return res.status(HttpStatus.OK).json(result);
   }
 
   /**
@@ -85,7 +130,8 @@ export class GoogleController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.TEACHER, UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
-  async disconnectGoogle(@CurrentUser('sub') userId: string) {
+  async disconnectGoogle(@CurrentUser() user: any) {
+    const userId = this.extractUserId(user);
     return this.googleAuthService.disconnect(userId);
   }
 }

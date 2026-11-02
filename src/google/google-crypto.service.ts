@@ -13,15 +13,14 @@ export class GoogleCryptoService {
   private readonly key: Buffer;
 
   constructor(private readonly configService: ConfigService) {
-    const secret =
-      this.configService.get<string>('GOOGLE_TOKEN_ENCRYPTION_KEY') ||
-      this.configService.get<string>('JWT_ACCESS_SECRET') ||
-      '';
+    const customKey = this.configService.get<string>('GOOGLE_TOKEN_ENCRYPTION_KEY');
+    const jwtSecret = this.configService.get<string>('JWT_ACCESS_SECRET');
+    const secret = customKey || jwtSecret || '';
 
     if (!secret) {
       if (process.env.NODE_ENV === 'production') {
         throw new InternalServerErrorException(
-          'Lỗi cấu hình: Thiếu GOOGLE_TOKEN_ENCRYPTION_KEY trong môi trường production',
+          'Lỗi cấu hình: Thiếu GOOGLE_TOKEN_ENCRYPTION_KEY hoặc JWT_ACCESS_SECRET trong môi trường production',
         );
       }
       this.logger.warn(
@@ -32,9 +31,48 @@ export class GoogleCryptoService {
         .update('vanbynhi-default-google-token-key-32b!')
         .digest();
     } else {
+      if (!customKey && process.env.NODE_ENV === 'production') {
+        this.logger.warn(
+          'GOOGLE_TOKEN_ENCRYPTION_KEY chưa được thiết lập riêng. Đang tạm thời sử dụng JWT_ACCESS_SECRET làm khóa mã hóa.',
+        );
+      }
       // Đảm bảo key luôn có đúng 32 bytes thông qua SHA-256
       this.key = crypto.createHash('sha256').update(secret).digest();
     }
+  }
+
+  /**
+   * Kiểm tra xem chuỗi có đúng định dạng AES-256-GCM đã mã hóa (iv:authTag:encrypted) không
+   */
+  isEncrypted(value?: string | null): boolean {
+    if (!value || typeof value !== 'string') {
+      return false;
+    }
+    const parts = value.split(':');
+    if (parts.length !== 3) {
+      return false;
+    }
+    const [ivHex, authTagHex, encryptedHex] = parts;
+    // IV là 12 bytes (24 hex), authTag là 16 bytes (32 hex)
+    if (ivHex.length !== 24 || authTagHex.length !== 32 || encryptedHex.length === 0) {
+      return false;
+    }
+    return (
+      /^[0-9a-fA-F]+$/.test(ivHex) &&
+      /^[0-9a-fA-F]+$/.test(authTagHex) &&
+      /^[0-9a-fA-F]+$/.test(encryptedHex)
+    );
+  }
+
+  /**
+   * Nhận diện chuỗi token plaintext cũ (chưa được mã hóa qua AES-256-GCM)
+   */
+  isLegacyPlaintext(value?: string | null): boolean {
+    if (!value || typeof value !== 'string') {
+      return false;
+    }
+    // Token Google OAuth thường có độ dài > 20 và không chứa ký tự phân tách ':'
+    return value.length >= 20 && !value.includes(':');
   }
 
   /**
@@ -58,30 +96,46 @@ export class GoogleCryptoService {
   }
 
   /**
-   * Giải mã chuỗi AES-256-GCM đã mã hóa
+   * Giải mã chuỗi AES-256-GCM đã mã hóa (hỗ trợ tương thích ngược dữ liệu plaintext cũ)
    */
   decrypt(ciphertext: string): string {
     if (!ciphertext) {
       throw new InternalServerErrorException('Dữ liệu cần giải mã không được để trống');
     }
 
-    const parts = ciphertext.split(':');
-    if (parts.length !== 3) {
-      throw new InternalServerErrorException(
-        'Định dạng chuỗi mã hóa không hợp lệ (cần iv:authTag:content)',
-      );
+    if (this.isEncrypted(ciphertext)) {
+      try {
+        const [ivHex, authTagHex, encryptedHex] = ciphertext.split(':');
+        const iv = Buffer.from(ivHex, 'hex');
+        const authTag = Buffer.from(authTagHex, 'hex');
+
+        const decipher = crypto.createDecipheriv(this.algorithm, this.key, iv);
+        decipher.setAuthTag(authTag);
+
+        let decrypted = decipher.update(encryptedHex, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+
+        return decrypted;
+      } catch {
+        this.logger.error(
+          'Giải mã refresh token thất bại: Khóa giải mã không đúng hoặc dữ liệu bị thay đổi',
+        );
+        throw new InternalServerErrorException(
+          'Không thể giải mã dữ liệu xác thực Google (khóa giải mã không khớp hoặc dữ liệu bị thay đổi)',
+        );
+      }
     }
 
-    const [ivHex, authTagHex, encryptedHex] = parts;
-    const iv = Buffer.from(ivHex, 'hex');
-    const authTag = Buffer.from(authTagHex, 'hex');
+    // Tương thích dữ liệu cũ: Nếu token được lưu ở dạng plaintext trước đây
+    if (this.isLegacyPlaintext(ciphertext)) {
+      this.logger.warn(
+        'Phát hiện refresh token ở định dạng plaintext cũ. Cần tự động mã hóa lại khi lưu.',
+      );
+      return ciphertext;
+    }
 
-    const decipher = crypto.createDecipheriv(this.algorithm, this.key, iv);
-    decipher.setAuthTag(authTag);
-
-    let decrypted = decipher.update(encryptedHex, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-
-    return decrypted;
+    throw new InternalServerErrorException(
+      'Định dạng chuỗi mã hóa không hợp lệ (cần iv:authTag:content)',
+    );
   }
 }

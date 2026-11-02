@@ -11,6 +11,22 @@ export class GoogleCallbackQueryDto {
 
   @IsOptional()
   @IsString()
+  scope?: string;
+
+  @IsOptional()
+  @IsString()
+  authuser?: string;
+
+  @IsOptional()
+  @IsString()
+  prompt?: string;
+
+  @IsOptional()
+  @IsString()
+  hd?: string;
+
+  @IsOptional()
+  @IsString()
   error?: string;
 
   @IsOptional()
@@ -19,5 +35,10 @@ export class GoogleCallbackQueryDto {
 
   @IsOptional()
   @IsString()
+  error_subtype?: string;
+
+  @IsOptional()
+  @IsString()
   format?: 'json' | 'redirect';
 }
+

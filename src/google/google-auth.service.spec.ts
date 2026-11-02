@@ -3,6 +3,7 @@ import {
   BadRequestException,
   UnauthorizedException,
   ConflictException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleAuthService } from './google-auth.service.js';
@@ -35,6 +36,7 @@ describe('GoogleAuthService', () => {
         findUnique: vi.fn(),
         upsert: vi.fn(),
         update: vi.fn(),
+        delete: vi.fn(),
       },
     };
 
@@ -57,6 +59,7 @@ describe('GoogleAuthService', () => {
       );
       expect(url.searchParams.get('access_type')).toBe('offline');
       expect(url.searchParams.get('prompt')).toBe('consent');
+      expect(url.searchParams.get('include_granted_scopes')).toBe('true');
       expect(url.searchParams.get('scope')).toContain(
         'https://www.googleapis.com/auth/meetings.space.created',
       );
@@ -70,6 +73,65 @@ describe('GoogleAuthService', () => {
 
       // State đã tiêu thụ một lần, lần thứ hai phải trả về null (chống replay attack)
       expect(service.validateAndConsumeState(state!)).toBeNull();
+    });
+
+    it('báo lỗi khi thiếu GOOGLE_CLIENT_ID trong môi trường', () => {
+      const missingClientConfig = new ConfigService({
+        GOOGLE_REDIRECT_URI: 'http://localhost:3000/google/callback',
+      });
+      const localService = new GoogleAuthService(missingClientConfig, prismaMock, cryptoService);
+      expect(() => localService.getAuthorizationUrl('teacher-1')).toThrow(
+        InternalServerErrorException,
+      );
+      localService.onModuleDestroy();
+    });
+
+    it('báo lỗi khi thiếu cả GOOGLE_REDIRECT_URI lẫn RENDER_EXTERNAL_URL', () => {
+      const missingRedirectConfig = new ConfigService({
+        GOOGLE_CLIENT_ID: 'mock-client-id',
+      });
+      const localService = new GoogleAuthService(missingRedirectConfig, prismaMock, cryptoService);
+      expect(() => localService.getAuthorizationUrl('teacher-1')).toThrow(
+        InternalServerErrorException,
+      );
+      localService.onModuleDestroy();
+    });
+
+    it('fallback sang RENDER_EXTERNAL_URL khi GOOGLE_REDIRECT_URI không được cấu hình', () => {
+      const renderConfig = new ConfigService({
+        GOOGLE_CLIENT_ID: 'mock-client-id',
+        RENDER_EXTERNAL_URL: 'https://vanbynhi-be.onrender.com',
+      });
+      const localService = new GoogleAuthService(renderConfig, prismaMock, cryptoService);
+      const url = new URL(localService.getAuthorizationUrl('teacher-1'));
+      expect(url.searchParams.get('redirect_uri')).toBe(
+        'https://vanbynhi-be.onrender.com/google/callback',
+      );
+      localService.onModuleDestroy();
+    });
+
+    it('xác thực thành công state HMAC kể cả khi in-memory store bị xóa (mô phỏng server reboot)', () => {
+      const state = service.generateState('teacher-1');
+
+      // Mô phỏng server restart bằng cách xóa sạch stateStore trong RAM
+      (service as any).stateStore.clear();
+
+      // State có chữ ký HMAC vẫn được giải mã an toàn và trích xuất đúng userId
+      const recoveredUserId = service.validateAndConsumeState(state);
+      expect(recoveredUserId).toBe('teacher-1');
+
+      // Đã tiêu thụ xong một lần, không thể tái sử dụng
+      expect(service.validateAndConsumeState(state)).toBeNull();
+    });
+
+    it('từ chối state có chữ ký bị giả mạo', () => {
+      const state = service.generateState('teacher-1');
+      const [payload, signature] = state.split('.');
+      const tamperedSignature = signature.slice(0, -2) + (signature.endsWith('a') ? 'b' : 'a');
+      const tamperedState = `${payload}.${tamperedSignature}`;
+
+      (service as any).stateStore.clear();
+      expect(service.validateAndConsumeState(tamperedState)).toBeNull();
     });
 
     it('từ chối khi state không hợp lệ hoặc đã hết hạn (Test Case 3)', async () => {
@@ -90,6 +152,19 @@ describe('GoogleAuthService', () => {
           error_description: 'The user denied the request to link account',
         }),
       ).rejects.toThrow(/Xác thực Google bị từ chối/);
+    });
+
+    it('từ chối khi thiếu code hoặc state', async () => {
+      await expect(service.handleCallback({})).rejects.toThrow(BadRequestException);
+    });
+
+    it('từ chối khi user không tồn tại hoặc tài khoản bị vô hiệu hóa', async () => {
+      const state = service.generateState('inactive-user');
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.handleCallback({ code: 'valid-code', state }),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('từ chối khi email Google chưa được xác minh (Test Case 2a)', async () => {
@@ -191,7 +266,73 @@ describe('GoogleAuthService', () => {
       expect((result as any).googleAccount).not.toHaveProperty('encryptedRefreshToken');
     });
 
-    it('từ chối khi Google sub đã được liên kết với một tài khoản VanbyNhi khác (Test Case 5)', async () => {
+    it('giữ lại refresh token cũ khi Google không trả refresh token mới', async () => {
+      const stateTeacher1 = service.generateState('teacher-1');
+      const oldEncryptedToken = cryptoService.encrypt('existing-refresh-token');
+
+      prismaMock.user.findUnique.mockResolvedValue({
+        id: 'teacher-1',
+        isActive: true,
+        googleAccount: {
+          encryptedRefreshToken: oldEncryptedToken,
+        },
+      });
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue(null);
+      prismaMock.userGoogleAccount.upsert.mockImplementation(({ update }: any) => ({
+        ...update,
+        lastConnectedAt: new Date(),
+      }));
+
+      vi.spyOn(service, 'exchangeCodeForTokens').mockResolvedValue({
+        access_token: 'fake-access-token',
+        // Google KHÔNG trả refresh_token
+        expires_in: 3600,
+      });
+
+      vi.spyOn(service, 'fetchUserProfile').mockResolvedValue({
+        sub: 'google-sub-teacher-1',
+        email: 'teacher1@hcmus.edu.vn',
+        email_verified: true,
+      });
+
+      await service.handleCallback({ code: 'valid-code', state: stateTeacher1 });
+
+      expect(prismaMock.userGoogleAccount.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          update: expect.objectContaining({
+            encryptedRefreshToken: oldEncryptedToken,
+          }),
+        }),
+      );
+    });
+
+    it('từ chối khi Google không trả refresh token và trong DB cũng chưa từng có token', async () => {
+      const stateTeacher1 = service.generateState('teacher-1');
+
+      prismaMock.user.findUnique.mockResolvedValue({
+        id: 'teacher-1',
+        isActive: true,
+        googleAccount: null,
+      });
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue(null);
+
+      vi.spyOn(service, 'exchangeCodeForTokens').mockResolvedValue({
+        access_token: 'fake-access-token',
+        expires_in: 3600,
+      });
+
+      vi.spyOn(service, 'fetchUserProfile').mockResolvedValue({
+        sub: 'google-sub-teacher-1',
+        email: 'teacher1@hcmus.edu.vn',
+        email_verified: true,
+      });
+
+      await expect(
+        service.handleCallback({ code: 'valid-code', state: stateTeacher1 }),
+      ).rejects.toThrow(/Google không trả về Refresh Token/);
+    });
+
+    it('từ chối khi Google sub đã được liên kết với một tài khoản VanbyNhi khác đang hoạt động (Test Case 5)', async () => {
       const stateTeacher1 = service.generateState('teacher-1');
 
       prismaMock.user.findUnique.mockResolvedValue({
@@ -199,10 +340,12 @@ describe('GoogleAuthService', () => {
         isActive: true,
       });
 
-      // Đã có teacher-2 liên kết với sub này trước đó
+      // Đã có teacher-2 liên kết với sub này trước đó và đang CONNECTED
       prismaMock.userGoogleAccount.findUnique.mockResolvedValue({
+        id: 'old-acc-id',
         userId: 'teacher-2',
         googleSub: 'google-sub-shared',
+        status: GoogleConnectionStatus.CONNECTED,
       });
 
       vi.spyOn(service, 'exchangeCodeForTokens').mockResolvedValue({
@@ -220,6 +363,46 @@ describe('GoogleAuthService', () => {
       await expect(
         service.handleCallback({ code: 'valid-code', state: stateTeacher1 }),
       ).rejects.toThrow(ConflictException);
+    });
+
+    it('dọn dẹp bản ghi cũ nếu tài khoản Google trước đó thuộc user khác nhưng đã DISCONNECTED', async () => {
+      const stateTeacher1 = service.generateState('teacher-1');
+
+      prismaMock.user.findUnique.mockResolvedValue({
+        id: 'teacher-1',
+        isActive: true,
+      });
+
+      // teacher-2 từng liên kết nhưng đã DISCONNECTED
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue({
+        id: 'old-disconnected-acc-id',
+        userId: 'teacher-2',
+        googleSub: 'google-sub-shared',
+        status: GoogleConnectionStatus.DISCONNECTED,
+      });
+      prismaMock.userGoogleAccount.upsert.mockImplementation(({ create }: any) => ({
+        ...create,
+        lastConnectedAt: new Date(),
+      }));
+
+      vi.spyOn(service, 'exchangeCodeForTokens').mockResolvedValue({
+        access_token: 'fake-access-token',
+        refresh_token: 'fake-refresh-token',
+        expires_in: 3600,
+      });
+
+      vi.spyOn(service, 'fetchUserProfile').mockResolvedValue({
+        sub: 'google-sub-shared',
+        email: 'teacher@hcmus.edu.vn',
+        email_verified: true,
+      });
+
+      await service.handleCallback({ code: 'valid-code', state: stateTeacher1 });
+
+      // Phải xóa bản ghi cũ đã ngắt liên kết để giải phóng googleSub
+      expect(prismaMock.userGoogleAccount.delete).toHaveBeenCalledWith({
+        where: { id: 'old-disconnected-acc-id' },
+      });
     });
   });
 
@@ -254,6 +437,36 @@ describe('GoogleAuthService', () => {
       );
     });
 
+    it('tự động nâng cấp mã hóa khi refresh token trong DB là plaintext cũ', async () => {
+      const legacyToken = '1//0gXyzLegacyRefreshTokenWithoutColon123456';
+
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue({
+        userId: 'teacher-1',
+        status: GoogleConnectionStatus.CONNECTED,
+        encryptedRefreshToken: legacyToken,
+      });
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          access_token: 'new-access-token',
+          expires_in: 3600,
+        }),
+      } as any);
+
+      await service.getValidAccessToken('teacher-1');
+
+      // Phải cập nhật lại token đã mã hóa vào DB
+      expect(prismaMock.userGoogleAccount.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { userId: 'teacher-1' },
+          data: expect.objectContaining({
+            encryptedRefreshToken: expect.stringMatching(/^[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+$/),
+          }),
+        }),
+      );
+    });
+
     it('đánh dấu NEEDS_REAUTH và báo lỗi khi refresh token bị thu hồi hoặc invalid_grant (Test Case 7)', async () => {
       const encryptedToken = cryptoService.encrypt('revoked-google-refresh-token');
 
@@ -282,6 +495,23 @@ describe('GoogleAuthService', () => {
         data: { status: GoogleConnectionStatus.NEEDS_REAUTH },
       });
     });
+
+    it('đánh dấu NEEDS_REAUTH khi không thể giải mã refresh token (lỗi khóa hoặc tampered)', async () => {
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue({
+        userId: 'teacher-1',
+        status: GoogleConnectionStatus.CONNECTED,
+        encryptedRefreshToken: 'corrupted:ciphertext:token',
+      });
+
+      await expect(service.getValidAccessToken('teacher-1')).rejects.toThrow(
+        UnauthorizedException,
+      );
+
+      expect(prismaMock.userGoogleAccount.update).toHaveBeenCalledWith({
+        where: { userId: 'teacher-1' },
+        data: { status: GoogleConnectionStatus.NEEDS_REAUTH },
+      });
+    });
   });
 
   describe('Connection status & Disconnect', () => {
@@ -303,6 +533,16 @@ describe('GoogleAuthService', () => {
       expect(status).not.toHaveProperty('encryptedRefreshToken');
     });
 
+    it('trả về trạng thái DISCONNECTED khi chưa có bản ghi kết nối', async () => {
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue(null);
+
+      const status = await service.getConnectionStatus('teacher-without-google');
+      expect(status).toEqual({
+        isConnected: false,
+        status: GoogleConnectionStatus.DISCONNECTED,
+      });
+    });
+
     it('hủy liên kết thành công và xóa refresh token đã mã hóa', async () => {
       prismaMock.userGoogleAccount.findUnique.mockResolvedValue({
         userId: 'teacher-1',
@@ -318,6 +558,11 @@ describe('GoogleAuthService', () => {
           encryptedRefreshToken: null,
         },
       });
+    });
+
+    it('báo lỗi khi ngắt liên kết tài khoản chưa từng liên kết', async () => {
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue(null);
+      await expect(service.disconnect('unlinked-teacher')).rejects.toThrow(BadRequestException);
     });
   });
 });

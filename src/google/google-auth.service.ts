@@ -31,15 +31,24 @@ export interface GoogleUserProfile {
 export class GoogleAuthService implements OnModuleDestroy {
   private readonly logger = new Logger(GoogleAuthService.name);
 
-  // In-memory state store chống CSRF, có TTL 10 phút
+  // In-memory state store chống CSRF, TTL 10 phút
   private readonly stateStore = new Map<string, GoogleStateItem>();
+  // Bộ lưu trữ state đã tiêu thụ để chống replay attack ngay cả khi có multi-node hoặc signed state
+  private readonly consumedStates = new Map<string, number>();
   private readonly cleanupInterval: NodeJS.Timeout;
+  private readonly hmacSecret: Buffer;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
     private readonly googleCryptoService: GoogleCryptoService,
   ) {
+    const rawSecret =
+      this.configService.get<string>('GOOGLE_TOKEN_ENCRYPTION_KEY') ||
+      this.configService.get<string>('JWT_ACCESS_SECRET') ||
+      'vanbynhi-state-csrf-secret-fallback-key-32b';
+    this.hmacSecret = crypto.createHash('sha256').update(rawSecret).digest();
+
     this.cleanupInterval = setInterval(() => {
       this.cleanupExpiredStates();
     }, 3 * 60 * 1000);
@@ -59,14 +68,47 @@ export class GoogleAuthService implements OnModuleDestroy {
         this.stateStore.delete(state);
       }
     }
+    for (const [state, expiresAt] of this.consumedStates.entries()) {
+      if (now > expiresAt) {
+        this.consumedStates.delete(state);
+      }
+    }
   }
 
   /**
-   * Sinh state bảo mật ngẫu nhiên chống CSRF và gắn chặt với userId của giáo viên
+   * Lấy URI chuyển hướng callback của Google OAuth.
+   * Ưu tiên GOOGLE_REDIRECT_URI; nếu thiếu trên Render, tự động fallback theo RENDER_EXTERNAL_URL.
+   */
+  getRedirectUri(): string {
+    const configured = this.configService.get<string>('GOOGLE_REDIRECT_URI');
+    if (configured && configured.trim() !== '') {
+      return configured.trim();
+    }
+    const renderUrl = this.configService.get<string>('RENDER_EXTERNAL_URL');
+    if (renderUrl && renderUrl.trim() !== '') {
+      return `${renderUrl.replace(/\/+$/, '')}/google/callback`;
+    }
+    return '';
+  }
+
+  /**
+   * Sinh state bảo mật ngẫu nhiên chống CSRF gắn chặt với userId của giáo viên,
+   * có chữ ký HMAC chống giả mạo kể cả khi server khởi động lại (Render cold restart).
    */
   generateState(userId: string, ttlMs = 10 * 60 * 1000): string {
-    const state = crypto.randomBytes(32).toString('hex');
+    if (!userId) {
+      throw new BadRequestException('userId là bắt buộc để sinh OAuth state');
+    }
+
     const expiresAt = Date.now() + ttlMs;
+    const nonce = crypto.randomBytes(16).toString('hex');
+    const payload = `${userId}:${expiresAt}:${nonce}`;
+    const signature = crypto
+      .createHmac('sha256', this.hmacSecret)
+      .update(payload)
+      .digest('hex');
+
+    const state = `${Buffer.from(payload, 'utf8').toString('base64url')}.${signature}`;
     this.stateStore.set(state, { userId, expiresAt });
     return state;
   }
@@ -78,38 +120,93 @@ export class GoogleAuthService implements OnModuleDestroy {
     if (!state) {
       return null;
     }
-    const item = this.stateStore.get(state);
-    if (!item) {
-      return null;
-    }
-    // Tiêu thụ ngay lập tức để chống replay attack
-    this.stateStore.delete(state);
 
-    if (Date.now() > item.expiresAt) {
+    // 1. Kiểm tra xem state đã bị tiêu thụ trước đó chưa (chống replay attack)
+    if (this.consumedStates.has(state)) {
       return null;
     }
-    return item.userId;
+
+    // 2. Kiểm tra trong bộ nhớ in-memory
+    const memoryItem = this.stateStore.get(state);
+    if (memoryItem) {
+      this.stateStore.delete(state);
+      this.consumedStates.set(state, memoryItem.expiresAt);
+      if (Date.now() > memoryItem.expiresAt) {
+        return null;
+      }
+      return memoryItem.userId;
+    }
+
+    // 3. Fallback giải mã và kiểm tra chữ ký HMAC (khi server bị restart hoặc state phân tán)
+    const parts = state.split('.');
+    if (parts.length !== 2) {
+      return null;
+    }
+
+    const [encodedPayload, receivedSignature] = parts;
+    try {
+      const payload = Buffer.from(encodedPayload, 'base64url').toString('utf8');
+      const expectedSignature = crypto
+        .createHmac('sha256', this.hmacSecret)
+        .update(payload)
+        .digest('hex');
+
+      const expectedBuf = Buffer.from(expectedSignature, 'hex');
+      const receivedBuf = Buffer.from(receivedSignature, 'hex');
+      if (
+        expectedBuf.length !== receivedBuf.length ||
+        !crypto.timingSafeEqual(expectedBuf, receivedBuf)
+      ) {
+        return null;
+      }
+
+      const [userId, expiresAtStr] = payload.split(':');
+      const expiresAt = parseInt(expiresAtStr, 10);
+      if (!userId || !expiresAt || Date.now() > expiresAt) {
+        return null;
+      }
+
+      this.consumedStates.set(state, expiresAt);
+      return userId;
+    } catch {
+      return null;
+    }
   }
 
   /**
    * Tạo URL ủy quyền Google OAuth2 Authorization Code Flow
    */
   getAuthorizationUrl(userId: string): string {
-    const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
-    const redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
+    if (!userId) {
+      throw new UnauthorizedException(
+        'Không tìm thấy thông tin người dùng để khởi tạo kết nối Google',
+      );
+    }
 
-    if (!clientId || !redirectUri) {
+    const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
+    const redirectUri = this.getRedirectUri();
+
+    if (!clientId) {
       this.logger.error(
-        'Lỗi cấu hình: Thiếu GOOGLE_CLIENT_ID hoặc GOOGLE_REDIRECT_URI trong biến môi trường (.env)',
+        'Lỗi cấu hình: Thiếu GOOGLE_CLIENT_ID trong biến môi trường hệ thống',
       );
       throw new InternalServerErrorException(
-        'Lỗi cấu hình hệ thống: Không thể khởi tạo xác thực Google',
+        'Lỗi cấu hình hệ thống: Chưa thiết lập GOOGLE_CLIENT_ID',
+      );
+    }
+
+    if (!redirectUri) {
+      this.logger.error(
+        'Lỗi cấu hình: Thiếu GOOGLE_REDIRECT_URI hoặc RENDER_EXTERNAL_URL trong biến môi trường',
+      );
+      throw new InternalServerErrorException(
+        'Lỗi cấu hình hệ thống: Chưa thiết lập GOOGLE_REDIRECT_URI',
       );
     }
 
     const state = this.generateState(userId);
 
-    // Scope tối thiểu cần thiết cho Google Meet Space và định danh người dùng
+    // Scopes tối thiểu cần thiết cho Google Meet Space và định danh tài khoản giáo viên
     const scopes = [
       'openid',
       'https://www.googleapis.com/auth/userinfo.email',
@@ -122,8 +219,9 @@ export class GoogleAuthService implements OnModuleDestroy {
       redirect_uri: redirectUri,
       response_type: 'code',
       scope: scopes.join(' '),
-      access_type: 'offline', // Bắt buộc để nhận refresh token
-      prompt: 'consent', // Đảm bảo Google luôn trả về refresh token
+      access_type: 'offline', // Bắt buộc để Google phát refresh token
+      prompt: 'consent', // Đảm bảo Google cấp refresh token
+      include_granted_scopes: 'true',
       state,
     });
 
@@ -141,14 +239,14 @@ export class GoogleAuthService implements OnModuleDestroy {
   }> {
     const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
-    const redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
+    const redirectUri = this.getRedirectUri();
 
     if (!clientId || !clientSecret || !redirectUri) {
       this.logger.error(
-        'Lỗi cấu hình: Thiếu GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET hoặc GOOGLE_REDIRECT_URI trong (.env)',
+        'Lỗi cấu hình: Thiếu GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET hoặc GOOGLE_REDIRECT_URI trong biến môi trường',
       );
       throw new InternalServerErrorException(
-        'Lỗi cấu hình hệ thống: Không thể hoàn tất đổi token Google',
+        'Lỗi cấu hình hệ thống: Không thể hoàn tất đổi token Google do thiếu biến môi trường',
       );
     }
 
@@ -205,7 +303,9 @@ export class GoogleAuthService implements OnModuleDestroy {
       const data = await response.json();
 
       if (!response.ok || !data.sub) {
-        this.logger.warn(`Google UserInfo thất bại: ${JSON.stringify(data)}`);
+        this.logger.warn(
+          `Google UserInfo thất bại: HTTP ${response.status} - ${data?.error?.message || data?.error || 'Unknown'}`,
+        );
         throw new BadRequestException(
           'Không thể lấy thông tin định danh người dùng từ Google',
         );
@@ -312,24 +412,40 @@ export class GoogleAuthService implements OnModuleDestroy {
     // 5. Kiểm tra chính sách miền email cấu hình
     this.validateEmailDomain(profile.email);
 
-    // 6. Chống chiếm dụng tài khoản: Không cho phép Google account (sub) đã gắn với user VanbyNhi khác
+    // 6. Chống chiếm dụng tài khoản & chống bản ghi trùng:
+    // Kiểm tra xem googleSub này đã gắn với user VanbyNhi nào khác chưa
     const existingGoogleOwner = await this.prisma.userGoogleAccount.findUnique({
       where: { googleSub: profile.sub },
     });
 
     if (existingGoogleOwner && existingGoogleOwner.userId !== userId) {
-      throw new ConflictException(
-        'Tài khoản Google Workspace này đã được liên kết với một tài khoản VanbyNhi khác',
-      );
+      if (existingGoogleOwner.status === GoogleConnectionStatus.DISCONNECTED) {
+        // Tài khoản cũ đã ngắt liên kết, xóa bản ghi cũ để giải phóng googleSub tránh xung đột unique constraint
+        await this.prisma.userGoogleAccount.delete({
+          where: { id: existingGoogleOwner.id },
+        });
+      } else {
+        throw new ConflictException(
+          'Tài khoản Google Workspace này đã được liên kết với một tài khoản VanbyNhi khác',
+        );
+      }
     }
 
-    // 7. Xử lý refresh token và mã hóa
+    // 7. Xử lý refresh token và mã hóa (tuyệt đối không lưu plaintext)
     let encryptedRefreshToken = user.googleAccount?.encryptedRefreshToken || null;
     if (tokens.refresh_token) {
       encryptedRefreshToken = this.googleCryptoService.encrypt(
         tokens.refresh_token,
       );
-    } else if (!encryptedRefreshToken) {
+    } else if (encryptedRefreshToken) {
+      // Giữ lại refresh token cũ khi Google không trả token mới.
+      // Nếu dữ liệu cũ là plaintext, tự động mã hóa lại để bảo mật tuyệt đối.
+      if (!this.googleCryptoService.isEncrypted(encryptedRefreshToken)) {
+        encryptedRefreshToken = this.googleCryptoService.encrypt(
+          this.googleCryptoService.decrypt(encryptedRefreshToken),
+        );
+      }
+    } else {
       // Trường hợp Google không trả refresh token và trong DB chưa từng có
       throw new BadRequestException(
         'Google không trả về Refresh Token. Vui lòng ngắt quyền ứng dụng trên tài khoản Google và thực hiện liên kết lại.',
@@ -393,6 +509,16 @@ export class GoogleAuthService implements OnModuleDestroy {
       refreshToken = this.googleCryptoService.decrypt(
         googleAccount.encryptedRefreshToken,
       );
+
+      // Tự động nâng cấp mã hóa nếu phát hiện dữ liệu cũ là plaintext
+      if (!this.googleCryptoService.isEncrypted(googleAccount.encryptedRefreshToken)) {
+        await this.prisma.userGoogleAccount.update({
+          where: { userId },
+          data: {
+            encryptedRefreshToken: this.googleCryptoService.encrypt(refreshToken),
+          },
+        });
+      }
     } catch {
       await this.prisma.userGoogleAccount.update({
         where: { userId },
@@ -406,9 +532,15 @@ export class GoogleAuthService implements OnModuleDestroy {
     const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
 
+    if (!clientId || !clientSecret) {
+      throw new InternalServerErrorException(
+        'Lỗi cấu hình hệ thống: Thiếu GOOGLE_CLIENT_ID hoặc GOOGLE_CLIENT_SECRET để làm mới token Google',
+      );
+    }
+
     const body = new URLSearchParams({
-      client_id: clientId || '',
-      client_secret: clientSecret || '',
+      client_id: clientId,
+      client_secret: clientSecret,
       refresh_token: refreshToken,
       grant_type: 'refresh_token',
     });
@@ -459,6 +591,13 @@ export class GoogleAuthService implements OnModuleDestroy {
    * Xem trạng thái liên kết Google của giáo viên
    */
   async getConnectionStatus(userId: string) {
+    if (!userId) {
+      return {
+        isConnected: false,
+        status: GoogleConnectionStatus.DISCONNECTED,
+      };
+    }
+
     const googleAccount = await this.prisma.userGoogleAccount.findUnique({
       where: { userId },
       select: {
