@@ -112,7 +112,15 @@ export class GoogleController {
     const rawError = (query?.error || '').toLowerCase();
     const message = (err?.message || '').toLowerCase();
 
-    // 1. Người dùng từ chối cấp quyền trên màn hình Google Consent
+    // 1. Mã phát hành (issuer RFC 9207) không hợp lệ hoặc bị thiếu
+    if (message.includes('issuer')) {
+      return {
+        errorCode: OAUTH_ERROR_CODES.INVALID_STATE,
+        safeMessage: 'Mã xác thực không hợp lệ hoặc đã qua sử dụng. Vui lòng thử lại.',
+      };
+    }
+
+    // 2. Người dùng từ chối cấp quyền trên màn hình Google Consent
     if (
       rawError === 'access_denied' ||
       message.includes('access_denied') ||
@@ -125,7 +133,7 @@ export class GoogleController {
       };
     }
 
-    // 2. State hết hạn (TTL 10 phút)
+    // 3. State hết hạn (TTL 10 phút)
     if (message.includes('hết hạn') || message.includes('expired')) {
       return {
         errorCode: OAUTH_ERROR_CODES.EXPIRED_STATE,
@@ -133,7 +141,7 @@ export class GoogleController {
       };
     }
 
-    // 3. State không hợp lệ / giả mạo / replay attack / thiếu mã code/state
+    // 4. State không hợp lệ / giả mạo / replay attack / thiếu mã code/state
     if (
       message.includes('state') ||
       message.includes('csrf') ||
@@ -146,7 +154,7 @@ export class GoogleController {
       };
     }
 
-    // 4. Lỗi cấu hình hệ thống / credentials
+    // 5. Lỗi cấu hình hệ thống / credentials
     if (
       message.includes('lỗi cấu hình') ||
       message.includes('google_client') ||

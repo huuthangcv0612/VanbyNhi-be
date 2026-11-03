@@ -245,6 +245,26 @@ describe('GoogleController', () => {
       );
     });
 
+    it('chuẩn hóa mã lỗi oauth_invalid_state khi callback thiếu issuer (missing iss)', async () => {
+      (authServiceMock.handleCallback as any).mockRejectedValue(
+        new BadRequestException('Mã phát hành (issuer) của Google OAuth là bắt buộc'),
+      );
+
+      const res: any = { redirect: vi.fn() };
+
+      await controller.googleCallback(
+        {
+          code: 'valid-code',
+          state: 'valid-state',
+        } as any,
+        res,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining(`error_code=${OAUTH_ERROR_CODES.INVALID_STATE}`),
+      );
+    });
+
     it('chuẩn hóa error_code=google_configuration_error khi lỗi cấu hình hệ thống', async () => {
       (authServiceMock.handleCallback as any).mockRejectedValue(
         new InternalServerErrorException('Lỗi cấu hình hệ thống: Chưa thiết lập GOOGLE_CLIENT_ID'),
@@ -287,6 +307,27 @@ describe('GoogleController', () => {
       // Phải chứa error_code chuẩn hóa và message thân thiện
       expect(redirectCall).toContain(`error_code=${OAUTH_ERROR_CODES.FAILED}`);
       expect(redirectCall).toContain('status=error');
+    });
+
+    it('chuẩn hóa mã lỗi oauth_invalid_state khi issuer RFC 9207 bị giả mạo', async () => {
+      (authServiceMock.handleCallback as any).mockRejectedValue(
+        new BadRequestException('Mã phát hành (issuer) của Google OAuth không hợp lệ'),
+      );
+
+      const res: any = { redirect: vi.fn() };
+
+      await controller.googleCallback(
+        {
+          code: 'valid-code',
+          state: 'valid-state',
+          iss: 'https://evil-oauth.example.com',
+        },
+        res,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining(`error_code=${OAUTH_ERROR_CODES.INVALID_STATE}`),
+      );
     });
 
     it('ngăn chặn Open Redirect: không chuyển hướng theo redirect_uri hoặc returnUrl từ query', async () => {

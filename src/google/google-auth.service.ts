@@ -769,6 +769,25 @@ export class GoogleAuthService implements OnModuleInit, OnModuleDestroy {
    * Xử lý callback OAuth từ Google
    */
   async handleCallback(query: GoogleCallbackQueryDto) {
+    // RFC 9207 Section 2.4 (OAuth 2.0 Authorization Server Issuer Identification)
+    // Issuer phải được so sánh bằng simple string comparison, chỉ chấp nhận chính xác https://accounts.google.com
+    // Tuyệt đối không trim(), không tự loại bỏ dấu slash, không chấp nhận accounts.google.com
+    if (!query.iss) {
+      this.logger.warn('Google OAuth callback thiếu tham số iss bắt buộc');
+      throw new BadRequestException(
+        'Mã phát hành (issuer) của Google OAuth là bắt buộc',
+      );
+    }
+
+    if (query.iss !== 'https://accounts.google.com') {
+      this.logger.warn(
+        `Google OAuth callback nhận issuer không hợp lệ: [${query.iss}]`,
+      );
+      throw new BadRequestException(
+        'Mã phát hành (issuer) của Google OAuth không hợp lệ',
+      );
+    }
+
     if (query.error) {
       const internalCode =
         query.error === 'access_denied' ? 'access_denied' : 'provider_error';

@@ -191,6 +191,7 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       const callbackResult = await googleAuthService.handleCallback({
         code: 'valid-google-auth-code',
         state: 'valid-login-state',
+        iss: 'https://accounts.google.com',
       });
 
       expect(callbackResult.isLogin).toBe(true);
@@ -232,7 +233,11 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       });
 
       await expect(
-        googleAuthService.handleCallback({ code: 'auth-code', state: 'login-state' }),
+        googleAuthService.handleCallback({
+          code: 'auth-code',
+          state: 'login-state',
+          iss: 'https://accounts.google.com',
+        }),
       ).rejects.toThrow('Tài khoản người dùng không tồn tại hoặc đã bị khóa');
     });
 
@@ -249,7 +254,11 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       vi.spyOn(googleAuthService, 'validateAndConsumeState').mockResolvedValue('login:anon');
 
       await expect(
-        googleAuthService.handleCallback({ code: 'auth-code', state: 'login-state' }),
+        googleAuthService.handleCallback({
+          code: 'auth-code',
+          state: 'login-state',
+          iss: 'https://accounts.google.com',
+        }),
       ).rejects.toThrow('Địa chỉ email Google chưa được xác minh');
     });
 
@@ -271,6 +280,7 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       const result = await googleAuthService.handleCallback({
         code: 'auth-code',
         state: 'login-state',
+        iss: 'https://accounts.google.com',
       });
 
       expect(result.isLogin).toBe(true);
@@ -313,6 +323,7 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       const res = await googleAuthService.handleCallback({
         code: 'valid-code',
         state: 'teacher-state',
+        iss: 'https://accounts.google.com',
       });
 
       expect(res.message).toContain('Liên kết tài khoản Google thành công');
@@ -414,6 +425,7 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       await googleAuthService.handleCallback({
         code: 'code',
         state: 'state',
+        iss: 'https://accounts.google.com',
       });
 
       // Vẫn lưu bằng pre-existing token
@@ -446,7 +458,11 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       prismaMock.userGoogleAccount.findUnique.mockResolvedValue(null);
 
       await expect(
-        googleAuthService.handleCallback({ code: 'code', state: 'state' }),
+        googleAuthService.handleCallback({
+          code: 'code',
+          state: 'state',
+          iss: 'https://accounts.google.com',
+        }),
       ).rejects.toThrow('Google không trả về Refresh Token');
     });
   });
@@ -923,6 +939,7 @@ describe('BỘ KIỂM THỬ TÍCH HỢP GOOGLE INTEGRATION & MULTI-TEACHER ISOLA
       const callbackResult = await googleAuthService.handleCallback({
         code: 'code-123',
         state: 'login-state',
+        iss: 'https://accounts.google.com',
       });
 
       // KHÔNG tự động liên kết hoặc đăng nhập bừa bãi

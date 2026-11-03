@@ -327,6 +327,7 @@ describe('GoogleAuthService', () => {
         await service.handleCallback({
           error: 'access_denied',
           error_description: 'The user denied the request to link account with sensitive provider url https://accounts.google.com/error?debug=123',
+          iss: 'https://accounts.google.com',
         });
         expect.unreachable();
       } catch (err: any) {
@@ -343,6 +344,7 @@ describe('GoogleAuthService', () => {
         await service.handleCallback({
           error: 'access_denied',
           error_description: 'The user denied the request to link account',
+          iss: 'https://accounts.google.com',
         });
         expect.unreachable();
       } catch (err: any) {
@@ -442,10 +444,97 @@ describe('GoogleAuthService', () => {
       );
     });
 
-    it('từ chối khi thiếu code hoặc state', async () => {
-      await expect(service.handleCallback({})).rejects.toThrow(
-        BadRequestException,
-      );
+    it('từ chối callback thiếu iss (áp dụng chính sách required theo RFC 9207)', async () => {
+      await expect(
+        service.handleCallback({
+          code: 'valid-code',
+          state: 'valid-state',
+        } as any),
+      ).rejects.toThrow('Mã phát hành (issuer) của Google OAuth là bắt buộc');
+    });
+
+    it('từ chối khi iss là chuỗi rỗng', async () => {
+      await expect(
+        service.handleCallback({
+          code: 'valid-code',
+          state: 'valid-state',
+          iss: '',
+        } as any),
+      ).rejects.toThrow('Mã phát hành (issuer) của Google OAuth là bắt buộc');
+    });
+
+    it('từ chối khi iss là accounts.google.com (simple string comparison, không chấp nhận thiếu protocol)', async () => {
+      await expect(
+        service.handleCallback({
+          code: 'valid-code',
+          state: 'valid-state',
+          iss: 'accounts.google.com',
+        }),
+      ).rejects.toThrow('Mã phát hành (issuer) của Google OAuth không hợp lệ');
+    });
+
+    it('từ chối khi iss có dấu slash ở cuối https://accounts.google.com/ (simple string comparison, không tự strip slash)', async () => {
+      await expect(
+        service.handleCallback({
+          code: 'valid-code',
+          state: 'valid-state',
+          iss: 'https://accounts.google.com/',
+        }),
+      ).rejects.toThrow('Mã phát hành (issuer) của Google OAuth không hợp lệ');
+    });
+
+    it('từ chối khi issuer bị giả mạo (RFC 9207 chống Mix-up Attacks)', async () => {
+      await expect(
+        service.handleCallback({
+          code: 'valid-code',
+          state: 'valid-state',
+          iss: 'https://malicious-fake-google.com',
+        }),
+      ).rejects.toThrow('Mã phát hành (issuer) của Google OAuth không hợp lệ');
+    });
+
+    it('từ chối khi thiếu code hoặc state dù có iss hợp lệ', async () => {
+      await expect(
+        service.handleCallback({
+          iss: 'https://accounts.google.com',
+        } as any),
+      ).rejects.toThrow('Thiếu mã code hoặc state từ phản hồi của Google');
+    });
+
+    it('chấp nhận callback khi iss là chính xác https://accounts.google.com (RFC 9207)', async () => {
+      const state = await service.generateState('teacher-1');
+
+      prismaMock.user.findUnique.mockResolvedValue({
+        id: 'teacher-1',
+        isActive: true,
+      });
+
+      vi.spyOn(service, 'exchangeCodeForTokens').mockResolvedValue({
+        access_token: 'fake-access-token',
+        refresh_token: 'fake-refresh-token',
+        expires_in: 3600,
+      });
+
+      vi.spyOn(service, 'fetchUserProfile').mockResolvedValue({
+        sub: 'google-sub-rfc9207',
+        email: 'teacher@hcmus.edu.vn',
+        email_verified: true,
+      });
+
+      prismaMock.userGoogleAccount.findUnique.mockResolvedValue(null);
+      prismaMock.userGoogleAccount.upsert.mockResolvedValue({
+        userId: 'teacher-1',
+        googleSub: 'google-sub-rfc9207',
+        email: 'teacher@hcmus.edu.vn',
+      });
+
+      const result = await service.handleCallback({
+        code: 'valid-code',
+        state,
+        iss: 'https://accounts.google.com',
+      });
+
+      expect(result.googleAccount.googleSub).toBe('google-sub-rfc9207');
     });
 
     it('từ chối khi email Google chưa được xác minh', async () => {
@@ -469,7 +558,11 @@ describe('GoogleAuthService', () => {
       });
 
       await expect(
-        service.handleCallback({ code: 'valid-code', state }),
+        service.handleCallback({
+          code: 'valid-code',
+          state,
+          iss: 'https://accounts.google.com',
+        }),
       ).rejects.toThrow(/email_verified: false/);
     });
 
@@ -494,7 +587,11 @@ describe('GoogleAuthService', () => {
       });
 
       await expect(
-        service.handleCallback({ code: 'valid-code', state }),
+        service.handleCallback({
+          code: 'valid-code',
+          state,
+          iss: 'https://accounts.google.com',
+        }),
       ).rejects.toThrow(/không nằm trong danh sách miền Google Workspace/);
     });
 
@@ -528,6 +625,7 @@ describe('GoogleAuthService', () => {
       const result = await service.handleCallback({
         code: 'valid-code',
         state: stateTeacher1,
+        iss: 'https://accounts.google.com',
       });
 
       expect(prismaMock.userGoogleAccount.upsert).toHaveBeenCalledWith(
@@ -579,7 +677,11 @@ describe('GoogleAuthService', () => {
         email_verified: true,
       });
 
-      await service.handleCallback({ code: 'valid-code', state: stateTeacher1 });
+      await service.handleCallback({
+        code: 'valid-code',
+        state: stateTeacher1,
+        iss: 'https://accounts.google.com',
+      });
 
       expect(prismaMock.userGoogleAccount.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -618,7 +720,11 @@ describe('GoogleAuthService', () => {
       });
 
       await expect(
-        service.handleCallback({ code: 'valid-code', state: stateTeacher1 }),
+        service.handleCallback({
+          code: 'valid-code',
+          state: stateTeacher1,
+          iss: 'https://accounts.google.com',
+        }),
       ).rejects.toThrow(ConflictException);
     });
 
@@ -655,7 +761,11 @@ describe('GoogleAuthService', () => {
         email_verified: true,
       });
 
-      await service.handleCallback({ code: 'valid-code', state: stateTeacher1 });
+      await service.handleCallback({
+        code: 'valid-code',
+        state: stateTeacher1,
+        iss: 'https://accounts.google.com',
+      });
 
       expect(prismaMock.userGoogleAccount.delete).toHaveBeenCalledWith({
         where: { id: 'old-disconnected-acc-id' },
