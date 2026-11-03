@@ -94,6 +94,22 @@ describe('RegisterDto', () => {
     );
   });
 
+  it('báo lỗi khi mật khẩu dài hơn 72 ký tự (chống bcrypt DoS)', async () => {
+    const dto = toDto({
+      fullName: 'Nguyễn Văn A',
+      email: 'test@example.com',
+      phone: '0901234567',
+      password: 'a'.repeat(73),
+    });
+
+    const errors = await validate(dto);
+    const passwordError = errors.find((e) => e.property === 'password');
+    expect(passwordError).toBeDefined();
+    expect(passwordError?.constraints?.maxLength).toBe(
+      'Mật khẩu không được vượt quá 72 ký tự',
+    );
+  });
+
   it('báo lỗi khi dateOfBirth không đúng định dạng ngày', async () => {
     const dto = toDto({
       fullName: 'Nguyễn Văn A',

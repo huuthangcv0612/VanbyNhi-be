@@ -264,12 +264,13 @@ describe('AuthService', () => {
       expect(result.tokens.refreshToken).not.toBe(rawOldToken);
     });
 
-    it('từ chối khi refresh token đã bị thu hồi (isRevoked = true)', async () => {
+    it('từ chối và thu hồi toàn bộ token của user khi phát hiện hành vi sử dụng lại refresh token đã bị thu hồi (Reuse Detection - RFC 6819)', async () => {
       const rawToken = 'revoked-token';
       const tokenHash = authService.hashToken(rawToken);
 
       prismaMock.refreshToken.findUnique.mockResolvedValue({
         id: 'token-revoked',
+        userId: 'user-compromised-1',
         tokenHash,
         isRevoked: true,
         expiresAt: new Date(Date.now() + 100000),
@@ -279,6 +280,12 @@ describe('AuthService', () => {
       await expect(
         authService.refresh({ refreshToken: rawToken }),
       ).rejects.toThrow('Refresh token đã bị thu hồi hoặc đã được sử dụng');
+
+      // Xác minh cơ chế phát hiện sử dụng lại token thu hồi tất cả phiên của user
+      expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith({
+        where: { userId: 'user-compromised-1', isRevoked: false },
+        data: { isRevoked: true },
+      });
     });
 
     it('từ chối khi refresh token đã hết hạn (expiresAt trong quá khứ)', async () => {
@@ -501,6 +508,8 @@ describe('AuthService', () => {
       const redirectArg = mockRes.redirect.mock.calls[0][0];
       expect(redirectArg).toContain('http://localhost:5173/auth/zalo/callback');
       expect(redirectArg).toContain('error=zalo_access_denied');
+      expect(redirectArg).not.toContain('User denied permission');
+      expect(redirectArg).toContain('error_description=');
     });
 
     it('ném BadRequestException nếu mã state không hợp lệ hoặc đã hết hạn', async () => {

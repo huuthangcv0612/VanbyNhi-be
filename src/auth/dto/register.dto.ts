@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   MinLength,
+  MaxLength,
   Matches,
   IsDateString,
 } from 'class-validator';
@@ -34,6 +35,7 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
   @IsString({ message: 'Mật khẩu phải là chuỗi ký tự' })
   @MinLength(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
+  @MaxLength(72, { message: 'Mật khẩu không được vượt quá 72 ký tự' })
   password: string;
 
   @IsOptional()

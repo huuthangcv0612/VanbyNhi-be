@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   MinLength,
+  MaxLength,
   Matches,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
@@ -40,5 +41,6 @@ export class CreateUserDto {
   @IsOptional()
   @IsString({ message: 'Mật khẩu phải là chuỗi ký tự' })
   @MinLength(6, { message: 'Mật khẩu ban đầu tối thiểu 6 ký tự' })
+  @MaxLength(72, { message: 'Mật khẩu ban đầu không được vượt quá 72 ký tự' })
   initialPassword?: string;
 }

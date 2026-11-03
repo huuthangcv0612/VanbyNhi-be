@@ -2,6 +2,7 @@ import {
   IsNotEmpty,
   IsString,
   MinLength,
+  MaxLength,
   IsOptional,
   ValidateIf,
 } from 'class-validator';
@@ -34,5 +35,6 @@ export class LoginDto {
   @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
   @IsString({ message: 'Mật khẩu phải là chuỗi ký tự' })
   @MinLength(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
+  @MaxLength(100, { message: 'Mật khẩu không được vượt quá 100 ký tự' })
   password: string;
 }

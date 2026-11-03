@@ -249,6 +249,14 @@ export class AuthService {
     }
 
     if (existingToken.isRevoked) {
+      this.logger.warn(
+        `Cảnh báo bảo mật: Phát hiện hành vi sử dụng lại refresh token đã thu hồi của user ${existingToken.userId}. Thu hồi toàn bộ phiên đăng nhập của người dùng.`,
+      );
+      // Theo chuẩn RFC 6819 Section 5.2.2.3: Khi phát hiện token reuse, lập tức thu hồi toàn bộ refresh token của user
+      await this.prisma.refreshToken.updateMany({
+        where: { userId: existingToken.userId, isRevoked: false },
+        data: { isRevoked: true },
+      });
       throw new UnauthorizedException(
         'Refresh token đã bị thu hồi hoặc đã được sử dụng',
       );
@@ -431,22 +439,20 @@ export class AuthService {
       query.error_description ||
       query.error_reason
     ) {
-      const errorMsg =
-        query.error_description ||
-        query.error_reason ||
-        'Người dùng đã hủy hoặc từ chối cấp quyền truy cập Zalo';
-      this.logger.warn(`Zalo OAuth bị từ chối hoặc phát sinh lỗi: ${errorMsg}`);
+      this.logger.warn(
+        'Zalo OAuth bị từ chối hoặc phát sinh lỗi từ nhà cung cấp [zalo_access_denied]',
+      );
+
+      const safeMessage = 'Người dùng đã từ chối cấp quyền truy cập Zalo';
 
       if (frontendUrl && !prefersJson) {
         const redirectUrl = this.buildFrontendRedirectUrl(frontendUrl);
         redirectUrl.searchParams.set('error', 'zalo_access_denied');
-        redirectUrl.searchParams.set('error_description', errorMsg);
+        redirectUrl.searchParams.set('error_description', safeMessage);
         return res.redirect(redirectUrl.toString());
       }
 
-      throw new UnauthorizedException(
-        `Người dùng đã từ chối cấp quyền truy cập Zalo: ${errorMsg}`,
-      );
+      throw new UnauthorizedException(safeMessage);
     }
 
     // 2. Xác minh state chống CSRF
@@ -747,12 +753,21 @@ export class AuthService {
     };
   }
 
-  private buildFrontendRedirectUrl(frontendUrl: string): URL {
-    const url = new URL(frontendUrl);
-    if (url.pathname === '/' || url.pathname === '') {
-      url.pathname = '/auth/zalo/callback';
+  private buildFrontendRedirectUrl(frontendUrl?: string): URL {
+    const defaultUrl = 'https://vanby-nhi-fe.vercel.app';
+    const target = frontendUrl?.trim() || defaultUrl;
+    try {
+      const parsed = new URL(target);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        return new URL('/auth/zalo/callback', defaultUrl);
+      }
+      if (parsed.pathname === '/' || parsed.pathname === '') {
+        parsed.pathname = '/auth/zalo/callback';
+      }
+      return parsed;
+    } catch {
+      return new URL('/auth/zalo/callback', defaultUrl);
     }
-    return url;
   }
 
   private prefersJson(req: Request): boolean {

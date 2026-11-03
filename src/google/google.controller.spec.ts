@@ -1,7 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ConfigService } from '@nestjs/config';
-import { UnauthorizedException, BadRequestException } from '@nestjs/common';
-import { GoogleController } from './google.controller.js';
+import {
+  UnauthorizedException,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { GoogleController, OAUTH_ERROR_CODES } from './google.controller.js';
 import { GoogleAuthService } from './google-auth.service.js';
 import { GoogleConnectionStatus } from '../../generated/prisma/client.js';
 
@@ -69,7 +73,7 @@ describe('GoogleController', () => {
 
   describe('GET /google/connect', () => {
     it('khởi tạo URL liên kết và trả về JSON nếu format=json', async () => {
-      (authServiceMock.getAuthorizationUrl as any).mockReturnValue(
+      (authServiceMock.getAuthorizationUrl as any).mockResolvedValue(
         'https://accounts.google.com/o/oauth2/v2/auth?mock=1',
       );
 
@@ -90,7 +94,7 @@ describe('GoogleController', () => {
     });
 
     it('trả về JSON khi header có Accept: application/json', async () => {
-      (authServiceMock.getAuthorizationUrl as any).mockReturnValue(
+      (authServiceMock.getAuthorizationUrl as any).mockResolvedValue(
         'https://accounts.google.com/o/oauth2/v2/auth?mock=1',
       );
 
@@ -115,7 +119,7 @@ describe('GoogleController', () => {
     });
 
     it('thực hiện redirect nếu không yêu cầu JSON', async () => {
-      (authServiceMock.getAuthorizationUrl as any).mockReturnValue(
+      (authServiceMock.getAuthorizationUrl as any).mockResolvedValue(
         'https://accounts.google.com/o/oauth2/v2/auth?mock=1',
       );
 
@@ -143,7 +147,7 @@ describe('GoogleController', () => {
     });
   });
 
-  describe('GET /google/callback', () => {
+  describe('GET /google/callback & Redirect Security', () => {
     it('xử lý callback và chuyển hướng về frontend khi format!=json', async () => {
       (authServiceMock.handleCallback as any).mockResolvedValue({
         message: 'Liên kết thành công',
@@ -187,25 +191,128 @@ describe('GoogleController', () => {
       expect(res.json).toHaveBeenCalledWith(mockResult);
     });
 
-    it('chuyển hướng về frontend kèm status=error khi xảy ra lỗi trong browser redirect flow', async () => {
+    it('chuẩn hóa error_code=oauth_access_denied khi người dùng từ chối cấp quyền', async () => {
       (authServiceMock.handleCallback as any).mockRejectedValue(
-        new BadRequestException('Mã state không hợp lệ hoặc đã hết hạn'),
+        new BadRequestException('Xác thực Google bị từ chối: access_denied'),
       );
 
-      const res: any = {
-        redirect: vi.fn(),
-        status: vi.fn().mockReturnThis(),
-        json: vi.fn(),
-      };
+      const res: any = { redirect: vi.fn() };
 
       await controller.googleCallback(
-        { code: 'valid-code', state: 'expired-state' },
+        { error: 'access_denied', error_description: 'User denied' },
         res,
       );
 
       expect(res.redirect).toHaveBeenCalledWith(
-        expect.stringContaining('/teacher/settings/google?status=error'),
+        expect.stringContaining(`error_code=${OAUTH_ERROR_CODES.ACCESS_DENIED}`),
       );
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining('status=error'),
+      );
+    });
+
+    it('chuẩn hóa error_code=oauth_expired_state khi state hết hạn', async () => {
+      (authServiceMock.handleCallback as any).mockRejectedValue(
+        new BadRequestException('Mã state đã hết hạn'),
+      );
+
+      const res: any = { redirect: vi.fn() };
+
+      await controller.googleCallback(
+        { code: 'code', state: 'expired-state' },
+        res,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining(`error_code=${OAUTH_ERROR_CODES.EXPIRED_STATE}`),
+      );
+    });
+
+    it('chuẩn hóa error_code=oauth_invalid_state khi state không hợp lệ hoặc bị giả mạo', async () => {
+      (authServiceMock.handleCallback as any).mockRejectedValue(
+        new BadRequestException('Mã state không hợp lệ (CSRF verification failed)'),
+      );
+
+      const res: any = { redirect: vi.fn() };
+
+      await controller.googleCallback(
+        { code: 'code', state: 'tampered-state' },
+        res,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining(`error_code=${OAUTH_ERROR_CODES.INVALID_STATE}`),
+      );
+    });
+
+    it('chuẩn hóa error_code=google_configuration_error khi lỗi cấu hình hệ thống', async () => {
+      (authServiceMock.handleCallback as any).mockRejectedValue(
+        new InternalServerErrorException('Lỗi cấu hình hệ thống: Chưa thiết lập GOOGLE_CLIENT_ID'),
+      );
+
+      const res: any = { redirect: vi.fn() };
+
+      await controller.googleCallback(
+        { code: 'code', state: 'valid-state' },
+        res,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining(`error_code=${OAUTH_ERROR_CODES.CONFIGURATION_ERROR}`),
+      );
+    });
+
+    it('InternalServerErrorException và Database timeout KHÔNG xuất hiện trong URL redirect', async () => {
+      const sensitiveDbError =
+        "Can't reach database server at neon.tech:5432 - Connection Timeout with sensitive schema details";
+      (authServiceMock.handleCallback as any).mockRejectedValue(
+        new Error(sensitiveDbError),
+      );
+
+      const res: any = { redirect: vi.fn() };
+
+      await controller.googleCallback(
+        { code: 'code', state: 'state' },
+        res,
+      );
+
+      const redirectCall = res.redirect.mock.calls[0][0];
+
+      // Tuyệt đối không chứa thông tin lỗi nội bộ
+      expect(redirectCall).not.toContain('neon.tech');
+      expect(redirectCall).not.toContain('Connection Timeout');
+      expect(redirectCall).not.toContain('database');
+      expect(redirectCall).not.toContain(sensitiveDbError);
+
+      // Phải chứa error_code chuẩn hóa và message thân thiện
+      expect(redirectCall).toContain(`error_code=${OAUTH_ERROR_CODES.FAILED}`);
+      expect(redirectCall).toContain('status=error');
+    });
+
+    it('ngăn chặn Open Redirect: không chuyển hướng theo redirect_uri hoặc returnUrl từ query', async () => {
+      (authServiceMock.handleCallback as any).mockResolvedValue({
+        message: 'Liên kết thành công',
+        googleAccount: { email: 'teacher@hcmus.edu.vn' },
+      });
+
+      const res: any = { redirect: vi.fn() };
+
+      // Kẻ tấn công cố tình truyền returnUrl hoặc redirect_uri độc hại
+      await controller.googleCallback(
+        {
+          code: 'valid-code',
+          state: 'valid-state',
+          returnUrl: 'https://evil-phishing-site.com/steal-token',
+          redirect_uri: 'https://evil-phishing-site.com/callback',
+        } as any,
+        res,
+      );
+
+      const redirectCall = res.redirect.mock.calls[0][0];
+
+      // Tuyệt đối không chuyển hướng sang trang web độc hại
+      expect(redirectCall).not.toContain('evil-phishing-site.com');
+      expect(redirectCall.startsWith('http://localhost:5173/teacher/settings/google')).toBe(true);
     });
 
     it('ném lại lỗi khi format=json và xảy ra lỗi (cho API client/test)', async () => {

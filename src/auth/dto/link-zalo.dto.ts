@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class LinkZaloDto {
   @IsNotEmpty({ message: 'linkTicket không được để trống' })
@@ -11,5 +11,6 @@ export class LinkZaloDto {
 
   @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
   @IsString({ message: 'password phải là chuỗi' })
+  @MaxLength(100, { message: 'Mật khẩu không được vượt quá 100 ký tự' })
   password: string;
 }
